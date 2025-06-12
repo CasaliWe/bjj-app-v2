@@ -1,0 +1,85 @@
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Sistema de cores dark mode sofisticado para BJJ Academy */
+
+@layer base {
+  :root {
+    --background: 215 28% 8%; /* #0f1419 - fundo principal muito escuro */
+    --foreground: 210 40% 98%; /* texto principal claro */
+
+    --card: 215 28% 10%; /* #141a21 - cards ligeiramente mais claros */
+    --card-foreground: 210 40% 98%;
+
+    --popover: 215 28% 10%;
+    --popover-foreground: 210 40% 98%;
+
+    --primary: 45 93% 55%; /* #f1c40f - dourado elegante */
+    --primary-foreground: 215 28% 8%;
+
+    --secondary: 215 28% 12%; /* #1a2229 - elementos secundários */
+    --secondary-foreground: 210 40% 98%;
+
+    --muted: 215 28% 15%; /* #202934 - elementos muted */
+    --muted-foreground: 215 20% 65%; /* texto muted */
+
+    --accent: 45 93% 55%; /* dourado para acentos */
+    --accent-foreground: 215 28% 8%;
+
+    --destructive: 0 84% 60%; /* vermelho para ações destrutivas */
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 215 28% 18%; /* #2a3441 - bordas sutis */
+    --input: 215 28% 18%;
+    --ring: 45 93% 55%; /* anel dourado para foco */
+
+    --radius: 0.75rem; /* bordas mais arredondadas */
+
+    /* Cores específicas da sidebar */
+    --sidebar-background: 215 28% 6%; /* #0c1015 - ainda mais escuro */
+    --sidebar-foreground: 210 40% 98%;
+    --sidebar-primary: 45 93% 55%;
+    --sidebar-primary-foreground: 215 28% 6%;
+    --sidebar-accent: 215 28% 12%;
+    --sidebar-accent-foreground: 210 40% 98%;
+    --sidebar-border: 215 28% 15%;
+    --sidebar-ring: 45 93% 55%;
+
+    /* Cores personalizadas BJJ */
+    --bjj-gold: 45 93% 55%; /* #f1c40f */
+    --bjj-gold-foreground: 215 28% 8%;
+    --bjj-dark: 215 28% 8%;
+    --bjj-dark-secondary: 215 28% 12%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-inter;
+    font-feature-settings: "cv11", "ss01";
+    font-variation-settings: "opsz" 32;
+  }
+
+  /* Scrollbar personalizada */
+  ::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-muted;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-border rounded-full;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-accent;
+  }
+}
