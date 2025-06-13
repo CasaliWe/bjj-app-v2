@@ -1,59 +1,47 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
-import { Shield, Award, Target, TrendingUp, Mail, KeyRound, User, EyeOff, Eye } from "lucide-react";
+import { Shield, Mail, ArrowLeft } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { useIsMobile } from "@/hooks/use-mobile";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter
+} from "@/components/ui/dialog";
 
-const Login = () => {
+const PasswordRecovery = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
+  const [showDialog, setShowDialog] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const isMobile = useIsMobile();
   
-  const handleLogin = (e) => {
+  const handleRecovery = (e) => {
     e.preventDefault();
-    // Aqui seria a lógica de autenticação
-    console.log("Login com:", { email, password });
-    // Por enquanto, apenas navega para o dashboard
-    navigate("/");
+    setIsSubmitting(true);
+    
+    // Simulando uma requisição de recuperação de senha
+    setTimeout(() => {
+      setIsSubmitting(false);
+      setShowDialog(true);
+      console.log("Recuperação solicitada para:", email);
+    }, 1500);
   };
   
-  const handleCreateAccount = () => {
-    // Navegar para a página de criação de conta
-    navigate("/register");
-  };
-  
-  const handlePasswordRecovery = () => {
-    // Navegar para a página de recuperação de senha
-    navigate("/recuperar-senha");
+  const handleBackToLogin = () => {
+    navigate("/login");
   };
 
-  const features = [
-    {
-      icon: Target,
-      title: "Técnicas Organizadas",
-      description: "Catalogue e organize todas as técnicas que você aprende"
-    },
-    {
-      icon: TrendingUp,
-      title: "Progresso Detalhado",
-      description: "Acompanhe sua evolução com métricas e estatísticas"
-    },
-    {
-      icon: Award,
-      title: "Competições",
-      description: "Registre suas participações e conquistas"
-    },
-    {
-      icon: Shield,
-      title: "Plano de Jogo",
-      description: "Monte estratégias e táticas personalizadas"
-    }
-  ];
+  const handleCloseDialog = () => {
+    setShowDialog(false);
+    navigate("/login");
+  };
 
   return (
     <div className="min-h-screen bg-[#121315] flex flex-col justify-between p-4">
@@ -78,41 +66,41 @@ const Login = () => {
               </div>
               
               <h2 className="text-4xl lg:text-5xl font-bold text-foreground mb-4 leading-tight">
-                Evolua seu
-                <span className="text-bjj-gold block">Jiu-Jitsu</span>
+                Recupere seu
+                <span className="text-bjj-gold block">Acesso</span>
               </h2>
               
               <p className="text-lg text-muted-foreground leading-relaxed max-w-md mx-auto lg:mx-0">
-                A plataforma completa para organizar técnicas, acompanhar treinos, 
-                registrar competições e criar seu plano de jogo personalizado.
+                Não se preocupe. Insira seu e-mail cadastrado e enviaremos instruções 
+                para restaurar seu acesso à plataforma.
               </p>
             </div>
             
-            {/* Features grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
-              {features.map((feature, index) => (
-                <div 
-                  key={index}
-                  className="group p-4 rounded-lg bg-card/50 border border-border/50 hover:border-bjj-gold/30 transition-all duration-300 hover:bg-card/80"
-                  style={{
-                    animationDelay: `${index * 0.1}s`
-                  }}
-                >
-                  <div className="flex items-start gap-3">
-                    <div className="p-2 bg-bjj-gold/10 rounded-lg group-hover:bg-bjj-gold/20 transition-colors duration-300">
-                      <feature.icon className="w-5 h-5 text-bjj-gold" />
-                    </div>
-                    <div className="flex-1">
-                      <h3 className="font-semibold text-foreground text-sm mb-1">
-                        {feature.title}
-                      </h3>
-                      <p className="text-muted-foreground text-xs leading-relaxed">
-                        {feature.description}
-                      </p>
-                    </div>
-                  </div>
+            {/* Lista de passos */}
+            <div className="space-y-4 mt-8">
+              <div className="flex items-start gap-4">
+                <div className="w-8 h-8 bg-bjj-gold/10 rounded-full flex items-center justify-center text-bjj-gold font-bold">1</div>
+                <div>
+                  <h3 className="text-foreground font-medium mb-1">Digite seu e-mail</h3>
+                  <p className="text-sm text-muted-foreground">Informe o e-mail que você usou para se cadastrar</p>
                 </div>
-              ))}
+              </div>
+              
+              <div className="flex items-start gap-4">
+                <div className="w-8 h-8 bg-bjj-gold/10 rounded-full flex items-center justify-center text-bjj-gold font-bold">2</div>
+                <div>
+                  <h3 className="text-foreground font-medium mb-1">Verifique sua caixa de entrada</h3>
+                  <p className="text-sm text-muted-foreground">Enviaremos um e-mail com uma senha temporária</p>
+                </div>
+              </div>
+              
+              <div className="flex items-start gap-4">
+                <div className="w-8 h-8 bg-bjj-gold/10 rounded-full flex items-center justify-center text-bjj-gold font-bold">3</div>
+                <div>
+                  <h3 className="text-foreground font-medium mb-1">Acesse a plataforma</h3>
+                  <p className="text-sm text-muted-foreground">Use a senha temporária para fazer login e crie uma nova senha</p>
+                </div>
+              </div>
             </div>
             
             {/* Copyright - versão desktop */}
@@ -135,41 +123,47 @@ const Login = () => {
             </div>
             
             <h2 className="text-2xl font-bold text-foreground mb-2">
-              Acesse sua conta
+              Recuperar senha
             </h2>
             <p className="text-sm text-gray-400 mb-4">
-              Faça login para continuar sua jornada no Jiu-Jitsu
+              Recupere o acesso à sua conta
             </p>
-            
-            {/* Mini features no mobile */}
-            <div className="flex justify-center gap-4 flex-wrap mt-3">
-              {features.slice(0, 2).map((feature, index) => (
-                <div key={index} className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                  <feature.icon className="w-3 h-3 text-bjj-gold" />
-                  <span>{feature.title}</span>
-                </div>
-              ))}
-            </div>
           </div>
           
-          {/* Lado direito - Card de login */}
+          {/* Lado direito - Card de recuperação de senha */}
           <div className="flex justify-center lg:justify-end">
             <Card className="w-full max-w-md bg-card/80 backdrop-blur-sm border-border/50 animate-fade-in">
               <CardContent className="p-6 sm:p-8">
                 <div className={`text-center mb-6 ${isMobile ? "hidden" : "block"}`}>
                   <h3 className="text-2xl font-bold text-foreground mb-2">
-                    Acesse sua conta
+                    Recuperar senha
                   </h3>
                   <p className="text-muted-foreground text-sm">
-                    Faça login para continuar sua jornada no Jiu-Jitsu
+                    Enviaremos uma senha temporária para seu e-mail
                   </p>
                 </div>
 
-                <form onSubmit={handleLogin} className="space-y-4">
+                {/* Breves instruções no mobile - visíveis apenas em dispositivos móveis */}
+                <div className="md:hidden space-y-3 mb-6">
+                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                    <div className="w-5 h-5 rounded-full bg-bjj-gold/10 flex items-center justify-center text-bjj-gold text-xs">1</div>
+                    <span>Digite seu e-mail cadastrado</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                    <div className="w-5 h-5 rounded-full bg-bjj-gold/10 flex items-center justify-center text-bjj-gold text-xs">2</div>
+                    <span>Verifique sua caixa de entrada</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                    <div className="w-5 h-5 rounded-full bg-bjj-gold/10 flex items-center justify-center text-bjj-gold text-xs">3</div>
+                    <span>Use a senha temporária para acessar</span>
+                  </div>
+                </div>
+
+                <form onSubmit={handleRecovery} className="space-y-4">
                   {/* Campo de email */}
                   <div className="space-y-2">
                     <Label htmlFor="email" className="text-sm font-medium text-foreground">
-                      E-mail
+                      E-mail cadastrado
                     </Label>
                     <div className="relative">
                       <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -185,47 +179,13 @@ const Login = () => {
                     </div>
                   </div>
 
-                  {/* Campo de senha */}
-                  <div className="space-y-2">
-                    <div className="flex items-center justify-between">
-                      <Label htmlFor="password" className="text-sm font-medium text-foreground">
-                        Senha
-                      </Label>
-                      <button 
-                        type="button" 
-                        onClick={handlePasswordRecovery}
-                        className="text-xs text-bjj-gold hover:underline"
-                      >
-                        Esqueceu a senha?
-                      </button>
-                    </div>
-                    <div className="relative">
-                      <KeyRound className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                      <Input 
-                        id="password"
-                        type={showPassword ? "text" : "password"} 
-                        placeholder="••••••••" 
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        required
-                        className="pl-10 pr-10"
-                      />
-                      <button 
-                        type="button" 
-                        onClick={() => setShowPassword(!showPassword)}
-                        className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground hover:text-foreground"
-                      >
-                        {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                      </button>
-                    </div>
-                  </div>
-
-                  {/* Botão de login */}
+                  {/* Botão de envio */}
                   <Button 
                     type="submit"
                     className="w-full h-11 bg-bjj-gold hover:bg-bjj-gold/90 text-primary-foreground font-medium transition-all"
+                    disabled={isSubmitting}
                   >
-                    Entrar
+                    {isSubmitting ? "Enviando..." : "Enviar instruções"}
                   </Button>
                   
                   {/* Separador */}
@@ -238,26 +198,26 @@ const Login = () => {
                     </div>
                   </div>
 
-                  {/* Botão de criar conta */}
+                  {/* Botão voltar para login */}
                   <Button 
                     type="button"
                     variant="outline" 
-                    onClick={handleCreateAccount}
+                    onClick={handleBackToLogin}
                     className="w-full h-11 border-border hover:border-bjj-gold/50 text-foreground font-medium transition-all"
                   >
-                    <User className="mr-2 h-4 w-4" />
-                    Criar nova conta
+                    <ArrowLeft className="mr-2 h-4 w-4" />
+                    Voltar para o login
                   </Button>
 
                   <div className="text-center space-y-4 mt-4">
                     <div className="text-xs text-muted-foreground">
-                      Ao continuar, você concorda com nossos{" "}
-                      <button type="button" className="text-bjj-gold hover:underline">
-                        Termos de Uso
-                      </button>{" "}
-                      e{" "}
-                      <button type="button" className="text-bjj-gold hover:underline">
-                        Política de Privacidade
+                      Se você não possui uma conta,{" "}
+                      <button 
+                        type="button" 
+                        className="text-bjj-gold hover:underline"
+                        onClick={() => navigate("/register")}
+                      >
+                        criar agora
                       </button>
                     </div>
                   </div>
@@ -292,8 +252,46 @@ const Login = () => {
       <div className="md:hidden text-center mt-8 pt-4">
         <p className="text-xs text-muted-foreground">© 2025 BJJ Academy. Todos os direitos reservados.</p>
       </div>
+
+      {/* Modal de confirmação */}
+      <Dialog open={showDialog} onOpenChange={setShowDialog}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="text-xl font-bold">E-mail enviado com sucesso!</DialogTitle>
+            <DialogDescription className="mt-2">
+              Enviamos instruções para recuperação de senha para <span className="font-medium text-foreground">{email}</span>.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="py-4">
+            <div className="bg-muted/50 p-4 rounded-lg">
+              <div className="flex flex-col space-y-2">
+                <div className="flex items-center gap-2">
+                  <div className="w-5 h-5 rounded-full bg-bjj-gold/20 flex items-center justify-center text-bjj-gold text-xs">✓</div>
+                  <span className="text-sm">Verifique sua caixa de entrada e spam</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="w-5 h-5 rounded-full bg-bjj-gold/20 flex items-center justify-center text-bjj-gold text-xs">✓</div>
+                  <span className="text-sm">Use a senha temporária para fazer login</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="w-5 h-5 rounded-full bg-bjj-gold/20 flex items-center justify-center text-bjj-gold text-xs">✓</div>
+                  <span className="text-sm">Atualize sua senha nas configurações</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button 
+              onClick={handleCloseDialog} 
+              className="w-full sm:w-auto bg-bjj-gold hover:bg-bjj-gold/90 text-primary-foreground"
+            >
+              Voltar para o login
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
 
-export default Login;
+export default PasswordRecovery;
