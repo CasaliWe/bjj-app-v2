@@ -1,4 +1,3 @@
-
 import { useNavigate } from "react-router-dom";
 import { GoogleLoginButton } from "@/components/GoogleLoginButton";
 import { Card, CardContent } from "@/components/ui/card";
