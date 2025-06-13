@@ -280,16 +280,22 @@ const Register = () => {
                   >
                     <ArrowLeft className="mr-2 h-4 w-4" />
                     Voltar para o login
-                  </Button>
-
-                  <div className="text-center space-y-4 mt-4">
+                  </Button>                  <div className="text-center space-y-4 mt-4">
                     <div className="text-xs text-muted-foreground">
                       Ao criar uma conta, você concorda com nossos{" "}
-                      <button type="button" className="text-bjj-gold hover:underline">
+                      <button 
+                        type="button" 
+                        className="text-bjj-gold hover:underline"
+                        onClick={() => navigate("/termos-de-uso")}
+                      >
                         Termos de Uso
                       </button>{" "}
                       e{" "}
-                      <button type="button" className="text-bjj-gold hover:underline">
+                      <button 
+                        type="button" 
+                        className="text-bjj-gold hover:underline"
+                        onClick={() => navigate("/politica-de-privacidade")}
+                      >
                         Política de Privacidade
                       </button>
                     </div>
