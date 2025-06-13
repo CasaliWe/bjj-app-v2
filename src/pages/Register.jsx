@@ -1,35 +1,32 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
-import { Shield, Award, Target, TrendingUp, Mail, KeyRound, User, EyeOff, Eye } from "lucide-react";
+import { Shield, Award, Target, TrendingUp, Mail, KeyRound, User, EyeOff, Eye, ArrowLeft } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { useIsMobile } from "@/hooks/use-mobile";
 
-const Login = () => {
+const Register = () => {
   const navigate = useNavigate();
+  const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const isMobile = useIsMobile();
   
-  const handleLogin = (e) => {
+  const handleRegister = (e) => {
     e.preventDefault();
-    // Aqui seria a lógica de autenticação
-    console.log("Login com:", { email, password });
+    // Aqui seria a lógica de criação de conta
+    console.log("Registro com:", { username, email, password });
     // Por enquanto, apenas navega para o dashboard
     navigate("/");
   };
   
-  const handleCreateAccount = () => {
-    // Navegar para a página de criação de conta
-    navigate("/register");
-  };
-  
-  const handlePasswordRecovery = () => {
-    // Navegar para a página de recuperação de senha (a ser implementada)
-    console.log("Recuperar senha");
+  const handleBackToLogin = () => {
+    navigate("/login");
   };
 
   const features = [
@@ -78,13 +75,13 @@ const Login = () => {
               </div>
               
               <h2 className="text-4xl lg:text-5xl font-bold text-foreground mb-4 leading-tight">
-                Evolua seu
-                <span className="text-bjj-gold block">Jiu-Jitsu</span>
+                Junte-se à 
+                <span className="text-bjj-gold block">Comunidade</span>
               </h2>
               
               <p className="text-lg text-muted-foreground leading-relaxed max-w-md mx-auto lg:mx-0">
-                A plataforma completa para organizar técnicas, acompanhar treinos, 
-                registrar competições e criar seu plano de jogo personalizado.
+                Crie sua conta e comece a organizar suas técnicas, acompanhar treinos, 
+                registrar competições e evoluir seu Jiu-Jitsu.
               </p>
             </div>
             
@@ -135,10 +132,10 @@ const Login = () => {
             </div>
             
             <h2 className="text-2xl font-bold text-foreground mb-2">
-              Acesse sua conta
+              Crie sua conta
             </h2>
             <p className="text-sm text-gray-400 mb-4">
-              Faça login para continuar sua jornada no Jiu-Jitsu
+              Comece sua jornada de evolução no Jiu-Jitsu
             </p>
             
             {/* Mini features no mobile */}
@@ -152,20 +149,39 @@ const Login = () => {
             </div>
           </div>
           
-          {/* Lado direito - Card de login */}
+          {/* Lado direito - Card de cadastro */}
           <div className="flex justify-center lg:justify-end">
             <Card className="w-full max-w-md bg-card/80 backdrop-blur-sm border-border/50 animate-fade-in">
               <CardContent className="p-6 sm:p-8">
                 <div className={`text-center mb-6 ${isMobile ? "hidden" : "block"}`}>
                   <h3 className="text-2xl font-bold text-foreground mb-2">
-                    Acesse sua conta
+                    Crie sua conta
                   </h3>
                   <p className="text-muted-foreground text-sm">
-                    Faça login para continuar sua jornada no Jiu-Jitsu
+                    Preencha seus dados para começar
                   </p>
                 </div>
 
-                <form onSubmit={handleLogin} className="space-y-4">
+                <form onSubmit={handleRegister} className="space-y-4">
+                  {/* Campo de nome de usuário */}
+                  <div className="space-y-2">
+                    <Label htmlFor="username" className="text-sm font-medium text-foreground">
+                      Nome de usuário
+                    </Label>
+                    <div className="relative">
+                      <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                      <Input 
+                        id="username"
+                        type="text" 
+                        placeholder="seu_usuario" 
+                        value={username}
+                        onChange={(e) => setUsername(e.target.value)}
+                        required
+                        className="pl-10"
+                      />
+                    </div>
+                  </div>
+                
                   {/* Campo de email */}
                   <div className="space-y-2">
                     <Label htmlFor="email" className="text-sm font-medium text-foreground">
@@ -187,18 +203,9 @@ const Login = () => {
 
                   {/* Campo de senha */}
                   <div className="space-y-2">
-                    <div className="flex items-center justify-between">
-                      <Label htmlFor="password" className="text-sm font-medium text-foreground">
-                        Senha
-                      </Label>
-                      <button 
-                        type="button" 
-                        onClick={handlePasswordRecovery}
-                        className="text-xs text-bjj-gold hover:underline"
-                      >
-                        Esqueceu a senha?
-                      </button>
-                    </div>
+                    <Label htmlFor="password" className="text-sm font-medium text-foreground">
+                      Senha
+                    </Label>
                     <div className="relative">
                       <KeyRound className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                       <Input 
@@ -220,12 +227,38 @@ const Login = () => {
                     </div>
                   </div>
 
-                  {/* Botão de login */}
+                  {/* Campo de confirmação de senha */}
+                  <div className="space-y-2">
+                    <Label htmlFor="confirmPassword" className="text-sm font-medium text-foreground">
+                      Confirme sua senha
+                    </Label>
+                    <div className="relative">
+                      <KeyRound className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                      <Input 
+                        id="confirmPassword"
+                        type={showConfirmPassword ? "text" : "password"} 
+                        placeholder="••••••••" 
+                        value={confirmPassword}
+                        onChange={(e) => setConfirmPassword(e.target.value)}
+                        required
+                        className="pl-10 pr-10"
+                      />
+                      <button 
+                        type="button" 
+                        onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground hover:text-foreground"
+                      >
+                        {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Botão de cadastro */}
                   <Button 
                     type="submit"
                     className="w-full h-11 bg-bjj-gold hover:bg-bjj-gold/90 text-primary-foreground font-medium transition-all"
                   >
-                    Entrar
+                    Criar conta
                   </Button>
                   
                   {/* Separador */}
@@ -238,20 +271,20 @@ const Login = () => {
                     </div>
                   </div>
 
-                  {/* Botão de criar conta */}
+                  {/* Botão voltar para login */}
                   <Button 
                     type="button"
                     variant="outline" 
-                    onClick={handleCreateAccount}
+                    onClick={handleBackToLogin}
                     className="w-full h-11 border-border hover:border-bjj-gold/50 text-foreground font-medium transition-all"
                   >
-                    <User className="mr-2 h-4 w-4" />
-                    Criar nova conta
+                    <ArrowLeft className="mr-2 h-4 w-4" />
+                    Voltar para o login
                   </Button>
 
                   <div className="text-center space-y-4 mt-4">
                     <div className="text-xs text-muted-foreground">
-                      Ao continuar, você concorda com nossos{" "}
+                      Ao criar uma conta, você concorda com nossos{" "}
                       <button type="button" className="text-bjj-gold hover:underline">
                         Termos de Uso
                       </button>{" "}
@@ -296,4 +329,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default Register;
