@@ -20,6 +20,7 @@ import Contact from "./pages/Contact";
 import UserProfile from "./pages/UserProfile";
 import LandingPage from "./pages/LandingPage";
 import NotFound from "./pages/NotFound";
+import IASensei from "./pages/IASensei";
 
 
 const queryClient = new QueryClient();
@@ -30,17 +31,19 @@ const App = () => (
     <TooltipProvider>
       <Toaster />
       <Sonner />
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<LandingPage />} />          <Route path="/app" element={<Index />} />
+      <BrowserRouter>        <Routes>
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/app" element={<Index />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/recuperar-senha" element={<PasswordRecovery />} />
           <Route path="/termos-de-uso" element={<TermsOfUse />} />
           <Route path="/politica-de-privacidade" element={<PrivacyPolicy />} />
-          <Route path="/suporte" element={<Support />} />          <Route path="/sobre-nos" element={<AboutUs />} />
+          <Route path="/suporte" element={<Support />} />
+          <Route path="/sobre-nos" element={<AboutUs />} />
           <Route path="/contato" element={<Contact />} />
           <Route path="/perfil" element={<UserProfile />} />
+          <Route path="/ia-sensei" element={<IASensei />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
