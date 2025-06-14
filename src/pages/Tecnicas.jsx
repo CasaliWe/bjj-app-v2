@@ -350,9 +350,8 @@ const Tecnicas = () => {  const [tecnicas, setTecnicas] = useState(MOCK_TECNICAS
           </header>
 
           <MobileNav />
-          
-          <main className="flex-1 p-4 md:p-6 overflow-auto">
-            <div className="mb-6 space-y-4">            <div className="flex items-center justify-between">
+            <main className="flex-1 p-4 md:p-6 overflow-auto pb-32 md:pb-6">
+            <div className="mb-6 space-y-4"><div className="flex items-center justify-between">
                 <h2 className="text-2xl font-bold hidden md:block">Biblioteca de Técnicas</h2>
                 <div className="flex gap-2 md:hidden w-full">
                   <Button
@@ -454,7 +453,7 @@ const Tecnicas = () => {  const [tecnicas, setTecnicas] = useState(MOCK_TECNICAS
                 </Button>
               </div>              {/* Lista de Técnicas */}
               {tecnicasFiltradas.length > 0 ? (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-20 md:mb-0">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                   {tecnicasFiltradas.map((tecnica) => (
                     <Card key={tecnica.id} className="flex flex-col h-full overflow-hidden">
                       <CardHeader className="pb-3">
@@ -545,16 +544,14 @@ const Tecnicas = () => {  const [tecnicas, setTecnicas] = useState(MOCK_TECNICAS
                             </div>
                           )}
                         </div>
-                      </CardHeader>
-
-                      <CardContent className="px-0 pb-0">
+                      </CardHeader>                      <CardContent className="px-0 pb-0">
                         <Accordion type="single" collapsible className="w-full">
                           <AccordionItem value="detalhes" className="border-b-0">
                             <AccordionTrigger className="px-6 py-2 text-sm hover:no-underline">
                               Ver detalhes
                             </AccordionTrigger>
                             <AccordionContent>
-                              <div className="px-6 pb-4 space-y-3">
+                              <div className="px-6 pb-4 space-y-3 max-h-60 overflow-y-auto">
                                 <div>
                                   <h4 className="font-medium text-sm mb-1">Passo a passo:</h4>
                                   <ol className="pl-5 list-decimal">
@@ -824,7 +821,7 @@ const Tecnicas = () => {  const [tecnicas, setTecnicas] = useState(MOCK_TECNICAS
 
       {/* Modal de técnicas destacadas */}
       <Dialog open={modalDestaques} onOpenChange={setModalDestaques}>
-        <DialogContent className="max-w-[90%] md:max-w-[700px] max-h-[90vh] overflow-hidden">
+        <DialogContent className="max-w-[95%] w-full md:max-w-[700px] max-h-[90vh] overflow-hidden p-4 pt-6">
           <DialogHeader>
             <DialogTitle>Técnicas Destacadas</DialogTitle>
             <DialogDescription>
@@ -834,22 +831,31 @@ const Tecnicas = () => {  const [tecnicas, setTecnicas] = useState(MOCK_TECNICAS
             </DialogDescription>
           </DialogHeader>
           
-          <ScrollArea className="max-h-[60vh] py-4">
+          <ScrollArea className="max-h-[60vh] py-1">
             {tecnicasDestacadas.length > 0 ? (
-              <div className="space-y-4">
-                {tecnicasDestacadas.map((tecnica) => (
-                  <Card key={tecnica.id}>
-                    <CardHeader className="py-3">
-                      <div className="flex justify-between items-start">
-                        <div>                          <CardTitle className="text-base">{tecnica.nome}</CardTitle>
-                          <div className="mt-1 flex items-center gap-1 text-sm text-muted-foreground">
+              <div className="space-y-4">                {tecnicasDestacadas.map((tecnica) => (
+                  <Card key={tecnica.id}>                    <CardHeader className="py-3 pb-1">
+                      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-2">
+                        <div className="flex-1">
+                          <div className="flex items-center justify-between sm:justify-start gap-2">
+                            <CardTitle className="text-base flex-1 sm:flex-initial">{tecnica.nome}</CardTitle>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="sm:hidden h-7 w-7 p-0"
+                              onClick={() => toggleDestaque(tecnica.id)}
+                            >
+                              <Heart className="h-4 w-4 text-red-500 fill-red-500" />
+                            </Button>
+                          </div>
+                          <div className="mt-1 flex flex-wrap items-center gap-1 text-sm text-muted-foreground">
                             <Badge variant={tecnica.categoria === "guardeiro" ? "secondary" : "default"}>
                               {tecnica.categoria === "guardeiro" ? "Guardeiro" : "Passador"}
                             </Badge>
-                            <span>• {tecnica.posicao}</span>
+                            <span className="whitespace-nowrap">• {tecnica.posicao}</span>
                           </div>
                         </div>
-                        <div className="flex items-center gap-2">
+                        <div className="hidden sm:flex items-center gap-2 flex-shrink-0">
                           <div className="flex">
                             {[1, 2, 3, 4, 5].map((estrela) => (
                               <Star
@@ -866,12 +872,88 @@ const Tecnicas = () => {  const [tecnicas, setTecnicas] = useState(MOCK_TECNICAS
                             variant="ghost"
                             size="icon"
                             onClick={() => toggleDestaque(tecnica.id)}
+                            className="h-7 w-7 p-0"
                           >
                             <Heart className="h-4 w-4 text-red-500 fill-red-500" />
                           </Button>
                         </div>
+                        <div className="flex sm:hidden items-center mt-1">
+                          <span className="text-xs text-muted-foreground mr-1">Avaliação:</span>
+                          <div className="flex">
+                            {[1, 2, 3, 4, 5].map((estrela) => (
+                              <Star
+                                key={estrela}
+                                className={`h-3 w-3 ${
+                                  estrela <= tecnica.nota
+                                    ? "text-yellow-500 fill-yellow-500"
+                                    : "text-gray-300"
+                                }`}
+                              />
+                            ))}
+                          </div>
+                        </div>
                       </div>
+                        {/* Informações de vídeo, se houver */}
+                      {tecnica.video && (
+                        <div className="mt-2 flex justify-start sm:justify-end">
+                          <div className="flex items-center gap-1">
+                            <span className="text-xs text-muted-foreground">Vídeo:</span>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              asChild
+                              className="h-6 w-6 rounded-full"
+                            >
+                              <a 
+                                href={tecnica.video} 
+                                target="_blank" 
+                                rel="noopener noreferrer"
+                              >
+                                {tecnica.video.includes("youtube") ? (
+                                  <Youtube className="h-4 w-4 text-red-500" />
+                                ) : tecnica.video.includes("instagram") ? (
+                                  <Instagram className="h-4 w-4 text-purple-500" />
+                                ) : (
+                                  <ExternalLink className="h-4 w-4 text-blue-500" />
+                                )}
+                              </a>
+                            </Button>
+                          </div>
+                        </div>
+                      )}
                     </CardHeader>
+                      <CardContent className="px-0 pt-0 pb-3">
+                      <Accordion type="single" collapsible className="w-full">
+                        <AccordionItem value="detalhes" className="border-b-0">
+                          <AccordionTrigger className="px-4 sm:px-6 py-2 text-sm hover:no-underline">
+                            Ver detalhes
+                          </AccordionTrigger>
+                          <AccordionContent>
+                            <div className="px-4 sm:px-6 pb-2 space-y-3 max-h-[40vh] sm:max-h-60 overflow-y-auto">
+                              <div>
+                                <h4 className="font-medium text-sm mb-1">Passo a passo:</h4>
+                                <ol className="pl-5 list-decimal">
+                                  {tecnica.passos.map((passo, index) => (
+                                    <li key={index} className="text-sm mb-1">{passo}</li>
+                                  ))}
+                                </ol>
+                              </div>
+                              
+                              {tecnica.observacoes.length > 0 && (
+                                <div className="mt-3">
+                                  <h4 className="font-medium text-sm mb-1">Observações:</h4>
+                                  <ul className="pl-5 list-disc">
+                                    {tecnica.observacoes.map((obs, index) => (
+                                      <li key={index} className="text-sm mb-1">{obs}</li>
+                                    ))}
+                                  </ul>
+                                </div>
+                              )}
+                            </div>
+                          </AccordionContent>
+                        </AccordionItem>
+                      </Accordion>
+                    </CardContent>
                   </Card>
                 ))}
               </div>
@@ -884,8 +966,7 @@ const Tecnicas = () => {  const [tecnicas, setTecnicas] = useState(MOCK_TECNICAS
               </div>
             )}
           </ScrollArea>
-          
-          <DialogFooter>
+            <DialogFooter className="mt-4 sm:mt-6 pb-2">
             <Button variant="outline" onClick={() => setModalDestaques(false)}>
               Fechar
             </Button>
