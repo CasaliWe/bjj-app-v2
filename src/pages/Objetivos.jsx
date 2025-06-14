@@ -1,21 +1,16 @@
-import { useState, useEffect } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { useLocation } from "react-router-dom";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
 import { MobileNav } from "@/components/MobileNav";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Target, Calendar, ArrowRight, ChevronLeft } from "lucide-react";
+import { Target, Calendar, ArrowRight } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 
 const Objetivos = () => {
   const location = useLocation();
-  const navigate = useNavigate();
   const isMobile = useIsMobile();
-
-  const goBack = () => {
-    navigate(-1);
-  };
 
   return (
     <SidebarProvider>
@@ -30,19 +25,9 @@ const Objetivos = () => {
               </div>
               <div className="md:hidden">
                 <MobileNav />
-              </div>
-              <div className="flex items-center w-full justify-between">
+              </div>              <div className="flex items-center w-full justify-between">
                 <div className="flex items-center gap-2">
-                  {isMobile && (
-                    <Button 
-                      variant="ghost" 
-                      size="icon" 
-                      onClick={goBack}
-                      className="mr-1"
-                    >
-                      <ChevronLeft className="h-5 w-5" />
-                    </Button>
-                  )}
+                  <SidebarTrigger />
                   <h1 className="text-xl font-bold">Objetivos</h1>
                 </div>
               </div>
@@ -94,14 +79,6 @@ const Objetivos = () => {
                   </div>
                 </CardContent>
               </Card>
-
-              {!isMobile && (
-                <div className="flex mt-6">
-                  <Button variant="outline" onClick={goBack}>
-                    Voltar
-                  </Button>
-                </div>
-              )}
             </div>
           </main>
         </div>

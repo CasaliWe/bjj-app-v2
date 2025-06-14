@@ -25,6 +25,7 @@ import Tecnicas from "./pages/Tecnicas";
 import Treinos from "./pages/Treinos";
 import Competicoes from "./pages/Competicoes";
 import Objetivos from "./pages/Objetivos";
+import Observacoes from "./pages/Observacoes";
 
 
 const queryClient = new QueryClient();
@@ -45,10 +46,10 @@ const App = () => (
           <Route path="/suporte" element={<Support />} />
           <Route path="/sobre-nos" element={<AboutUs />} />
           <Route path="/contato" element={<Contact />} />
-          <Route path="/perfil" element={<UserProfile />} />        <Route path="/ia-sensei" element={<IASensei />} />
-        <Route path="/tecnicas" element={<Tecnicas />} />
+          <Route path="/perfil" element={<UserProfile />} />        <Route path="/ia-sensei" element={<IASensei />} />        <Route path="/tecnicas" element={<Tecnicas />} />
         <Route path="/treinos" element={<Treinos />} />        <Route path="/competicoes" element={<Competicoes />} />
         <Route path="/objetivos" element={<Objetivos />} />
+        <Route path="/observacoes" element={<Observacoes />} />
         <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
