@@ -33,7 +33,14 @@ import {
   Zap,
   Settings,
   GraduationCap,
-  Mail
+  Mail,
+  Gamepad2,
+  Bot,
+  LineChart,
+  ShoppingBag,
+  Dumbbell,
+  Layers,
+  Newspaper
 } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 
@@ -60,7 +67,7 @@ const Youtube = (props) => (
 const HERO_CONTENT = {
   title: "BJJ Academy",
   subtitle: "Evolua seu Jiu-Jitsu",
-  description: "A plataforma completa para organizar técnicas, acompanhar treinos, registrar competições e criar seu plano de jogo personalizado.",
+  description: "A plataforma completa para organizar técnicas, acompanhar treinos, registrar competições, definir objetivos, criar planos de jogo, acessar vídeos educativos, analisar métricas de desempenho e muito mais. Seu dojo digital com assistência de I.A para maximizar seu potencial no Jiu-Jitsu.",
   ctaButton: "Começar agora",
   secondaryButton: "Saber mais"
 };
@@ -68,7 +75,7 @@ const HERO_CONTENT = {
 // Conteúdo da seção de Funcionalidades Principais
 const MAIN_FEATURES_CONTENT = {
   title: "Funcionalidades Principais",
-  description: "A BJJ Academy oferece todas as ferramentas que você precisa para evoluir no Jiu-Jitsu, desde o acompanhamento detalhado de treinos até a organização estratégica de competições.",
+  description: "A BJJ Academy oferece todas as ferramentas que você precisa para evoluir no Jiu-Jitsu, desde o acompanhamento detalhado de treinos até a organização estratégica de competições e muito mais.",
   features: [
     {
       icon: BookOpen,
@@ -76,9 +83,9 @@ const MAIN_FEATURES_CONTENT = {
       description: "Catalogue e organize todas as técnicas que você aprende nos treinos. Adicione vídeos, notas e agrupe por categorias."
     },
     {
-      icon: BarChart2,
-      title: "Progresso Detalhado",
-      description: "Acompanhe sua evolução com métricas e estatísticas personalizadas. Veja seu desenvolvimento ao longo do tempo."
+      icon: Calendar,
+      title: "Gestão de Treinos",
+      description: "Registre cada sessão de treino, técnicas praticadas, parceiros e observações para acompanhamento contínuo."
     },
     {
       icon: Trophy,
@@ -86,9 +93,29 @@ const MAIN_FEATURES_CONTENT = {
       description: "Registre suas participações em campeonatos, guarde informações sobre adversários e analise seu desempenho."
     },
     {
-      icon: Target,
+      icon: Gamepad2,
       title: "Plano de Jogo",
       description: "Monte estratégias e táticas personalizadas para treinos e competições, baseadas nos seus pontos fortes."
+    },
+    {
+      icon: Target,
+      title: "Objetivos e Metas",
+      description: "Defina metas claras para sua evolução no Jiu-Jitsu e acompanhe seu progresso de forma visual."
+    },
+    {
+      icon: Video,
+      title: "Conteúdo em Vídeo",
+      description: "Acesse uma biblioteca de vídeos com técnicas, drills de treinamento e alongamentos específicos."
+    },
+    {
+      icon: Bot,
+      title: "I.A Sensei",
+      description: "Tire dúvidas e obtenha recomendações personalizadas com um assistente de inteligência artificial."
+    },
+    {
+      icon: LineChart,
+      title: "Métricas Avançadas",
+      description: "Analise seu desempenho com estatísticas detalhadas e visualize tendências ao longo do tempo."
     }
   ]
 };
@@ -350,6 +377,186 @@ const FOOTER_CONTENT = {
   ]
 };
 
+// Conteúdo da seção de Objetivos e Metas
+const GOALS_CONTENT = {
+  title: "Objetivos e Metas",
+  description: "Estabeleça objetivos claros, acompanhe seu progresso e celebre suas conquistas no Jiu-Jitsu.",
+  features: [
+    {
+      icon: Target,
+      title: "Metas Personalizadas",
+      description: "Defina objetivos específicos como aprender novas técnicas, conquistar faixas ou medalhas."
+    },
+    {
+      icon: TrendingUp,
+      title: "Acompanhamento Visual",
+      description: "Visualize seu progresso com gráficos e indicadores claros para manter a motivação."
+    },
+    {
+      icon: CheckCircle2,
+      title: "Conquistas e Recompensas",
+      description: "Ganhe conquistas virtuais ao atingir marcos importantes na sua jornada."
+    }
+  ],
+  image: "/goals-tracking.png",
+  ctaButton: "Defina Seus Objetivos"
+};
+
+// Conteúdo da seção de Observações e Notas
+const NOTES_CONTENT = {
+  title: "Observações e Anotações",
+  description: "Registre ideias importantes, insights técnicos e observações detalhadas sobre seu desenvolvimento.",
+  features: [
+    {
+      icon: FileCheck,
+      title: "Notas Detalhadas",
+      description: "Mantenha um registro organizado de todas as dicas e observações sobre seu treino."
+    },
+    {
+      icon: PenTool,
+      title: "Editor Intuitivo",
+      description: "Interface simples para anotar rapidamente durante ou após os treinos."
+    },
+    {
+      icon: Inbox,
+      title: "Categorização",
+      description: "Organize suas anotações por temas, técnicas ou eventos para fácil consulta."
+    }
+  ],
+  image: "/notes-feature.png",
+  ctaButton: "Organize Suas Observações"
+};
+
+// Conteúdo da seção de Plano de Jogo
+const GAME_PLAN_CONTENT = {
+  title: "Plano de Jogo",
+  description: "Desenvolva estratégias personalizadas para competições e treinos específicos.",
+  features: [
+    {
+      icon: Gamepad2,
+      title: "Estratégias Personalizadas",
+      description: "Crie planos táticos específicos para diferentes adversários e situações."
+    },
+    {
+      icon: Shield,
+      title: "Defesas e Contra-ataques",
+      description: "Planeje respostas para as técnicas mais comuns dos seus adversários."
+    },
+    {
+      icon: Award,
+      title: "Simulações de Luta",
+      description: "Prepare-se mentalmente através de simulações e cenários de competição."
+    }
+  ],
+  image: "/game-plan.png",
+  ctaButton: "Monte Sua Estratégia"
+};
+
+// Conteúdo da seção de Videos e Mídia
+const VIDEOS_CONTENT = {
+  title: "Conteúdo em Vídeo",
+  description: "Acesse uma extensa biblioteca de vídeos educativos para complementar seu aprendizado.",
+  features: [
+    {
+      icon: Video,
+      title: "Vídeos de Técnicas",
+      description: "Assista demonstrações detalhadas de técnicas em alta qualidade."
+    },
+    {
+      icon: Dumbbell,
+      title: "Drills de Treinamento",
+      description: "Acesse exercícios específicos para melhorar movimentação, timing e condicionamento."
+    },
+    {
+      icon: Layers,
+      title: "Alongamentos",
+      description: "Rotinas de alongamento específicas para praticantes de Jiu-Jitsu."
+    },
+    {
+      icon: Newspaper,
+      title: "Notícias e Entrevistas",
+      description: "Mantenha-se atualizado com as últimas notícias do mundo do Jiu-Jitsu e esportes de combate."
+    }
+  ],
+  image: "/video-content.png",
+  ctaButton: "Ver Biblioteca de Vídeos"
+};
+
+// Conteúdo da seção de Métricas e Análises
+const METRICS_CONTENT = {
+  title: "Métricas e Estatísticas",
+  description: "Análise avançada de dados para extrair informações valiosas sobre seu desempenho.",
+  features: [
+    {
+      icon: BarChart,
+      title: "Estatísticas Detalhadas",
+      description: "Acompanhe tempo de treino, técnicas mais utilizadas e taxa de sucesso."
+    },
+    {
+      icon: BarChart2,
+      title: "Análises Personalizadas",
+      description: "Painéis personalizados com as métricas que são mais importantes para você."
+    },
+    {
+      icon: TrendingUp,
+      title: "Tendências e Evolução",
+      description: "Visualize sua progressão ao longo do tempo com gráficos interativos."
+    }
+  ],
+  image: "/metrics-dashboard.png",
+  ctaButton: "Analise Seu Desempenho"
+};
+
+// Conteúdo da seção de Dojo Market
+const MARKETPLACE_CONTENT = {
+  title: "Dojo Market",
+  description: "Marketplace especializado para compra e venda de equipamentos de Jiu-Jitsu.",
+  features: [
+    {
+      icon: ShoppingBag,
+      title: "Compra e Venda",
+      description: "Negocie kimonos, faixas, equipamentos e acessórios com outros praticantes."
+    },
+    {
+      icon: Tag,
+      title: "Preços Justos",
+      description: "Economia na aquisição de itens seminovos ou troca de equipamentos."
+    },
+    {
+      icon: Shield,
+      title: "Transações Seguras",
+      description: "Sistema de avaliação de vendedores e compradores para maior segurança."
+    }
+  ],
+  image: "/marketplace.png",
+  ctaButton: "Explorar o Marketplace"
+};
+
+// Conteúdo da seção IA Sensei
+const AI_SENSEI_CONTENT = {
+  title: "I.A Sensei",
+  description: "Assistente de inteligência artificial especializado em Jiu-Jitsu para responder suas dúvidas.",
+  features: [
+    {
+      icon: Bot,
+      title: "Consulta Inteligente",
+      description: "Tire dúvidas sobre técnicas, regras e estratégias com um assistente virtual especializado."
+    },
+    {
+      icon: MessageSquare,
+      title: "Sugestões Personalizadas",
+      description: "Receba recomendações de técnicas baseadas em seu nível e preferências de luta."
+    },
+    {
+      icon: BookOpen,
+      title: "Biblioteca de Conhecimento",
+      description: "Acesse uma vasta base de dados sobre Jiu-Jitsu, atualizada constantemente."
+    }
+  ],
+  image: "/ai-sensei.png",
+  ctaButton: "Converse com o I.A Sensei"
+};
+
 // Componente da landing page
 const LandingPage = () => {
   const navigate = useNavigate();
@@ -393,13 +600,14 @@ const LandingPage = () => {
             </div>
             <span className="font-bold text-xl">Academy</span>
           </div>
-          
-          {/* Menu Desktop */}
-          <nav className="hidden md:flex items-center gap-8">
+            {/* Menu Desktop */}
+          <nav className="hidden md:flex items-center gap-6">
             <a href="#features" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Funcionalidades</a>
             <a href="#training" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Treinos</a>
             <a href="#techniques" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Técnicas</a>
             <a href="#competitions" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Competições</a>
+            <a href="#goals" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Objetivos</a>
+            <a href="#ai-sensei" className="text-sm text-muted-foreground hover:text-foreground transition-colors">I.A Sensei</a>
             <a href="#pricing" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Preços</a>
           </nav>
           
@@ -432,8 +640,7 @@ const LandingPage = () => {
         
         {/* Mobile Menu Dropdown */}
         {isMenuOpen && (
-          <div className="md:hidden absolute top-full left-0 right-0 bg-[#121315]/95 backdrop-blur-lg border-b border-border/50 p-4">
-            <nav className="flex flex-col gap-4 mb-6">
+          <div className="md:hidden absolute top-full left-0 right-0 bg-[#121315]/95 backdrop-blur-lg border-b border-border/50 p-4">            <nav className="flex flex-col gap-4 mb-6">
               <a 
                 href="#features" 
                 className="text-sm text-muted-foreground hover:text-foreground transition-colors p-2"
@@ -461,6 +668,41 @@ const LandingPage = () => {
                 onClick={() => setIsMenuOpen(false)}
               >
                 Competições
+              </a>
+              <a 
+                href="#goals" 
+                className="text-sm text-muted-foreground hover:text-foreground transition-colors p-2"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                Objetivos
+              </a>
+              <a 
+                href="#gameplan" 
+                className="text-sm text-muted-foreground hover:text-foreground transition-colors p-2"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                Plano de Jogo
+              </a>
+              <a 
+                href="#videos" 
+                className="text-sm text-muted-foreground hover:text-foreground transition-colors p-2"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                Vídeos
+              </a>
+              <a 
+                href="#metrics" 
+                className="text-sm text-muted-foreground hover:text-foreground transition-colors p-2"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                Métricas
+              </a>
+              <a 
+                href="#ai-sensei" 
+                className="text-sm text-muted-foreground hover:text-foreground transition-colors p-2"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                I.A Sensei
               </a>
               <a 
                 href="#pricing" 
@@ -553,11 +795,27 @@ const LandingPage = () => {
                 {MAIN_FEATURES_CONTENT.description}
               </p>
             </div>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
-              {MAIN_FEATURES_CONTENT.features.map((feature, index) => (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
+              {MAIN_FEATURES_CONTENT.features.slice(0, 4).map((feature, index) => (
                 <Card 
                   key={index}
+                  className="bg-card/50 border-border/50 backdrop-blur-sm hover:border-bjj-gold/30 transition-all duration-300 group"
+                >
+                  <CardContent className="p-6">
+                    <div className="p-3 w-14 h-14 rounded-lg bg-bjj-gold/10 group-hover:bg-bjj-gold/20 transition-colors mb-4 flex items-center justify-center">
+                      <feature.icon className="w-7 h-7 text-bjj-gold" />
+                    </div>
+                    <h3 className="text-xl font-semibold mb-2">{feature.title}</h3>
+                    <p className="text-muted-foreground">{feature.description}</p>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8 mt-6 md:mt-8">
+              {MAIN_FEATURES_CONTENT.features.slice(4).map((feature, index) => (
+                <Card 
+                  key={index + 4}
                   className="bg-card/50 border-border/50 backdrop-blur-sm hover:border-bjj-gold/30 transition-all duration-300 group"
                 >
                   <CardContent className="p-6">
@@ -662,8 +920,7 @@ const LandingPage = () => {
             </div>
           </div>
         </section>
-        
-        {/* Competitions Management Section */}
+          {/* Competitions Management Section */}
         <section id="competitions" className="py-20 px-6 bg-gradient-to-b from-transparent to-[#13141A]">
           <div className="max-w-7xl mx-auto">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
@@ -699,6 +956,315 @@ const LandingPage = () => {
               <div className="relative">
                 <div className="w-full aspect-[4/3] rounded-xl bg-card/30 border border-border/40 backdrop-blur-sm flex items-center justify-center">
                   <p className="text-muted-foreground">Imagem de Gestão de Competições</p>
+                </div>
+                {/* Elementos decorativos */}
+                <div className="absolute -top-6 -left-6 w-32 h-32 bg-bjj-gold/5 rounded-full blur-xl"></div>
+                <div className="absolute -bottom-10 -right-10 w-40 h-40 bg-bjj-gold/10 rounded-full blur-xl"></div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Goals and Objectives Section */}
+        <section id="goals" className="py-20 px-6">
+          <div className="max-w-7xl mx-auto">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+              <div className="order-2 lg:order-1 relative">
+                <div className="w-full aspect-[4/3] rounded-xl bg-card/30 border border-border/40 backdrop-blur-sm flex items-center justify-center">
+                  <p className="text-muted-foreground">Imagem de Objetivos e Metas</p>
+                </div>
+                {/* Elementos decorativos */}
+                <div className="absolute -bottom-6 -left-6 w-32 h-32 bg-bjj-gold/5 rounded-full blur-xl"></div>
+                <div className="absolute -top-10 -right-10 w-40 h-40 bg-bjj-gold/10 rounded-full blur-xl"></div>
+              </div>
+              
+              <div className="order-1 lg:order-2">
+                <h2 className="text-3xl md:text-4xl font-bold mb-4">{GOALS_CONTENT.title}</h2>
+                <p className="text-lg text-muted-foreground mb-8">
+                  {GOALS_CONTENT.description}
+                </p>
+                
+                <div className="space-y-6">
+                  {GOALS_CONTENT.features.map((feature, index) => (
+                    <div key={index} className="flex gap-4">
+                      <div className="flex-shrink-0 w-10 h-10 rounded-full bg-bjj-gold/10 flex items-center justify-center">
+                        <feature.icon className="w-5 h-5 text-bjj-gold" />
+                      </div>
+                      <div>
+                        <h3 className="text-lg font-semibold mb-1">{feature.title}</h3>
+                        <p className="text-muted-foreground">{feature.description}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                
+                <Button 
+                  className="mt-10 bg-bjj-gold hover:bg-bjj-gold/90 text-primary-foreground"
+                  onClick={handleSignUp}
+                >
+                  <Target className="mr-2 h-5 w-5" />
+                  {GOALS_CONTENT.ctaButton}
+                </Button>
+              </div>
+            </div>
+          </div>
+        </section>
+        
+        {/* Notes Section */}
+        <section id="notes" className="py-20 px-6 bg-gradient-to-b from-transparent to-[#13141A]">
+          <div className="max-w-7xl mx-auto">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+              <div>
+                <h2 className="text-3xl md:text-4xl font-bold mb-4">{NOTES_CONTENT.title}</h2>
+                <p className="text-lg text-muted-foreground mb-8">
+                  {NOTES_CONTENT.description}
+                </p>
+                
+                <div className="space-y-6">
+                  {NOTES_CONTENT.features.map((feature, index) => (
+                    <div key={index} className="flex gap-4">
+                      <div className="flex-shrink-0 w-10 h-10 rounded-full bg-bjj-gold/10 flex items-center justify-center">
+                        <feature.icon className="w-5 h-5 text-bjj-gold" />
+                      </div>
+                      <div>
+                        <h3 className="text-lg font-semibold mb-1">{feature.title}</h3>
+                        <p className="text-muted-foreground">{feature.description}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                
+                <Button 
+                  className="mt-10 bg-bjj-gold hover:bg-bjj-gold/90 text-primary-foreground"
+                  onClick={handleSignUp}
+                >
+                  <FileCheck className="mr-2 h-5 w-5" />
+                  {NOTES_CONTENT.ctaButton}
+                </Button>
+              </div>
+              
+              <div className="relative">
+                <div className="w-full aspect-[4/3] rounded-xl bg-card/30 border border-border/40 backdrop-blur-sm flex items-center justify-center">
+                  <p className="text-muted-foreground">Imagem de Observações e Notas</p>
+                </div>
+                {/* Elementos decorativos */}
+                <div className="absolute -top-6 -left-6 w-32 h-32 bg-bjj-gold/5 rounded-full blur-xl"></div>
+                <div className="absolute -bottom-10 -right-10 w-40 h-40 bg-bjj-gold/10 rounded-full blur-xl"></div>
+              </div>
+            </div>
+          </div>
+        </section>
+        
+        {/* Game Plan Section */}
+        <section id="gameplan" className="py-20 px-6">
+          <div className="max-w-7xl mx-auto">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+              <div className="order-2 lg:order-1 relative">
+                <div className="w-full aspect-[4/3] rounded-xl bg-card/30 border border-border/40 backdrop-blur-sm flex items-center justify-center">
+                  <p className="text-muted-foreground">Imagem do Plano de Jogo</p>
+                </div>
+                {/* Elementos decorativos */}
+                <div className="absolute -bottom-6 -left-6 w-32 h-32 bg-bjj-gold/5 rounded-full blur-xl"></div>
+                <div className="absolute -top-10 -right-10 w-40 h-40 bg-bjj-gold/10 rounded-full blur-xl"></div>
+              </div>
+              
+              <div className="order-1 lg:order-2">
+                <h2 className="text-3xl md:text-4xl font-bold mb-4">{GAME_PLAN_CONTENT.title}</h2>
+                <p className="text-lg text-muted-foreground mb-8">
+                  {GAME_PLAN_CONTENT.description}
+                </p>
+                
+                <div className="space-y-6">
+                  {GAME_PLAN_CONTENT.features.map((feature, index) => (
+                    <div key={index} className="flex gap-4">
+                      <div className="flex-shrink-0 w-10 h-10 rounded-full bg-bjj-gold/10 flex items-center justify-center">
+                        <feature.icon className="w-5 h-5 text-bjj-gold" />
+                      </div>
+                      <div>
+                        <h3 className="text-lg font-semibold mb-1">{feature.title}</h3>
+                        <p className="text-muted-foreground">{feature.description}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                
+                <Button 
+                  className="mt-10 bg-bjj-gold hover:bg-bjj-gold/90 text-primary-foreground"
+                  onClick={handleSignUp}
+                >
+                  <Gamepad2 className="mr-2 h-5 w-5" />
+                  {GAME_PLAN_CONTENT.ctaButton}
+                </Button>
+              </div>
+            </div>
+          </div>
+        </section>
+        
+        {/* Videos and Media Section */}
+        <section id="videos" className="py-20 px-6 bg-gradient-to-b from-transparent to-[#13141A]">
+          <div className="max-w-7xl mx-auto">
+            <div className="text-center mb-16">
+              <h2 className="text-3xl md:text-4xl font-bold mb-4">{VIDEOS_CONTENT.title}</h2>
+              <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+                {VIDEOS_CONTENT.description}
+              </p>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
+              {VIDEOS_CONTENT.features.map((feature, index) => (
+                <Card 
+                  key={index}
+                  className="bg-card/50 border-border/50 backdrop-blur-sm hover:border-bjj-gold/30 transition-all duration-300 group"
+                >
+                  <CardContent className="p-6">
+                    <div className="p-3 w-14 h-14 rounded-lg bg-bjj-gold/10 group-hover:bg-bjj-gold/20 transition-colors mb-4 flex items-center justify-center">
+                      <feature.icon className="w-7 h-7 text-bjj-gold" />
+                    </div>
+                    <h3 className="text-xl font-semibold mb-2">{feature.title}</h3>
+                    <p className="text-muted-foreground">{feature.description}</p>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+            
+            <div className="mt-12 text-center">
+              <Button 
+                className="bg-bjj-gold hover:bg-bjj-gold/90 text-primary-foreground"
+                onClick={handleSignUp}
+              >
+                <Video className="mr-2 h-5 w-5" />
+                {VIDEOS_CONTENT.ctaButton}
+              </Button>
+            </div>
+          </div>
+        </section>
+        
+        {/* Metrics and Analysis Section */}
+        <section id="metrics" className="py-20 px-6">
+          <div className="max-w-7xl mx-auto">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+              <div>
+                <h2 className="text-3xl md:text-4xl font-bold mb-4">{METRICS_CONTENT.title}</h2>
+                <p className="text-lg text-muted-foreground mb-8">
+                  {METRICS_CONTENT.description}
+                </p>
+                
+                <div className="space-y-6">
+                  {METRICS_CONTENT.features.map((feature, index) => (
+                    <div key={index} className="flex gap-4">
+                      <div className="flex-shrink-0 w-10 h-10 rounded-full bg-bjj-gold/10 flex items-center justify-center">
+                        <feature.icon className="w-5 h-5 text-bjj-gold" />
+                      </div>
+                      <div>
+                        <h3 className="text-lg font-semibold mb-1">{feature.title}</h3>
+                        <p className="text-muted-foreground">{feature.description}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                
+                <Button 
+                  className="mt-10 bg-bjj-gold hover:bg-bjj-gold/90 text-primary-foreground"
+                  onClick={handleSignUp}
+                >
+                  <BarChart className="mr-2 h-5 w-5" />
+                  {METRICS_CONTENT.ctaButton}
+                </Button>
+              </div>
+              
+              <div className="relative">
+                <div className="w-full aspect-[4/3] rounded-xl bg-card/30 border border-border/40 backdrop-blur-sm flex items-center justify-center">
+                  <p className="text-muted-foreground">Imagem do Dashboard de Métricas</p>
+                </div>
+                {/* Elementos decorativos */}
+                <div className="absolute -top-6 -left-6 w-32 h-32 bg-bjj-gold/5 rounded-full blur-xl"></div>
+                <div className="absolute -bottom-10 -right-10 w-40 h-40 bg-bjj-gold/10 rounded-full blur-xl"></div>
+              </div>
+            </div>
+          </div>
+        </section>
+        
+        {/* Marketplace Section */}
+        <section id="marketplace" className="py-20 px-6 bg-gradient-to-b from-transparent to-[#13141A]">
+          <div className="max-w-7xl mx-auto">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+              <div className="order-2 lg:order-1 relative">
+                <div className="w-full aspect-[4/3] rounded-xl bg-card/30 border border-border/40 backdrop-blur-sm flex items-center justify-center">
+                  <p className="text-muted-foreground">Imagem do Dojo Market</p>
+                </div>
+                {/* Elementos decorativos */}
+                <div className="absolute -bottom-6 -left-6 w-32 h-32 bg-bjj-gold/5 rounded-full blur-xl"></div>
+                <div className="absolute -top-10 -right-10 w-40 h-40 bg-bjj-gold/10 rounded-full blur-xl"></div>
+              </div>
+              
+              <div className="order-1 lg:order-2">
+                <h2 className="text-3xl md:text-4xl font-bold mb-4">{MARKETPLACE_CONTENT.title}</h2>
+                <p className="text-lg text-muted-foreground mb-8">
+                  {MARKETPLACE_CONTENT.description}
+                </p>
+                
+                <div className="space-y-6">
+                  {MARKETPLACE_CONTENT.features.map((feature, index) => (
+                    <div key={index} className="flex gap-4">
+                      <div className="flex-shrink-0 w-10 h-10 rounded-full bg-bjj-gold/10 flex items-center justify-center">
+                        <feature.icon className="w-5 h-5 text-bjj-gold" />
+                      </div>
+                      <div>
+                        <h3 className="text-lg font-semibold mb-1">{feature.title}</h3>
+                        <p className="text-muted-foreground">{feature.description}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                
+                <Button 
+                  className="mt-10 bg-bjj-gold hover:bg-bjj-gold/90 text-primary-foreground"
+                  onClick={handleSignUp}
+                >
+                  <ShoppingBag className="mr-2 h-5 w-5" />
+                  {MARKETPLACE_CONTENT.ctaButton}
+                </Button>
+              </div>
+            </div>
+          </div>
+        </section>
+        
+        {/* AI Sensei Section */}
+        <section id="ai-sensei" className="py-20 px-6">
+          <div className="max-w-7xl mx-auto">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+              <div>
+                <h2 className="text-3xl md:text-4xl font-bold mb-4">{AI_SENSEI_CONTENT.title}</h2>
+                <p className="text-lg text-muted-foreground mb-8">
+                  {AI_SENSEI_CONTENT.description}
+                </p>
+                
+                <div className="space-y-6">
+                  {AI_SENSEI_CONTENT.features.map((feature, index) => (
+                    <div key={index} className="flex gap-4">
+                      <div className="flex-shrink-0 w-10 h-10 rounded-full bg-bjj-gold/10 flex items-center justify-center">
+                        <feature.icon className="w-5 h-5 text-bjj-gold" />
+                      </div>
+                      <div>
+                        <h3 className="text-lg font-semibold mb-1">{feature.title}</h3>
+                        <p className="text-muted-foreground">{feature.description}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                
+                <Button 
+                  className="mt-10 bg-bjj-gold hover:bg-bjj-gold/90 text-primary-foreground"
+                  onClick={handleSignUp}
+                >
+                  <Bot className="mr-2 h-5 w-5" />
+                  {AI_SENSEI_CONTENT.ctaButton}
+                </Button>
+              </div>
+              
+              <div className="relative">
+                <div className="w-full aspect-[4/3] rounded-xl bg-card/30 border border-border/40 backdrop-blur-sm flex items-center justify-center">
+                  <p className="text-muted-foreground">Imagem do I.A Sensei</p>
                 </div>
                 {/* Elementos decorativos */}
                 <div className="absolute -top-6 -left-6 w-32 h-32 bg-bjj-gold/5 rounded-full blur-xl"></div>
