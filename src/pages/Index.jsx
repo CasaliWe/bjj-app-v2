@@ -87,9 +87,8 @@ const Index = () => {
                   title="Perfil de Usuário"
                 >
                   <User className="h-5 w-5 text-bjj-gold" />
-                </button>
-                <button 
-                  onClick={() => console.log('Logout')}
+                </button>                <button 
+                  onClick={() => navigate('/login')}
                   className="p-2 rounded-full hover:bg-muted transition-colors"
                   title="Sair"
                 >
