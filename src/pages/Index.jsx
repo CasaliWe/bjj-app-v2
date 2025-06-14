@@ -4,16 +4,14 @@ import { MobileNav } from "@/components/MobileNav";
 import { MetricCard } from "@/components/MetricCard";
 import { QuickActions } from "@/components/QuickActions";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Calendar, Book, Award, TrendingUp, Clock, Target } from "lucide-react";
+import { Calendar, Book, Award, TrendingUp, Clock, Target, Repeat, Dumbbell } from "lucide-react";
 
-const Index = () => {
-  const metrics = [
-    {
+const Index = () => {  const metrics = [    {
       title: "Técnicas Aprendidas",
       value: "47",
-      description: "+3 esta semana",
+      description: "Meta: 60 técnicas",
       icon: Book,
-      trend: { type: 'up', text: '+6% vs mês anterior' }
+      trend: { type: 'neutral', text: '78% da meta anual' }
     },
     {
       title: "Treinos no Mês",
@@ -28,13 +26,12 @@ const Index = () => {
       description: "Este ano",
       icon: Award,
       trend: { type: 'up', text: '2 medalhas conquistadas' }
-    },
-    {
-      title: "Tempo Total",
-      value: "89h",
-      description: "Nos últimos 3 meses",
-      icon: Clock,
-      trend: { type: 'up', text: '+12h vs período anterior' }
+    },    {
+      title: "Observações Gerais",
+      value: "20",
+      description: "Registradas",
+      icon: Target,
+      trend: { type: 'up', text: '3 destacadas' }
     }
   ];
 
