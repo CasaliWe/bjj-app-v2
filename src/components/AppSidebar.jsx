@@ -1,4 +1,4 @@
-import { Home, Book, Calendar, Award, Map, LogIn } from "lucide-react";
+import { Home, Book, Calendar, Award, Target, FileText } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -36,16 +36,16 @@ const menuItems = [  {
     description: "Competições participadas"
   },
   {
-    title: "Plano de Jogo",
-    url: "/plano-jogo",
-    icon: Map,
-    description: "Estratégias e táticas"
+    title: "Objetivos",
+    url: "/objetivos",
+    icon: Target,
+    description: "Metas e progresso"
   },
   {
-    title: "Login",
-    url: "/login",
-    icon: LogIn,
-    description: "Tela de login"
+    title: "Observações Gerais",
+    url: "/observacoes",
+    icon: FileText,
+    description: "Notas e observações"
   },
 ];
 
