@@ -127,27 +127,37 @@ export function AppSidebar() {
             NAVEGAÇÃO
           </SidebarGroupLabel>
           <SidebarGroupContent>
-            <SidebarMenu className="space-y-1">
-              {menuItems.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton 
-                    asChild
-                    className="h-12 px-3 rounded-lg hover:bg-sidebar-accent transition-all duration-200 group"
-                  >
-                    <a href={item.url} className="flex items-center gap-3">
-                      <item.icon className="w-5 h-5 text-sidebar-foreground/70 group-hover:text-bjj-gold transition-colors duration-200" />
-                      <div className="flex flex-col">
-                        <span className="text-sidebar-foreground font-medium text-sm">
-                          {item.title}
-                        </span>
-                        <span className="text-sidebar-foreground/50 text-xs">
-                          {item.description}
-                        </span>
-                      </div>
-                    </a>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
+            <SidebarMenu className="space-y-1">              {menuItems.map((item) => {
+                const isActive = window.location.pathname === item.url;
+                return (
+                  <SidebarMenuItem key={item.title}>
+                    <SidebarMenuButton 
+                      asChild
+                      className={`h-12 px-3 rounded-lg transition-all duration-200 group ${
+                        isActive 
+                          ? "bg-sidebar-accent/50 border-l-2 border-bjj-gold" 
+                          : "hover:bg-sidebar-accent"
+                      }`}
+                    >
+                      <a href={item.url} className="flex items-center gap-3">
+                        <item.icon className={`w-5 h-5 transition-colors duration-200 ${
+                          isActive 
+                            ? "text-bjj-gold" 
+                            : "text-sidebar-foreground/70 group-hover:text-bjj-gold"
+                        }`} />
+                        <div className="flex flex-col">
+                          <span className="text-sidebar-foreground font-medium text-sm">
+                            {item.title}
+                          </span>
+                          <span className="text-sidebar-foreground/50 text-xs">
+                            {item.description}
+                          </span>
+                        </div>
+                      </a>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                );
+              })}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
