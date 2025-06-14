@@ -11,10 +11,9 @@ import {
   SidebarHeader,
 } from "@/components/ui/sidebar";
 
-const menuItems = [
-  {
+const menuItems = [  {
     title: "Início",
-    url: "/",
+    url: "/app",
     icon: Home,
     description: "Dashboard principal"
   },

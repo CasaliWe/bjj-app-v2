@@ -13,13 +13,12 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const isMobile = useIsMobile();
-  
-  const handleLogin = (e) => {
+    const handleLogin = (e) => {
     e.preventDefault();
     // Aqui seria a lógica de autenticação
     console.log("Login com:", { email, password });
     // Por enquanto, apenas navega para o dashboard
-    navigate("/");
+    navigate("/app");
   };
   
   const handleCreateAccount = () => {

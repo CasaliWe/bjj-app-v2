@@ -16,13 +16,12 @@ const Register = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const isMobile = useIsMobile();
-  
-  const handleRegister = (e) => {
+    const handleRegister = (e) => {
     e.preventDefault();
     // Aqui seria a lógica de criação de conta
     console.log("Registro com:", { username, email, password });
     // Por enquanto, apenas navega para o dashboard
-    navigate("/");
+    navigate("/app");
   };
   
   const handleBackToLogin = () => {
