@@ -4,7 +4,7 @@ import { MobileNav } from "@/components/MobileNav";
 import { MetricCard } from "@/components/MetricCard";
 import { QuickActions } from "@/components/QuickActions";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Calendar, Book, Award, TrendingUp, Clock, Target, Repeat, Dumbbell } from "lucide-react";
+import { Calendar, Book, Award, TrendingUp, Clock, Target, Repeat, Dumbbell, User, LogOut } from "lucide-react";
 
 const Index = () => {  const metrics = [    {
       title: "Técnicas Aprendidas",
@@ -34,28 +34,29 @@ const Index = () => {  const metrics = [    {
       trend: { type: 'up', text: '3 destacadas' }
     }
   ];
-
+  // Importação adicional para o ícone padrão
+  
   const recentActivities = [
     {
       type: "treino",
       title: "Treino de Gi",
       description: "Trabalhei guard pass e finalizações",
       time: "2 horas atrás",
-      icon: Calendar
+      icon: Target
     },
     {
       type: "tecnica",
       title: "Triângulo da Guarda Fechada",
       description: "Adicionei variação com lapela",
       time: "1 dia atrás",
-      icon: Book
+      icon: Target
     },
     {
       type: "competicao",
       title: "Copa Regional de Jiu-Jitsu",
       description: "2º lugar na categoria azul adulto",
       time: "3 dias atrás",
-      icon: Award
+      icon: Target
     }
   ];
 
@@ -63,14 +64,35 @@ const Index = () => {  const metrics = [    {
     <SidebarProvider>
       <div className="min-h-screen flex w-full bg-background">
         <AppSidebar />
-        <main className="flex-1 flex flex-col pb-16 md:pb-0">
-          {/* Header */}
+        <main className="flex-1 flex flex-col pb-16 md:pb-0">          {/* Header */}
           <header className="bg-card border-b border-border p-4 md:p-6">
-            <div className="flex items-center gap-4">
-              <SidebarTrigger className="md:hidden" />
-              <div>
-                <h1 className="text-2xl font-bold text-foreground">Olá, Atleta! 👋</h1>
-                <p className="text-muted-foreground">Bem-vindo de volta à sua jornada no Jiu-Jitsu</p>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-4">
+                <SidebarTrigger className="md:hidden text-bjj-gold hover:text-bjj-gold/80 h-10 w-10 flex items-center justify-center" />
+                <div className="hidden md:block">
+                  <h1 className="text-2xl font-bold text-foreground">Olá, Atleta! 👋</h1>
+                  <p className="text-muted-foreground">Bem-vindo de volta à sua jornada no Jiu-Jitsu</p>
+                </div>
+                <div className="md:hidden">
+                  <h1 className="text-xl font-bold text-foreground">Olá, Atleta! 👋</h1>
+                </div>
+              </div>
+              
+              <div className="flex items-center gap-2">
+                <button 
+                  onClick={() => console.log('Perfil de usuário')}
+                  className="p-2 rounded-full hover:bg-muted transition-colors"
+                  title="Perfil de Usuário"
+                >
+                  <User className="h-5 w-5 text-bjj-gold" />
+                </button>
+                <button 
+                  onClick={() => console.log('Logout')}
+                  className="p-2 rounded-full hover:bg-muted transition-colors"
+                  title="Sair"
+                >
+                  <LogOut className="h-5 w-5 text-bjj-gold" />
+                </button>
               </div>
             </div>
           </header>
@@ -133,29 +155,23 @@ const Index = () => {  const metrics = [    {
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div className="p-4 bg-card/50 rounded-lg border border-bjj-gold/20">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">                    <div className="p-4 bg-card/50 rounded-lg border border-bjj-gold/20">
                       <h4 className="font-medium text-foreground mb-2">Próxima Faixa</h4>
                       <p className="text-sm text-muted-foreground mb-2">Azul → Roxa</p>
+                      <p className="text-xs text-bjj-gold">Em 5 meses (Novembro 2025)</p>
+                    </div>
+                    
+                    <div className="p-4 bg-card/50 rounded-lg border border-bjj-gold/20">                      <h4 className="font-medium text-foreground mb-2">Meta Mensal</h4>
+                      <p className="text-sm text-muted-foreground mb-2">16 treinos em junho</p>
                       <div className="w-full bg-muted rounded-full h-2">
                         <div className="bg-bjj-gold h-2 rounded-full w-3/4"></div>
                       </div>
-                      <p className="text-xs text-bjj-gold mt-1">75% completo</p>
+                      <p className="text-xs text-bjj-gold mt-1">12/16 treinos (75%)</p>
                     </div>
                     
-                    <div className="p-4 bg-card/50 rounded-lg border border-bjj-gold/20">
-                      <h4 className="font-medium text-foreground mb-2">Meta Mensal</h4>
-                      <p className="text-sm text-muted-foreground mb-2">16 treinos</p>
-                      <div className="w-full bg-muted rounded-full h-2">
-                        <div className="bg-bjj-gold h-2 rounded-full w-3/4"></div>
-                      </div>
-                      <p className="text-xs text-bjj-gold mt-1">12/16 treinos</p>
-                    </div>
-                    
-                    <div className="p-4 bg-card/50 rounded-lg border border-bjj-gold/20">
-                      <h4 className="font-medium text-foreground mb-2">Próxima Competição</h4>
+                    <div className="p-4 bg-card/50 rounded-lg border border-bjj-gold/20">                      <h4 className="font-medium text-foreground mb-2">Próxima Competição</h4>
                       <p className="text-sm text-muted-foreground mb-2">Copa Estadual</p>
-                      <p className="text-xs text-bjj-gold">Em 45 dias</p>
+                      <p className="text-xs text-bjj-gold">29 de julho de 2025</p>
                     </div>
                   </div>
                 </CardContent>

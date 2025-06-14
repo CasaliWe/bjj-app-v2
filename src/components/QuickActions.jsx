@@ -9,7 +9,7 @@ const quickActions = [
     description: "Adicionar técnica aprendida",
     icon: Book,
     action: () => console.log("Nova técnica"),
-    variant: "default"
+    variant: "outline"
   },
   {
     title: "Registrar Treino",
