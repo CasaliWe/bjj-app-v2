@@ -24,6 +24,7 @@ import IASensei from "./pages/IASensei";
 import Tecnicas from "./pages/Tecnicas";
 import Treinos from "./pages/Treinos";
 import Competicoes from "./pages/Competicoes";
+import Objetivos from "./pages/Objetivos";
 
 
 const queryClient = new QueryClient();
@@ -46,8 +47,8 @@ const App = () => (
           <Route path="/contato" element={<Contact />} />
           <Route path="/perfil" element={<UserProfile />} />        <Route path="/ia-sensei" element={<IASensei />} />
         <Route path="/tecnicas" element={<Tecnicas />} />
-        <Route path="/treinos" element={<Treinos />} />
-        <Route path="/competicoes" element={<Competicoes />} />
+        <Route path="/treinos" element={<Treinos />} />        <Route path="/competicoes" element={<Competicoes />} />
+        <Route path="/objetivos" element={<Objetivos />} />
         <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
