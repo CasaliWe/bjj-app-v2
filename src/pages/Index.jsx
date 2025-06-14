@@ -3,10 +3,13 @@ import { AppSidebar } from "@/components/AppSidebar";
 import { MobileNav } from "@/components/MobileNav";
 import { MetricCard } from "@/components/MetricCard";
 import { QuickActions } from "@/components/QuickActions";
+import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Calendar, Book, Award, TrendingUp, Clock, Target, Repeat, Dumbbell, User, LogOut, Medal, Trophy, BookOpen, Shield, Shirt, CircleOff, Users, MapPin, Star, Plus } from "lucide-react";
+import { Calendar, Book, Award, TrendingUp, Clock, Target, Repeat, Dumbbell, User, LogOut, Medal, Trophy, BookOpen, Shield, Shirt, CircleOff, Users, MapPin, Star, Plus, Pencil } from "lucide-react";
 
-const Index = () => {  const metrics = [    {
+const Index = () => {
+  const navigate = useNavigate();  const metrics = [    {
       title: "Técnicas Aprendidas",
       value: "47",
       description: "Meta: 60 técnicas",
@@ -77,10 +80,9 @@ const Index = () => {  const metrics = [    {
                   <h1 className="text-xl font-bold text-foreground">Olá, Atleta! 👋</h1>
                 </div>
               </div>
-              
-              <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2">
                 <button 
-                  onClick={() => console.log('Perfil de usuário')}
+                  onClick={() => navigate('/perfil')}
                   className="p-2 rounded-full hover:bg-muted transition-colors"
                   title="Perfil de Usuário"
                 >
@@ -113,12 +115,21 @@ const Index = () => {  const metrics = [    {
 
             {/* Meus Dados Gerais (atualizado conforme solicitação) */}
             <section className="mb-6">
-              <Card className="bg-card border-border">
-                <CardHeader>
-                  <CardTitle className="text-lg font-semibold text-foreground flex items-center gap-2">
-                    <User className="w-5 h-5 text-bjj-gold" />
-                    Meus Dados Gerais
-                  </CardTitle>
+              <Card className="bg-card border-border">                <CardHeader>
+                  <div className="flex justify-between items-center">
+                    <CardTitle className="text-lg font-semibold text-foreground flex items-center gap-2">
+                      <User className="w-5 h-5 text-bjj-gold" />
+                      Meus Dados Gerais
+                    </CardTitle>
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      className="h-8 text-xs border-bjj-gold/30 text-bjj-gold hover:bg-bjj-gold/10"
+                      onClick={() => navigate('/perfil')}
+                    >
+                      <Pencil className="h-3 w-3 mr-1" /> Editar
+                    </Button>
+                  </div>
                 </CardHeader>
                 <CardContent>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
