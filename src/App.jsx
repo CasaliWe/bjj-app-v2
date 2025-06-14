@@ -22,6 +22,7 @@ import LandingPage from "./pages/LandingPage";
 import NotFound from "./pages/NotFound";
 import IASensei from "./pages/IASensei";
 import Tecnicas from "./pages/Tecnicas";
+import Treinos from "./pages/Treinos";
 
 
 const queryClient = new QueryClient();
@@ -42,10 +43,10 @@ const App = () => (
           <Route path="/suporte" element={<Support />} />
           <Route path="/sobre-nos" element={<AboutUs />} />
           <Route path="/contato" element={<Contact />} />
-          <Route path="/perfil" element={<UserProfile />} />
-          <Route path="/ia-sensei" element={<IASensei />} />
-          <Route path="/tecnicas" element={<Tecnicas />} />
-          <Route path="*" element={<NotFound />} />
+          <Route path="/perfil" element={<UserProfile />} />        <Route path="/ia-sensei" element={<IASensei />} />
+        <Route path="/tecnicas" element={<Tecnicas />} />
+        <Route path="/treinos" element={<Treinos />} />
+        <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
     </TooltipProvider>

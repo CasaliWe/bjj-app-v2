@@ -807,12 +807,11 @@ const Tecnicas = () => {  const [tecnicas, setTecnicas] = useState(MOCK_TECNICAS
               </Label>
             </div>
           </div>
-          
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setModalAberto(false)}>
+            <DialogFooter className="flex flex-col-reverse sm:flex-row gap-3">
+            <Button className="w-full sm:w-auto" variant="outline" onClick={() => setModalAberto(false)}>
               Cancelar
             </Button>
-            <Button onClick={salvarTecnica}>
+            <Button className="w-full sm:w-auto" onClick={salvarTecnica}>
               {editandoTecnica ? "Salvar alterações" : "Adicionar técnica"}
             </Button>
           </DialogFooter>
@@ -965,9 +964,8 @@ const Tecnicas = () => {  const [tecnicas, setTecnicas] = useState(MOCK_TECNICAS
                 </p>
               </div>
             )}
-          </ScrollArea>
-            <DialogFooter className="mt-4 sm:mt-6 pb-2">
-            <Button variant="outline" onClick={() => setModalDestaques(false)}>
+          </ScrollArea>          <DialogFooter className="mt-4 sm:mt-6 pb-2">
+            <Button className="w-full sm:w-auto" variant="outline" onClick={() => setModalDestaques(false)}>
               Fechar
             </Button>
           </DialogFooter>
