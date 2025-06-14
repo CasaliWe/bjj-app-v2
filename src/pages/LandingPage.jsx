@@ -328,8 +328,8 @@ const FOOTER_CONTENT = {
     },
     {      title: "Empresa",
       links: [
-        { name: "Sobre nós", href: "#about", icon: Users },
-        { name: "Contato", href: "#contact", icon: Mail }
+        { name: "Sobre nós", href: "/sobre-nos", icon: Users },
+        { name: "Contato", href: "/contato", icon: Mail }
       ]
     },
     {

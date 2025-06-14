@@ -15,6 +15,8 @@ import PasswordRecovery from "./pages/PasswordRecovery";
 import TermsOfUse from "./pages/TermsOfUse";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import Support from "./pages/Support";
+import AboutUs from "./pages/AboutUs";
+import Contact from "./pages/Contact";
 import LandingPage from "./pages/LandingPage";
 import NotFound from "./pages/NotFound";
 
@@ -36,6 +38,8 @@ const App = () => (
           <Route path="/termos-de-uso" element={<TermsOfUse />} />
           <Route path="/politica-de-privacidade" element={<PrivacyPolicy />} />
           <Route path="/suporte" element={<Support />} />
+          <Route path="/sobre-nos" element={<AboutUs />} />
+          <Route path="/contato" element={<Contact />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
