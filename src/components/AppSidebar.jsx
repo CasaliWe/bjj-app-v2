@@ -1,4 +1,4 @@
-import { Home, Book, Calendar, Award, Target, FileText } from "lucide-react";
+import { Home, Book, Calendar, Award, Target, FileText, Bot } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -46,6 +46,12 @@ const menuItems = [  {
     url: "/observacoes",
     icon: FileText,
     description: "Notas e observações"
+  },
+  {
+    title: "I.A Sensei",
+    url: "/ia-sensei",
+    icon: Bot,
+    description: "Chat com Inteligência Artificial"
   },
 ];
 

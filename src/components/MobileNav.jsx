@@ -1,5 +1,5 @@
 
-import { Home, Book, Calendar, Award, Map } from "lucide-react";
+import { Home, Book, Calendar, Award, Target } from "lucide-react";
 import { useState } from "react";
 
 const menuItems = [
@@ -7,7 +7,7 @@ const menuItems = [
   { title: "Técnicas", url: "/tecnicas", icon: Book },
   { title: "Treinos", url: "/treinos", icon: Calendar },
   { title: "Competições", url: "/competicoes", icon: Award },
-  { title: "Plano", url: "/plano-jogo", icon: Map },
+  { title: "Objetivos", url: "/objetivos", icon: Target },
 ];
 
 export function MobileNav() {
