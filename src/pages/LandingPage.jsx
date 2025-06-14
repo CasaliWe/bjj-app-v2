@@ -318,13 +318,12 @@ const FOOTER_CONTENT = {
   tagline: "Evolua seu Jiu-Jitsu",
   copyright: "© 2025 BJJ Academy. Todos os direitos reservados.",
   sections: [
-    {
-      title: "Produto",
+    {      title: "Produto",
       links: [
         { name: "Funcionalidades", href: "#features", icon: CheckCircle2 },
         { name: "Preços", href: "#pricing", icon: Tag },
         { name: "FAQ", href: "#faq", icon: MessageSquare },
-        { name: "Suporte", href: "#support", icon: Inbox }
+        { name: "Suporte", href: "/suporte", icon: Inbox }
       ]
     },
     {      title: "Empresa",
