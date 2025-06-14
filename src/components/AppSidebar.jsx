@@ -50,18 +50,11 @@ const menuItems = [  {
     url: "/observacoes",
     icon: FileText,
     description: "Notas e observações"
-  },
-  {
+  },  {
     title: "Plano de Jogo",
-    url: "/plano-jogo",
+    url: "/plano-de-jogo",
     icon: Gamepad2,
     description: "Estratégia para a luta"
-  },
-  {
-    title: "Testar Técnica",
-    url: "/testar-tecnica",
-    icon: Book,
-    description: "Experimentar técnicas no treino"
   },
   {
     title: "Vídeos",
@@ -80,10 +73,9 @@ const menuItems = [  {
     url: "/metricas",
     icon: LineChart,
     description: "Estatísticas do usuário"
-  },
-  {
+  },  {
     title: "Dojo Market",
-    url: "/marketplace",
+    url: "/dojo-market",
     icon: ShoppingBag,
     description: "Compra e venda de equipamentos"
   },

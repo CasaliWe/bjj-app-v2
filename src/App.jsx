@@ -26,6 +26,13 @@ import Treinos from "./pages/Treinos";
 import Competicoes from "./pages/Competicoes";
 import Objetivos from "./pages/Objetivos";
 import Observacoes from "./pages/Observacoes";
+import PlanoDeJogo from "./pages/PlanoDeJogo";
+import Videos from "./pages/Videos";
+import Noticias from "./pages/Noticias";
+import Metricas from "./pages/Metricas";
+import DojoMarket from "./pages/DojoMarket";
+import Drills from "./pages/Drills";
+import Alongamentos from "./pages/Alongamentos";
 
 
 const queryClient = new QueryClient();
@@ -50,6 +57,13 @@ const App = () => (
         <Route path="/treinos" element={<Treinos />} />        <Route path="/competicoes" element={<Competicoes />} />
         <Route path="/objetivos" element={<Objetivos />} />
         <Route path="/observacoes" element={<Observacoes />} />
+        <Route path="/plano-de-jogo" element={<PlanoDeJogo />} />
+        <Route path="/videos" element={<Videos />} />
+        <Route path="/noticias" element={<Noticias />} />
+        <Route path="/metricas" element={<Metricas />} />
+        <Route path="/dojo-market" element={<DojoMarket />} />
+        <Route path="/drills" element={<Drills />} />
+        <Route path="/alongamentos" element={<Alongamentos />} />
         <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
