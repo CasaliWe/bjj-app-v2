@@ -38,6 +38,7 @@ import {
   Briefcase,
   Trophy
 } from "lucide-react";
+import { InstallPWAButton } from "@/components/InstallPWAButton";
 
 const UserProfile = () => {
   const navigate = useNavigate();
@@ -194,11 +195,11 @@ const UserProfile = () => {
                 Gerencie suas informações pessoais e credenciais de acesso
               </CardDescription>
             </CardHeader>
-            <CardContent>
-              <Tabs defaultValue="profile" className="w-full">
-                <TabsList className="grid w-full grid-cols-2 mb-8">
+            <CardContent>              <Tabs defaultValue="profile" className="w-full">
+                <TabsList className="grid w-full grid-cols-3 mb-8">
                   <TabsTrigger value="profile">Informações Pessoais</TabsTrigger>
                   <TabsTrigger value="password">Alterar Senha</TabsTrigger>
+                  <TabsTrigger value="settings">Configurações</TabsTrigger>
                 </TabsList>
                 
                 <TabsContent value="profile">
@@ -517,7 +518,63 @@ const UserProfile = () => {
                         Senha alterada com sucesso!
                       </div>
                     )}
-                  </form>
+                  </form>                </TabsContent>
+                
+                <TabsContent value="settings">
+                  <div className="space-y-6 max-w-md mx-auto">
+                    <div className="space-y-4">
+                      <h3 className="text-lg font-medium flex items-center gap-2">
+                        <Shield className="h-5 w-5 text-bjj-gold" />
+                        Configurações do Aplicativo
+                      </h3>
+                      
+                      <Card className="bg-card/50">
+                        <CardHeader className="pb-2">
+                          <CardTitle className="text-base">Instalar Aplicativo</CardTitle>
+                          <CardDescription>
+                            Instale o BJJ Academy na tela inicial do seu dispositivo para acesso offline e melhor experiência.
+                          </CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                          {/* Importamos o componente aqui */}
+                          <InstallPWAButton />
+                        </CardContent>
+                      </Card>
+                      
+                      <Card className="bg-card/50">
+                        <CardHeader className="pb-2">
+                          <CardTitle className="text-base">Notificações</CardTitle>
+                          <CardDescription>
+                            Configure como deseja receber notificações do aplicativo.
+                          </CardDescription>
+                        </CardHeader>
+                        <CardContent className="space-y-2">
+                          <div className="flex items-center justify-between">
+                            <Label htmlFor="notify-treinos" className="cursor-pointer flex items-center gap-2">
+                              Lembretes de Treino
+                            </Label>
+                            <input
+                              type="checkbox"
+                              id="notify-treinos"
+                              className="toggle toggle-primary"
+                              defaultChecked
+                            />
+                          </div>
+                          <div className="flex items-center justify-between">
+                            <Label htmlFor="notify-competicoes" className="cursor-pointer flex items-center gap-2">
+                              Alertas de Competições
+                            </Label>
+                            <input
+                              type="checkbox"
+                              id="notify-competicoes"
+                              className="toggle toggle-primary"
+                              defaultChecked
+                            />
+                          </div>
+                        </CardContent>
+                      </Card>
+                    </div>
+                  </div>
                 </TabsContent>
               </Tabs>
             </CardContent>
