@@ -451,21 +451,22 @@ const Observacoes = () => {
                       />
                     </div>
                   </div>
-                  
-                  <DialogFooter className="flex-col sm:flex-row gap-2 sm:gap-0">
+                    <DialogFooter className="flex-col sm:flex-row gap-2 sm:gap-0">
                     <DialogClose asChild>
                       <Button variant="outline" type="button" className="w-full sm:w-auto">
                         Cancelar
                       </Button>
                     </DialogClose>
-                    <Button 
-                      type="button"
-                      className="w-full sm:w-auto"
-                      onClick={atualizarObservacao}
-                      disabled={!novaObservacao.titulo || !novaObservacao.conteudo}
-                    >
-                      Atualizar
-                    </Button>
+                    <DialogClose asChild>
+                      <Button 
+                        type="button"
+                        className="w-full sm:w-auto"
+                        onClick={atualizarObservacao}
+                        disabled={!novaObservacao.titulo || !novaObservacao.conteudo}
+                      >
+                        Atualizar
+                      </Button>
+                    </DialogClose>
                   </DialogFooter>
                 </DialogContent>
               </Dialog>
