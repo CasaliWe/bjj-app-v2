@@ -1,7 +1,7 @@
 
 import { Card, CardContent } from "@/components/ui/card";
 
-export function MetricCard({ title, value, description, icon: Icon, trend }) {
+export function MetricCard({ title, value, meta, icon: Icon, faltando, totalObs }) {
   return (
     <Card className="bg-card border-border hover:border-bjj-gold/30 transition-all duration-300 group">
       <CardContent className="p-6">
@@ -10,17 +10,23 @@ export function MetricCard({ title, value, description, icon: Icon, trend }) {
             <p className="text-muted-foreground text-sm font-medium">{title}</p>
             <div className="space-y-1">
               <p className="text-2xl font-bold text-foreground">{value}</p>
-              {description && (
-                <p className="text-xs text-muted-foreground">{description}</p>
+              {meta && (
+                <p className="text-xs text-muted-foreground">Meta: {meta}</p>
               )}
             </div>
-            {trend && (
+            {faltando && (
               <div className={`text-xs font-medium ${
-                trend.type === 'up' ? 'text-green-400' : 
-                trend.type === 'down' ? 'text-red-400' : 
+                faltando.type === 'up' ? 'text-green-400' : 
+                faltando.type === 'down' ? 'text-red-400' : 
                 'text-muted-foreground'
               }`}>
-                {trend.text}
+                Faltando {faltando.text}
+              </div>
+            )}
+
+            {totalObs && (
+              <div className="text-xs font-medium text-muted-foreground">
+                total de observações: {totalObs}
               </div>
             )}
           </div>

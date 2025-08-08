@@ -25,7 +25,7 @@ if ('serviceWorker' in navigator) {
     if (refreshing) return;
     refreshing = true;
     console.log('Service Worker atualizado, recarregando...');
-    // Não recarregamos aqui para evitar perda de dados - deixamos o usuário decidir quando atualizar
+    window.location.reload();
   });
 }
 

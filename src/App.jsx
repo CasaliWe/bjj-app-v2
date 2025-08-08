@@ -4,7 +4,6 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { PWAInstallPrompt } from "@/components/PWAInstallPrompt";
-import { UpdateNotification } from "@/components/UpdateNotification";
 
 // REACT QUERY
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -44,11 +43,12 @@ const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
       <PWAInstallPrompt />
-      <UpdateNotification />
       <Toaster />
       <Sonner />
-      <BrowserRouter>        <Routes>
-          <Route path="/" element={<LandingPage />} />          <Route path="/app" element={<Index />} />
+      <BrowserRouter>        
+        <Routes>
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/app" element={<Index />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/recuperar-senha" element={<PasswordRecovery />} />
@@ -57,18 +57,21 @@ const App = () => (
           <Route path="/suporte" element={<Support />} />
           <Route path="/sobre-nos" element={<AboutUs />} />
           <Route path="/contato" element={<Contact />} />
-          <Route path="/perfil" element={<UserProfile />} />        <Route path="/ia-sensei" element={<IASensei />} />        <Route path="/tecnicas" element={<Tecnicas />} />
-        <Route path="/treinos" element={<Treinos />} />        <Route path="/competicoes" element={<Competicoes />} />
-        <Route path="/objetivos" element={<Objetivos />} />
-        <Route path="/observacoes" element={<Observacoes />} />
-        <Route path="/plano-de-jogo" element={<PlanoDeJogo />} />
-        <Route path="/videos" element={<Videos />} />
-        <Route path="/noticias" element={<Noticias />} />
-        <Route path="/metricas" element={<Metricas />} />
-        <Route path="/dojo-market" element={<DojoMarket />} />
-        <Route path="/drills" element={<Drills />} />
-        <Route path="/alongamentos" element={<Alongamentos />} />
-        <Route path="*" element={<NotFound />} />
+          <Route path="/perfil" element={<UserProfile />} />
+          <Route path="/ia-sensei" element={<IASensei />} />
+          <Route path="/tecnicas" element={<Tecnicas />} />
+          <Route path="/treinos" element={<Treinos />} />
+          <Route path="/competicoes" element={<Competicoes />} />
+          <Route path="/objetivos" element={<Objetivos />} />
+          <Route path="/observacoes" element={<Observacoes />} />
+          <Route path="/plano-de-jogo" element={<PlanoDeJogo />} />
+          <Route path="/videos" element={<Videos />} />
+          <Route path="/noticias" element={<Noticias />} />
+          <Route path="/metricas" element={<Metricas />} />
+          <Route path="/dojo-market" element={<DojoMarket />} />
+          <Route path="/drills" element={<Drills />} />
+          <Route path="/alongamentos" element={<Alongamentos />} />
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
     </TooltipProvider>

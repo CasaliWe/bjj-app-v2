@@ -7,77 +7,119 @@ import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Calendar, Book, Award, TrendingUp, Clock, Target, Repeat, Dumbbell, User, LogOut, Medal, Trophy, BookOpen, Shield, Shirt, CircleOff, Users, MapPin, Star, Plus, Pencil } from "lucide-react";
+import {sair} from "@/services/auth/logout";
 
 const Index = () => {
-  const navigate = useNavigate();  const metrics = [    {
-      title: "Técnicas Aprendidas",
-      value: "47",
-      description: "Meta: 60 técnicas",
-      icon: Book,
-      trend: { type: 'neutral', text: '78% da meta anual' }
-    },
-    {
-      title: "Treinos no Mês",
-      value: "12",
-      description: "Meta: 16 treinos",
-      icon: Calendar,
-      trend: { type: 'neutral', text: '75% da meta mensal' }
-    },
-    {
-      title: "Competições",
-      value: "3",
-      description: "Este ano",
-      icon: Award,
-      trend: { type: 'up', text: '2 medalhas conquistadas' }
-    },    {
-      title: "Observações Gerais",
-      value: "20",
-      description: "Registradas",
-      icon: Target,
-      trend: { type: 'up', text: '3 destacadas' }
-    }
-  ];
-  // Importação adicional para o ícone padrão
-  
+  const navigate = useNavigate();
+
+  const logout = () => {
+    sair();
+  };
+
+  const user = {
+    nome: 'Weslei Casali',
+    email: 'weslei.casali@example.com',
+    idade: 28,
+    peso: '75kg',
+    faixa: 'Azul',
+    treinaDesde: 'Agosto de 2022',
+    telefone: '(11) 98765-4321',
+    academia: 'Gracie Barra',
+    cidade: 'São Paulo',
+    estado: 'SP',
+    estilo: 'Guardeiro',
+    competidor: true,
+    finalizacao: 'Triângulo',
+    bio: 'Praticante de Jiu-Jitsu há 3 anos, focado em competições e desenvolvimento técnico. Especialista em guarda e jogo de lapela. Buscando evoluir em raspagens e finalizações.',
+  }
+
+  const metrics = {
+      tecnicas: "50",
+      tecnicasMeta: "55",
+      tecnicasFaltando: "5",
+      upDownTecnicas: "down",
+      treinos: "20",
+      treinosMeta: "15",
+      treinosFaltando: "0",
+      upDownTreinos: "up",
+      competicoes: "3",
+      competicoesMeta: "5",
+      competicoesFaltando: "2",
+      upDownCompeticoes: "down",
+      observacoesTotal: "12",
+      observacoesMes: "8"
+  };
+
   const recentActivities = [
     {
       type: "treino",
       title: "Treino de Gi",
       description: "Trabalhei guard pass e finalizações",
-      time: "2 horas atrás",
-      icon: Target
+      time: "14 de agosto",
     },
     {
       type: "tecnica",
       title: "Triângulo da Guarda Fechada",
       description: "Adicionei variação com lapela",
-      time: "1 dia atrás",
-      icon: Target
+      time: "13 de agosto",
     },
     {
       type: "competicao",
       title: "Copa Regional de Jiu-Jitsu",
       description: "2º lugar na categoria azul adulto",
-      time: "3 dias atrás",
-      icon: Target
+      time: "12 de agosto",
     }
   ];
+
+  const treinosDados = {
+    gi: {
+      total: 128,
+      esteMes: 8,
+      ultimaVez: "12 de Agosto"
+    },
+    noGi: {
+      total: 59,
+      esteMes: 4,
+      ultimaVez: "09 de Agosto"
+    },
+    competicoesGi: {
+      eventos: 5,
+      lutas: 1,
+      vitorias: 2,
+      derrotas: 2,
+      finalizacoes: 1,
+      primeiroLugar: 2,
+      segundoLugar: 1,
+      terceiroLugar: 5
+    },
+    competicoesNoGi: {
+      eventos: 5,
+      lutas: 1,
+      vitorias: 2,
+      derrotas: 2,
+      finalizacoes: 1,
+      primeiroLugar: 2,
+      segundoLugar: 1,
+      terceiroLugar: 5
+    }
+  }
 
   return (
     <SidebarProvider>
       <div className="min-h-screen flex w-full bg-background">
         <AppSidebar />
-        <main className="flex-1 flex flex-col pb-16 md:pb-0">          {/* Header */}
+        <main className="flex-1 flex flex-col pb-16 md:pb-0">         
+          {/* Header */}
           <header className="bg-card border-b border-border p-4 md:p-6">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-4">
                 <SidebarTrigger className="md:hidden text-bjj-gold hover:text-bjj-gold/80 h-10 w-10 flex items-center justify-center" />
                 <div className="hidden md:block">
-                  <h1 className="text-2xl font-bold text-foreground">Olá, Atleta! 👋</h1>
+                  <h1 className="text-2xl font-bold text-foreground">Olá, {user.nome.split(" ")[0]}! 👋</h1>
                   <p className="text-muted-foreground">Bem-vindo de volta à sua jornada no Jiu-Jitsu</p>
                 </div>
                 <div className="md:hidden">
-                  <h1 className="text-xl font-bold text-foreground">Olá, Atleta! 👋</h1>
+                  <h1 className="text-xl font-bold text-foreground">Olá, {user.nome.split(" ")[0]}! 👋</h1>
                 </div>
               </div>
                 <div className="flex items-center gap-2">
@@ -87,12 +129,13 @@ const Index = () => {
                   title="Perfil de Usuário"
                 >
                   <User className="h-5 w-5 text-bjj-gold" />
-                </button>                <button 
-                  onClick={() => navigate('/login')}
+                </button>
+                <button
+                  onClick={logout}
                   className="p-2 rounded-full hover:bg-muted transition-colors"
                   title="Sair"
                 >
-                  <LogOut className="h-5 w-5 text-bjj-gold" />
+                <LogOut className="h-5 w-5 text-bjj-gold" />
                 </button>
               </div>
             </div>
@@ -107,14 +150,17 @@ const Index = () => {
                 Seu Progresso
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                {metrics.map((metric, index) => (
-                  <MetricCard key={index} {...metric} />
-                ))}
-              </div>            </section>
+                <MetricCard title="Técnicas no mês" value={metrics.tecnicas} meta={metrics.tecnicasMeta} icon={Book} faltando={{ type: metrics.upDownTecnicas, text: metrics.tecnicasFaltando }} />
+                <MetricCard title="Treinos no Mês" value={metrics.treinos} meta={metrics.treinosMeta} icon={Calendar} faltando={{ type: metrics.upDownTreinos, text: metrics.treinosFaltando }} />
+                <MetricCard title="Competições no Mês" value={metrics.competicoes} meta={metrics.competicoesMeta} icon={Award} faltando={{ type: metrics.upDownCompeticoes, text: metrics.competicoesFaltando }} />
+                <MetricCard title="Observações Gerais" value={metrics.observacoesMes} icon={Target}  totalObs={metrics.observacoesTotal} />
+              </div>            
+            </section>
 
             {/* Meus Dados Gerais (atualizado conforme solicitação) */}
             <section className="mb-6">
-              <Card className="bg-card border-border">                <CardHeader>
+              <Card className="bg-card border-border">                
+                <CardHeader>
                   <div className="flex justify-between items-center">
                     <CardTitle className="text-lg font-semibold text-foreground flex items-center gap-2">
                       <User className="w-5 h-5 text-bjj-gold" />
@@ -137,33 +183,34 @@ const Index = () => {
                       <div className="flex flex-col items-center text-center mb-4">                        <div className="w-32 h-32 rounded-full bg-bjj-gold/10 flex items-center justify-center mb-4 overflow-hidden">
                           <User className="w-16 h-16 text-bjj-gold" />
                         </div>
-                        <h3 className="font-semibold text-lg mb-1">Carlos Silva</h3>
-                        <p className="text-sm text-bjj-gold">Faixa Azul • 2 graus</p>
-                        <p className="text-xs text-muted-foreground mt-1">Treina desde Agosto 2022</p>
+                        <h3 className="font-semibold text-lg mb-0">{user.nome}</h3>
+                        <p className="mb-1 text-sm">{user.idade} Anos</p>
+                        <p className="text-sm text-bjj-gold">Faixa {user.faixa}</p>
+                        <p className="text-xs text-muted-foreground mt-1">Treina desde {user.treinaDesde}</p>
                       </div>
                       
                       <div className="space-y-2 mt-4 text-sm">
                         <div className="grid grid-cols-3 gap-2 items-center">
                           <span className="text-muted-foreground">Email:</span>
-                          <span className="col-span-2">carlos.silva@email.com</span>
+                          <span className="col-span-2">{user.email}</span>
                         </div>
                         <div className="grid grid-cols-3 gap-2 items-center">
                           <span className="text-muted-foreground">Telefone:</span>
-                          <span className="col-span-2">(11) 98765-4321</span>
+                          <span className="col-span-2">{user.telefone}</span>
                         </div>
                         <div className="grid grid-cols-3 gap-2 items-center">
                           <span className="text-muted-foreground">Academia:</span>
-                          <span className="col-span-2">Alliance Jiu-Jitsu</span>
+                          <span className="col-span-2">{user.academia}</span>
                         </div>
                         <div className="grid grid-cols-3 gap-2 items-center">
                           <span className="text-muted-foreground">Localização:</span>
-                          <span className="col-span-2">São Paulo, SP</span>
+                          <span className="col-span-2">{user.cidade} - {user.estado}</span>
                         </div>
                         <div className="grid grid-cols-3 gap-2 items-center">
                           <span className="text-muted-foreground">Estilo:</span>
                           <span className="col-span-2">
                             <span className="inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium bg-bjj-gold/10 text-bjj-gold">
-                              <Shield className="w-3 h-3 mr-1" /> Guardeiro
+                              <Shield className="w-3 h-3 mr-1" /> {user.estilo}
                             </span>
                           </span>
                         </div>
@@ -171,21 +218,20 @@ const Index = () => {
                           <span className="text-muted-foreground">Competidor:</span>
                           <span className="col-span-2">
                             <span className="inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium bg-bjj-gold/10 text-bjj-gold">
-                              <Trophy className="w-3 h-3 mr-1" /> Ativo
+                              <Trophy className="w-3 h-3 mr-1" /> {user.competidor ? 'Ativo' : 'Inativo'}
                             </span>
                           </span>
                         </div>
                         <div className="grid grid-cols-3 gap-2 items-center">
                           <span className="text-muted-foreground">Finalização:</span>
-                          <span className="col-span-2">Triângulo</span>
+                          <span className="col-span-2">{user.finalizacao}</span>
                         </div>
                       </div>
                       
                       <div className="mt-4 pt-3 border-t border-border/50">
                         <h4 className="text-sm font-medium mb-2">Bio:</h4>
                         <p className="text-xs text-muted-foreground">
-                          Praticante de Jiu-Jitsu há 3 anos, focado em competições e desenvolvimento técnico. 
-                          Especialista em guarda e jogo de lapela. Buscando evoluir em raspagens e finalizações.
+                          {user.bio}
                         </p>
                       </div>
                     </div>
@@ -202,14 +248,15 @@ const Index = () => {
                           <div className="space-y-2">
                             <div className="grid grid-cols-2 gap-2 text-sm">
                               <span className="text-muted-foreground">Total Treinos:</span>
-                              <span className="font-medium">128</span>
+                              <span className="font-medium">{treinosDados.gi.total}</span>
                             </div>
                             <div className="grid grid-cols-2 gap-2 text-sm">
                               <span className="text-muted-foreground">Este Mês:</span>
-                              <span className="font-medium">8</span>
-                            </div>                            <div className="grid grid-cols-2 gap-2 text-sm">
+                              <span className="font-medium">{treinosDados.gi.esteMes}</span>
+                            </div>
+                            <div className="grid grid-cols-2 gap-2 text-sm">
                               <span className="text-muted-foreground">Última Vez:</span>
-                              <span className="font-medium">Ontem</span>
+                              <span className="font-medium">{treinosDados.gi.ultimaVez}</span>
                             </div>
                           </div>
                         </div>
@@ -221,14 +268,15 @@ const Index = () => {
                           <div className="space-y-2">
                             <div className="grid grid-cols-2 gap-2 text-sm">
                               <span className="text-muted-foreground">Total Treinos:</span>
-                              <span className="font-medium">59</span>
+                              <span className="font-medium">{treinosDados.noGi.total}</span>
                             </div>
                             <div className="grid grid-cols-2 gap-2 text-sm">
                               <span className="text-muted-foreground">Este Mês:</span>
-                              <span className="font-medium">4</span>
-                            </div>                            <div className="grid grid-cols-2 gap-2 text-sm">
+                              <span className="font-medium">{treinosDados.noGi.esteMes}</span>
+                            </div>
+                            <div className="grid grid-cols-2 gap-2 text-sm">
                               <span className="text-muted-foreground">Última Vez:</span>
-                              <span className="font-medium">Há 3 dias</span>
+                              <span className="font-medium">{treinosDados.noGi.ultimaVez}</span>
                             </div>
                           </div>
                         </div>
@@ -247,38 +295,38 @@ const Index = () => {
                           <div className="grid grid-cols-2 gap-3 text-sm mb-3">
                             <div>
                               <p className="text-muted-foreground text-xs mb-1">Eventos</p>
-                              <p className="font-medium">5</p>
+                              <p className="font-medium">{treinosDados.competicoesGi.eventos}</p>
                             </div>
                             <div>
                               <p className="text-muted-foreground text-xs mb-1">Lutas</p>
-                              <p className="font-medium">14</p>
+                              <p className="font-medium">{treinosDados.competicoesGi.lutas}</p>
                             </div>
                             <div>
                               <p className="text-muted-foreground text-xs mb-1">Vitórias</p>
-                              <p className="font-medium text-green-400">9</p>
+                              <p className="font-medium text-green-400">{treinosDados.competicoesGi.vitorias}</p>
                             </div>
                             <div>
                               <p className="text-muted-foreground text-xs mb-1">Derrotas</p>
-                              <p className="font-medium text-red-400">5</p>
+                              <p className="font-medium text-red-400">{treinosDados.competicoesGi.derrotas}</p>
                             </div>
                             <div>
                               <p className="text-muted-foreground text-xs mb-1">Finalizações</p>
-                              <p className="font-medium">6</p>
+                              <p className="font-medium">{treinosDados.competicoesGi.finalizacoes}</p>
                             </div>
                           </div>
                           
                           <div className="flex items-center justify-between border-t border-border/30 pt-3">
                             <div className="flex items-center gap-1">
                               <div className="w-5 h-5 rounded-full bg-yellow-500"></div>
-                              <span className="text-xs">3</span>
+                              <span className="text-xs">{treinosDados.competicoesGi.primeiroLugar}</span>
                             </div>
                             <div className="flex items-center gap-1">
                               <div className="w-5 h-5 rounded-full bg-gray-300"></div>
-                              <span className="text-xs">1</span>
+                              <span className="text-xs">{treinosDados.competicoesGi.segundoLugar}</span>
                             </div>
                             <div className="flex items-center gap-1">
                               <div className="w-5 h-5 rounded-full bg-amber-700"></div>
-                              <span className="text-xs">2</span>
+                              <span className="text-xs">{treinosDados.competicoesGi.terceiroLugar}</span>
                             </div>
                           </div>
                         </div>
@@ -290,38 +338,38 @@ const Index = () => {
                           <div className="grid grid-cols-2 gap-3 text-sm mb-3">
                             <div>
                               <p className="text-muted-foreground text-xs mb-1">Eventos</p>
-                              <p className="font-medium">3</p>
+                              <p className="font-medium">{treinosDados.competicoesNoGi.eventos}</p>
                             </div>
                             <div>
                               <p className="text-muted-foreground text-xs mb-1">Lutas</p>
-                              <p className="font-medium">8</p>
+                              <p className="font-medium">{treinosDados.competicoesNoGi.lutas}</p>
                             </div>
                             <div>
                               <p className="text-muted-foreground text-xs mb-1">Vitórias</p>
-                              <p className="font-medium text-green-400">5</p>
+                              <p className="font-medium text-green-400">{treinosDados.competicoesNoGi.vitorias}</p>
                             </div>
                             <div>
                               <p className="text-muted-foreground text-xs mb-1">Derrotas</p>
-                              <p className="font-medium text-red-400">3</p>
+                              <p className="font-medium text-red-400">{treinosDados.competicoesNoGi.derrotas}</p>
                             </div>
                             <div>
                               <p className="text-muted-foreground text-xs mb-1">Finalizações</p>
-                              <p className="font-medium">4</p>
+                              <p className="font-medium">{treinosDados.competicoesNoGi.finalizacoes}</p>
                             </div>
                           </div>
                           
                           <div className="flex items-center justify-between border-t border-border/30 pt-3">
                             <div className="flex items-center gap-1">
                               <div className="w-5 h-5 rounded-full bg-yellow-500"></div>
-                              <span className="text-xs">2</span>
+                              <span className="text-xs">{treinosDados.competicoesNoGi.primeiroLugar}</span>
                             </div>
                             <div className="flex items-center gap-1">
                               <div className="w-5 h-5 rounded-full bg-gray-300"></div>
-                              <span className="text-xs">2</span>
+                              <span className="text-xs">{treinosDados.competicoesNoGi.segundoLugar}</span>
                             </div>
                             <div className="flex items-center gap-1">
                               <div className="w-5 h-5 rounded-full bg-amber-700"></div>
-                              <span className="text-xs">0</span>
+                              <span className="text-xs">{treinosDados.competicoesNoGi.terceiroLugar}</span>
                             </div>
                           </div>
                         </div>
@@ -351,7 +399,7 @@ const Index = () => {
                     {recentActivities.map((activity, index) => (
                       <div key={index} className="flex items-start gap-3 p-3 rounded-lg hover:bg-muted/50 transition-colors duration-200">
                         <div className="p-2 bg-bjj-gold/10 rounded-lg">
-                          <activity.icon className="w-4 h-4 text-bjj-gold" />
+                          <Target className="w-4 h-4 text-bjj-gold" />
                         </div>
                         <div className="flex-1 space-y-1">
                           <h4 className="font-medium text-foreground text-sm">{activity.title}</h4>
@@ -364,38 +412,6 @@ const Index = () => {
                 </Card>
               </div>
             </div>
-
-            {/* Próximos objetivos */}
-            <section>
-              <Card className="bg-gradient-to-r from-bjj-gold/5 to-bjj-gold/10 border-bjj-gold/20">
-                <CardHeader>
-                  <CardTitle className="text-lg font-semibold text-foreground flex items-center gap-2">
-                    <Target className="w-5 h-5 text-bjj-gold" />
-                    Próximos Objetivos
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">                    <div className="p-4 bg-card/50 rounded-lg border border-bjj-gold/20">
-                      <h4 className="font-medium text-foreground mb-2">Próxima Faixa</h4>
-                      <p className="text-sm text-muted-foreground mb-2">Azul → Roxa</p>
-                      <p className="text-xs text-bjj-gold">Em 5 meses (Novembro 2025)</p>
-                    </div>
-                    
-                    <div className="p-4 bg-card/50 rounded-lg border border-bjj-gold/20">                      <h4 className="font-medium text-foreground mb-2">Meta Mensal</h4>
-                      <p className="text-sm text-muted-foreground mb-2">16 treinos em junho</p>
-                      <div className="w-full bg-muted rounded-full h-2">
-                        <div className="bg-bjj-gold h-2 rounded-full w-3/4"></div>
-                      </div>
-                      <p className="text-xs text-bjj-gold mt-1">12/16 treinos (75%)</p>
-                    </div>
-                    
-                    <div className="p-4 bg-card/50 rounded-lg border border-bjj-gold/20">                      <h4 className="font-medium text-foreground mb-2">Próxima Competição</h4>
-                      <p className="text-sm text-muted-foreground mb-2">Copa Estadual</p>
-                      <p className="text-xs text-bjj-gold">29 de julho de 2025</p>
-                    </div>
-                  </div>
-                </CardContent>              </Card>
-            </section>            {/* Esta seção foi movida para cima e substituída pelo novo "Meus Dados Gerais" */}            {/* A seção "Rede de Treinamento" foi removida conforme solicitado */}
           </div>
         </main>
         

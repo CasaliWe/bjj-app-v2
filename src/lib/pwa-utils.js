@@ -1,6 +1,6 @@
 // Arquivo para administrar as preferências do PWA
-const PWA_STORAGE_KEY = 'bjj-app-pwa-status';
-const PROMPT_DELAY_MS = 30000; // 30 segundos
+const PWA_STORAGE_KEY = 'bjj-academy-pwa-status';
+const PROMPT_DELAY_MS = 20000; // 20 segundos
 
 export const getPwaStatus = () => {
   try {
@@ -25,10 +25,10 @@ export const setPwaStatus = (status) => {
 export const shouldShowInstallPrompt = () => {
   const status = getPwaStatus();
   
-  // Se o usuário já recusou recentemente (nas últimas 24h)
+  // Se o usuário já recusou recentemente (na última 1h)
   if (status.lastDismissed) {
     const hoursSinceDismiss = (Date.now() - status.lastDismissed) / (1000 * 60 * 60);
-    if (hoursSinceDismiss < 24) {
+    if (hoursSinceDismiss < 1) {
       return false;
     }
   }
@@ -41,12 +41,12 @@ export const shouldShowInstallPrompt = () => {
   // Controle de quantas visitas o usuário fez antes de mostrar o prompt
   if (!status.visitCount) {
     setPwaStatus({ visitCount: 1, firstVisit: Date.now() });
-    return false; // Não mostra na primeira visita
+    return true; // Mostra já na primeira visita
   } else {
     setPwaStatus({ visitCount: status.visitCount + 1 });
     
-    // Mostra após a segunda visita
-    return status.visitCount >= 2;
+    // Mostra em todas as visitas
+    return true;
   }
 };
 

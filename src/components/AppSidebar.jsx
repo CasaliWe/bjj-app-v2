@@ -1,7 +1,7 @@
 import { 
   Home, Book, Calendar, Award, Target, FileText, Bot, 
   Gamepad2, Video, Newspaper, LineChart, 
-  ShoppingBag, Dumbbell, Layers
+  ShoppingBag, Dumbbell, Layers, LogOut
 } from "lucide-react";
 import {
   Sidebar,
@@ -14,6 +14,11 @@ import {
   SidebarMenuItem,
   SidebarHeader,
 } from "@/components/ui/sidebar";
+
+
+import {sair} from "@/services/auth/logout";
+
+
 
 const menuItems = [  {
     title: "Início",
@@ -100,8 +105,15 @@ const menuItems = [  {
 ];
 
 export function AppSidebar() {
+
+  const logout = () => {
+    sair();
+  };
+
   return (
-    <Sidebar className="border-r border-sidebar-border">      <SidebarHeader className="border-b border-sidebar-border p-6">
+    <Sidebar className="border-r border-sidebar-border">      
+
+      <SidebarHeader className="border-b border-sidebar-border p-6">
         <div className="flex items-center gap-3">
           <div className="w-8 h-8 bg-bjj-gold rounded-lg flex items-center justify-center">
             <span className="text-bjj-dark font-bold text-sm">BJJ</span>
@@ -112,14 +124,15 @@ export function AppSidebar() {
           </div>
         </div>
       </SidebarHeader>
-      
+
       <SidebarContent className="p-4 h-[calc(100vh-98px)] overflow-y-auto scrollbar-thin scrollbar-thumb-sidebar-border/80 scrollbar-track-transparent hover:scrollbar-thumb-sidebar-border">
         <SidebarGroup>
-          <SidebarGroupLabel className="text-sidebar-foreground/60 text-xs font-medium mb-4 px-2 sticky top-0 bg-sidebar-background/95 backdrop-blur-sm pb-2 pt-1">
+          <SidebarGroupLabel className="text-sidebar-foreground/60 text-xs font-medium mb-4 px-2 bg-sidebar-background/95 backdrop-blur-sm pb-2 pt-1">
             NAVEGAÇÃO
           </SidebarGroupLabel>
           <SidebarGroupContent>
-            <SidebarMenu className="space-y-1">              {menuItems.map((item) => {
+            <SidebarMenu className="space-y-1">              
+              {menuItems.map((item) => {
                 const isActive = window.location.pathname === item.url;
                 return (
                   <SidebarMenuItem key={item.title}>
@@ -151,6 +164,7 @@ export function AppSidebar() {
                 );
               })}
             </SidebarMenu>
+            <div className="mt-8 text-red-500 flex justify-center"><button onClick={logout}>Sair</button> <LogOut className="ms-2 h-4 w-4 text-red-500"/></div>
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>

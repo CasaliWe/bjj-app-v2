@@ -8,21 +8,21 @@ const quickActions = [
     title: "Nova Técnica",
     description: "Adicionar técnica aprendida",
     icon: Book,
-    action: () => console.log("Nova técnica"),
+    action: () => window.location.href = "/tecnicas",
     variant: "outline"
   },
   {
     title: "Registrar Treino",
     description: "Marcar treino de hoje",
     icon: Calendar,
-    action: () => console.log("Registrar treino"),
+    action: () => window.location.href = "/treinos",
     variant: "outline"
   },
   {
     title: "Nova Competição",
     description: "Cadastrar competição",
     icon: Award,
-    action: () => console.log("Nova competição"),
+    action: () => window.location.href = "/competicoes",
     variant: "outline"
   }
 ];

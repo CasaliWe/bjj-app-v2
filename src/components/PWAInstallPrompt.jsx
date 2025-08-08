@@ -109,7 +109,7 @@ export function PWAInstallPrompt() {
         <DialogHeader>
           <DialogTitle>Instalar BJJ ACADEMY</DialogTitle>
           <DialogDescription>
-            Instale nosso aplicativo para ter acesso offline e uma melhor experiência!
+            Instale nosso aplicativo com um clique para ter acesso como um aplicativo de celular para uma melhor experiência!
           </DialogDescription>
         </DialogHeader>
         <div className="py-4">
@@ -118,7 +118,6 @@ export function PWAInstallPrompt() {
           </p>
           <ul className="list-disc ml-6 mt-2">
             <li>Acesso rápido direto da tela inicial</li>
-            <li>Uso offline</li>
             <li>Experiência completa de app</li>
           </ul>
         </div>
@@ -129,7 +128,7 @@ export function PWAInstallPrompt() {
           }}>Agora não</Button>
           <Button onClick={handleInstallClick} className="gap-2">
             <Download className="h-4 w-4" />
-            Instalar
+            Adicionar à tela inicial
           </Button>
         </DialogFooter>
       </DialogContent>

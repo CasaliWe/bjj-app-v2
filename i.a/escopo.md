@@ -13,3 +13,4 @@
 - todos os hooks devem ficar dentro da pasta hooks;
 - O arquivo app.jsx devem ficar organizado e com cometários;
 - Apesar do app estar com typescript, evite usar typescript nas próximas atualizações, o agente sempre deve fazer tudo sem typescript (mesmo o app usando em algumas partes atualmente);
+- A comunicação do front end com a api será sempre em json.

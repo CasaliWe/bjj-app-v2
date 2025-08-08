@@ -3,7 +3,6 @@ import react from "@vitejs/plugin-react-swc";
 import path from "path";
 import { VitePWA } from "vite-plugin-pwa";
 
-// https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
   server: {
     host: "::",
@@ -12,16 +11,16 @@ export default defineConfig(({ mode }) => ({
   plugins: [
     react(),
     VitePWA({
-      registerType: "prompt", // Alterado de autoUpdate para prompt para dar controle ao usuário
+      registerType: "autoUpdate", 
       includeAssets: ["favicon.png", "robots.txt", "icons/*.png"],
       workbox: {
         // Configurações do Workbox
         clientsClaim: true,
-        skipWaiting: false
+        skipWaiting: true
       },
       manifest: {
         name: "BJJ ACADEMY",
-        short_name: "BJJ APP",
+        short_name: "BJJ ACADEMY",
         description: "Plataforma completa para gerenciar seu progresso no Jiu-Jitsu",
         theme_color: "#ffffff",
         background_color: "#ffffff",
@@ -69,7 +68,7 @@ export default defineConfig(({ mode }) => ({
             type: "image/png"
           }
         ],
-        start_url: "/",
+        start_url: "/app",
         orientation: "portrait"
       }
     })
