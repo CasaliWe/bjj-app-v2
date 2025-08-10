@@ -127,7 +127,7 @@ const UserProfile = () => {
     }
   };
   
-  // Função para formatar número de telefone
+  // MASK INPUT TEL
   const formatPhoneNumber = (value) => {
     // Remove todos os caracteres não numéricos
     const phoneNumber = value.replace(/\D/g, '');
@@ -173,7 +173,6 @@ const UserProfile = () => {
       }, 4000);
     }, 1500);
   };
-
 
   // ATUALIZANDO INPUTS DA SENHA
   const handlePasswordChange = (e) => {
@@ -226,17 +225,19 @@ const UserProfile = () => {
     }, 1500);
   };
 
-  // Funções para gerenciar o upload da imagem
+  // GERENCIAR UPLOAD IMAGEM
   const handleOpenImageModal = () => {
     setIsImageModalOpen(true);
   };
 
+  // ABRIR MODAL IMAGEM
   const handleCloseImageModal = () => {
     setIsImageModalOpen(false);
     setSelectedImage(null);
     setPreviewImage(null);
   };
 
+  // SELECIONANDO IMAGEM NO MODAL E VERIFICANDO SE É IMAGEM
   const handleImageSelect = (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -256,6 +257,7 @@ const UserProfile = () => {
     reader.readAsDataURL(file);
   };
 
+  // CHAMANDO API PARA ATUALIZAR IMAGEM
   const handleImageUpload = async () => {
     if (!selectedImage) {
       alert('Por favor, selecione uma imagem para upload.');
@@ -323,12 +325,13 @@ const UserProfile = () => {
     */
   };
 
-  // Funções para gerenciar a visibilidade do perfil
+  // GERENCIAR VISIBILIDADE DO PERFIL
   const handleOpenVisibilityModal = (isAberto) => {
     setNewVisibility(isAberto);
     setIsVisibilityModalOpen(true);
   };
 
+  // ATUALIZAR VISIBILIDADE DO PERFIL
   const handleUpdateProfileVisibility = async () => {
     if (newVisibility === null) return;
     

@@ -24,7 +24,7 @@
 
 ### /pages:
 - Index.jsx = rota /app (privada) que seria a dashboard inicial, consts -> user, metrics, recentActivities, treinosDados;
-- UserProfile.jsx = rota perfil (privada) que seria para atualizar infos, senha e configs;
+- UserProfile.jsx = rota /perfil (privada) que seria para atualizar infos, senha e configs;
 
 ### /services:
 - /auth/logout.js = fazer logout do sistema;
