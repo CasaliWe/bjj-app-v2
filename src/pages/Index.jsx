@@ -20,15 +20,20 @@ const Index = () => {
     nome: 'Weslei Casali',
     email: 'weslei.casali@example.com',
     idade: 28,
-    peso: '75kg',
+    peso: 75,
     faixa: 'Azul',
-    treinaDesde: 'Agosto de 2022',
+    imagem: '/user.jpeg',
     telefone: '(11) 98765-4321',
+    instagram: '@instagram',
+    tiktok: '@tiktok',
+    youtube: '@youtube',
+    perfilPublico: true,
     academia: 'Gracie Barra',
     cidade: 'São Paulo',
     estado: 'SP',
+    pais: 'Brasil',
     estilo: 'Guardeiro',
-    competidor: true,
+    competidor: 'Sim',
     finalizacao: 'Triângulo',
     bio: 'Praticante de Jiu-Jitsu há 3 anos, focado em competições e desenvolvimento técnico. Especialista em guarda e jogo de lapela. Buscando evoluir em raspagens e finalizações.',
   }
@@ -62,6 +67,12 @@ const Index = () => {
       title: "Triângulo da Guarda Fechada",
       description: "Adicionei variação com lapela",
       time: "13 de agosto",
+    },
+    {
+      type: "competicao",
+      title: "Copa Regional de Jiu-Jitsu",
+      description: "2º lugar na categoria azul adulto",
+      time: "12 de agosto",
     },
     {
       type: "competicao",
@@ -180,13 +191,32 @@ const Index = () => {
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                     {/* Coluna 1: Dados Pessoais e Foto */}
                     <div className="md:col-span-1">
-                      <div className="flex flex-col items-center text-center mb-4">                        <div className="w-32 h-32 rounded-full bg-bjj-gold/10 flex items-center justify-center mb-4 overflow-hidden">
-                          <User className="w-16 h-16 text-bjj-gold" />
+                      <div className="flex flex-col items-center text-center mb-4">                        
+                        <div className="w-32 h-32 rounded-full bg-bjj-gold/10 flex items-center justify-center mb-4 overflow-hidden">
+                          {/* <User className="w-16 h-16 text-bjj-gold" /> */}
+                          <img src={user.imagem} alt="User" className="w-full h-full object-cover" />
                         </div>
                         <h3 className="font-semibold text-lg mb-0">{user.nome}</h3>
                         <p className="mb-1 text-sm">{user.idade} Anos</p>
                         <p className="text-sm text-bjj-gold">Faixa {user.faixa}</p>
-                        <p className="text-xs text-muted-foreground mt-1">Treina desde {user.treinaDesde}</p>
+                        {/* verificando se veio instagram. tik tok, youtube, cada um delees, se veio mostra o icone que é uma importação placeholder via url da platagorma sem usar lucide e com link que leva apra ela... */}
+                        <div className="flex space-x-2 mt-2">
+                          {user.instagram && (
+                            <a href={`${user.instagram}`} target="_blank" rel="noopener noreferrer">
+                              <img src="/instagram.png" alt="Instagram" className="w-5 h-5 text-bjj-gold" />
+                            </a>
+                          )}
+                          {user.tiktok && (
+                            <a href={`${user.tiktok}`} target="_blank" rel="noopener noreferrer">
+                              <img src="/tiktok.png" alt="TikTok" className="w-5 h-5 text-bjj-gold" />
+                            </a>
+                          )}
+                          {user.youtube && (
+                            <a href={`${user.youtube}`} target="_blank" rel="noopener noreferrer">
+                              <img src="/youtube.png" alt="YouTube" className="w-5 h-5 text-bjj-gold" />
+                            </a>
+                          )}
+                        </div>
                       </div>
                       
                       <div className="space-y-2 mt-4 text-sm">
@@ -199,18 +229,23 @@ const Index = () => {
                           <span className="col-span-2">{user.telefone}</span>
                         </div>
                         <div className="grid grid-cols-3 gap-2 items-center">
+                          <span className="text-muted-foreground">Peso:</span>
+                          <span className="col-span-2">{user.peso} kg</span>
+                        </div>
+                        <div className="grid grid-cols-3 gap-2 items-center">
                           <span className="text-muted-foreground">Academia:</span>
                           <span className="col-span-2">{user.academia}</span>
                         </div>
                         <div className="grid grid-cols-3 gap-2 items-center">
                           <span className="text-muted-foreground">Localização:</span>
-                          <span className="col-span-2">{user.cidade} - {user.estado}</span>
+                          <span className="col-span-2">{user.cidade} - {user.estado} - {user.pais}</span>
                         </div>
                         <div className="grid grid-cols-3 gap-2 items-center">
                           <span className="text-muted-foreground">Estilo:</span>
                           <span className="col-span-2">
                             <span className="inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium bg-bjj-gold/10 text-bjj-gold">
-                              <Shield className="w-3 h-3 mr-1" /> {user.estilo}
+                              <Shield className="w-3 h-3 mr-1" />
+                              {user.estilo === 'Guardeiro' ? 'Guardeiro' : user.estilo === 'Passador' ? 'Passador' : 'Equilibrado'}
                             </span>
                           </span>
                         </div>
@@ -218,7 +253,8 @@ const Index = () => {
                           <span className="text-muted-foreground">Competidor:</span>
                           <span className="col-span-2">
                             <span className="inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium bg-bjj-gold/10 text-bjj-gold">
-                              <Trophy className="w-3 h-3 mr-1" /> {user.competidor ? 'Ativo' : 'Inativo'}
+                              <Trophy className="w-3 h-3 mr-1" /> 
+                              {user.competidor === 'Sim' ? 'Ativo' : user.competidor === 'Não' ? 'Inativo' : 'Eventualmente'}
                             </span>
                           </span>
                         </div>

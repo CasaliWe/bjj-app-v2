@@ -164,7 +164,7 @@ export function AppSidebar() {
                 );
               })}
             </SidebarMenu>
-            <div className="mt-8 text-red-500 flex justify-center"><button onClick={logout}>Sair</button> <LogOut className="ms-2 h-4 w-4 text-red-500"/></div>
+            <div className="mt-8 mb-6 text-red-500 flex justify-center"><button onClick={logout}>Sair</button> <LogOut className="ms-2 h-4 w-4 text-red-500"/></div>
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>

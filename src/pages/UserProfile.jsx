@@ -45,18 +45,25 @@ const UserProfile = () => {
   
   // Estados para os dados do perfil
   const [profileData, setProfileData] = useState({
-    name: "Carlos Silva",
-    email: "carlos.silva@email.com",
-    phone: "(11) 98765-4321",
-    academy: "Alliance Jiu-Jitsu",
-    location: "São Paulo, SP",
-    belt: "blue",
-    degrees: "2",
-    style: "guard",
-    competitor: "yes",
-    favSubmission: "Triângulo",
-    since: "2022-08",
-    bio: "Praticante de Jiu-Jitsu há 3 anos, focado em competições e desenvolvimento técnico. Especialista em guarda e jogo de lapela. Buscando evoluir em raspagens e finalizações."
+    nome: 'Weslei Casali',
+    email: 'weslei.casali@example.com',
+    idade: 28,
+    peso: 75,
+    faixa: 'Azul',
+    imagem: '/user.jpeg',
+    telefone: '(11) 98765-4321',
+    instagram: '@instagram',
+    tiktok: '@tiktok',
+    youtube: '@youtube',
+    perfilPublico: true,
+    academia: 'Gracie Barra',
+    cidade: 'São Paulo',
+    estado: 'SP',
+    pais: 'Brasil',
+    estilo: 'Guardeiro',
+    competidor: 'Sim',
+    finalizacao: 'Triângulo',
+    bio: 'Praticante de Jiu-Jitsu há 3 anos, focado em competições e desenvolvimento técnico. Especialista em guarda e jogo de lapela. Buscando evoluir em raspagens e finalizações.',
   });
   
   // Estados para as senhas
@@ -73,6 +80,7 @@ const UserProfile = () => {
   const [passwordSuccess, setPasswordSuccess] = useState(false);
   const [passwordError, setPasswordError] = useState("");
 
+  // MUDANDO DADOS DOS INPUTS
   const handleProfileChange = (e) => {
     const { name, value } = e.target;
     setProfileData(prev => ({
@@ -81,6 +89,7 @@ const UserProfile = () => {
     }));
   };
   
+  // MUDANDO ITEM DO SELECT
   const handleSelectChange = (name, value) => {
     setProfileData(prev => ({
       ...prev,
@@ -88,6 +97,27 @@ const UserProfile = () => {
     }));
   };
   
+  // ATUALIZANDO DADOS DO USER VIA API
+  const handleProfileSubmit = (e) => {
+    e.preventDefault();
+    setIsSubmittingProfile(true);
+    
+    // Simular uma chamada de API
+    setTimeout(() => {
+      setIsSubmittingProfile(false);
+
+      console.log("Dados do perfil atualizados:", profileData);
+
+      setProfileSuccess(true);
+      
+      setTimeout(() => {
+        setProfileSuccess(false);
+      }, 4000);
+    }, 1500);
+  };
+
+
+  // ATUALIZANDO IMPUTS DA SENHA
   const handlePasswordChange = (e) => {
     const { name, value } = e.target;
     setPasswordData(prev => ({
@@ -99,21 +129,7 @@ const UserProfile = () => {
     if (passwordError) setPasswordError("");
   };
   
-  const handleProfileSubmit = (e) => {
-    e.preventDefault();
-    setIsSubmittingProfile(true);
-    
-    // Simular uma chamada de API
-    setTimeout(() => {
-      setIsSubmittingProfile(false);
-      setProfileSuccess(true);
-      
-      setTimeout(() => {
-        setProfileSuccess(false);
-      }, 3000);
-    }, 1500);
-  };
-  
+  // ATUALIZANDO A SENHA VIA API
   const handlePasswordSubmit = (e) => {
     e.preventDefault();
     setPasswordError("");
@@ -134,6 +150,9 @@ const UserProfile = () => {
     // Simular uma chamada de API
     setTimeout(() => {
       setIsSubmittingPassword(false);
+
+      console.log("Dados da senha atualizados:", passwordData);
+
       setPasswordSuccess(true);
       
       // Limpar os campos de senha
@@ -145,12 +164,15 @@ const UserProfile = () => {
       
       setTimeout(() => {
         setPasswordSuccess(false);
-      }, 3000);
+      }, 4000);
     }, 1500);
   };
 
+
+
+  // VOLTANDO PARA PÁG ANTERIOR
   const handleBack = () => {
-    navigate(-1);
+    window.location.href = "/app"; 
   };
 
   return (
@@ -167,7 +189,7 @@ const UserProfile = () => {
               <span className="text-bjj-dark font-bold text-lg">BJJ</span>
             </div>
             <div>
-              <h1 className="text-2xl font-bold text-foreground">Academy</h1>
+              <h1 className="text-2xl mb-2 font-bold text-foreground">Academy</h1>
               <p className="text-muted-foreground text-xs">Perfil do Usuário</p>
             </div>
           </div>
@@ -195,9 +217,10 @@ const UserProfile = () => {
                 Gerencie suas informações pessoais e credenciais de acesso
               </CardDescription>
             </CardHeader>
-            <CardContent>              <Tabs defaultValue="profile" className="w-full">
-                <TabsList className="grid w-full grid-cols-3 mb-8">
-                  <TabsTrigger value="profile">Informações Pessoais</TabsTrigger>
+            <CardContent>              
+              <Tabs defaultValue="profile" className="w-full">
+                <TabsList className="grid w-full grid-cols-1 sm:grid-cols-3 gap-2 mb-28 md:mb-16">
+                  <TabsTrigger value="profile">Informações</TabsTrigger>
                   <TabsTrigger value="password">Alterar Senha</TabsTrigger>
                   <TabsTrigger value="settings">Configurações</TabsTrigger>
                 </TabsList>
@@ -212,21 +235,23 @@ const UserProfile = () => {
                         </div>
                       </div>
                       
-                      <div className="w-full space-y-2">
-                        <Label htmlFor="name">Nome Completo</Label>
-                        <Input
-                          id="name"
-                          name="name"
-                          value={profileData.name}
-                          onChange={handleProfileChange}
-                          className="bg-card/50 border-border/40"
-                        />
-                        
+                      {/* campos gerais user */}
+                      <div className="w-full space-y-2">                        
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+                          <div>
+                            <Label htmlFor="nome">Nome Completo</Label>
+                            <Input
+                              id="nome"
+                              name="nome"
+                              value={profileData.nome}
+                              onChange={handleProfileChange}
+                              className="bg-card/50 border-border/40"
+                            />
+                          </div>
+
                           <div>
                             <Label htmlFor="email">E-mail</Label>
                             <div className="flex items-center gap-2">
-                              <Mail className="w-4 h-4 text-muted-foreground" />
                               <Input
                                 id="email"
                                 name="email"
@@ -237,164 +262,84 @@ const UserProfile = () => {
                               />
                             </div>
                           </div>
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2">
                           <div>
-                            <Label htmlFor="phone">Telefone</Label>
+                            <Label htmlFor="telefone">Telefone</Label>
                             <div className="flex items-center gap-2">
-                              <Phone className="w-4 h-4 text-muted-foreground" />
                               <Input
-                                id="phone"
-                                name="phone"
-                                value={profileData.phone}
+                                id="telefone"
+                                name="telefone"
+                                value={profileData.telefone}
+                                onChange={handleProfileChange}
+                                className="bg-card/50 border-border/40"
+                              />
+                            </div>
+                          </div>
+
+                          <div>
+                            <Label htmlFor="idade">Idade</Label>
+                            <div className="flex items-center gap-2">
+                              <Input
+                                id="idade"
+                                name="idade"
+                                type="number"
+                                value={profileData.idade}
+                                onChange={handleProfileChange}
+                                className="bg-card/50 border-border/40"
+                              />
+                            </div>
+                          </div>
+                          
+                          <div>
+                            <Label htmlFor="peso">Peso</Label>
+                            <div className="flex items-center gap-2">
+                              <Input
+                                id="peso"
+                                name="peso"
+                                type="number"
+                                value={profileData.peso}
                                 onChange={handleProfileChange}
                                 className="bg-card/50 border-border/40"
                               />
                             </div>
                           </div>
                         </div>
-                      </div>
-                    </div>
-                    
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      <div className="space-y-4">
-                        <h3 className="text-lg font-medium">Dados de Jiu-Jitsu</h3>
-                        
-                        <div>
-                          <Label htmlFor="belt">Faixa</Label>
-                          <Select 
-                            name="belt" 
-                            value={profileData.belt}
-                            onValueChange={(value) => handleSelectChange("belt", value)}
-                          >
-                            <SelectTrigger className="bg-card/50 border-border/40">
-                              <SelectValue placeholder="Selecione sua faixa" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="white">Branca</SelectItem>
-                              <SelectItem value="blue">Azul</SelectItem>
-                              <SelectItem value="purple">Roxa</SelectItem>
-                              <SelectItem value="brown">Marrom</SelectItem>
-                              <SelectItem value="black">Preta</SelectItem>
-                            </SelectContent>
-                          </Select>
-                        </div>
-                        
-                        <div>
-                          <Label htmlFor="degrees">Graus</Label>
-                          <Select 
-                            name="degrees"
-                            value={profileData.degrees}
-                            onValueChange={(value) => handleSelectChange("degrees", value)}
-                          >
-                            <SelectTrigger className="bg-card/50 border-border/40">
-                              <SelectValue placeholder="Selecione os graus" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="0">0</SelectItem>
-                              <SelectItem value="1">1</SelectItem>
-                              <SelectItem value="2">2</SelectItem>
-                              <SelectItem value="3">3</SelectItem>
-                              <SelectItem value="4">4</SelectItem>
-                            </SelectContent>
-                          </Select>
-                        </div>
-                        
-                        <div>
-                          <Label htmlFor="style">Estilo</Label>
-                          <div className="flex items-center gap-2">
-                            <Shield className="w-4 h-4 text-muted-foreground" />
-                            <Select 
-                              name="style" 
-                              value={profileData.style}
-                              onValueChange={(value) => handleSelectChange("style", value)}
-                            >
-                              <SelectTrigger className="bg-card/50 border-border/40">
-                                <SelectValue placeholder="Selecione seu estilo" />
-                              </SelectTrigger>
-                              <SelectContent>
-                                <SelectItem value="guard">Guardeiro</SelectItem>
-                                <SelectItem value="passer">Passador</SelectItem>
-                                <SelectItem value="balanced">Equilibrado</SelectItem>
-                              </SelectContent>
-                            </Select>
-                          </div>
-                        </div>
-                        
-                        <div>
-                          <Label htmlFor="competitor">Competidor</Label>
-                          <div className="flex items-center gap-2">
-                            <Trophy className="w-4 h-4 text-muted-foreground" />
-                            <Select 
-                              name="competitor" 
-                              value={profileData.competitor}
-                              onValueChange={(value) => handleSelectChange("competitor", value)}
-                            >
-                              <SelectTrigger className="bg-card/50 border-border/40">
-                                <SelectValue placeholder="Você compete?" />
-                              </SelectTrigger>
-                              <SelectContent>
-                                <SelectItem value="yes">Sim</SelectItem>
-                                <SelectItem value="no">Não</SelectItem>
-                                <SelectItem value="sometimes">Eventualmente</SelectItem>
-                              </SelectContent>
-                            </Select>
-                          </div>
-                        </div>
-                        
-                        <div>
-                          <Label htmlFor="since">Treina desde</Label>
-                          <Input
-                            id="since"
-                            name="since"
-                            type="month"
-                            value={profileData.since}
-                            onChange={handleProfileChange}
-                            className="bg-card/50 border-border/40"
-                          />
-                        </div>
-                      </div>
-                      
-                      <div className="space-y-4">
-                        <h3 className="text-lg font-medium">Localização e Preferências</h3>
-                        
-                        <div>
-                          <Label htmlFor="academy">Academia</Label>
-                          <div className="flex items-center gap-2">
-                            <Briefcase className="w-4 h-4 text-muted-foreground" />
+
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2">
+                          <div>
+                            <Label htmlFor="instagram">Instagram</Label>
                             <Input
-                              id="academy"
-                              name="academy"
-                              value={profileData.academy}
+                              id="instagram"
+                              name="instagram"
+                              value={profileData.instagram}
+                              onChange={handleProfileChange}
+                              className="bg-card/50 border-border/40"
+                            />
+                          </div>
+                          <div>
+                            <Label htmlFor="tiktok">TikTok</Label>
+                            <Input
+                              id="tiktok"
+                              name="tiktok"
+                              value={profileData.tiktok}
+                              onChange={handleProfileChange}
+                              className="bg-card/50 border-border/40"
+                            />
+                          </div>
+                          <div>
+                            <Label htmlFor="youtube">YouTube</Label>
+                            <Input
+                              id="youtube"
+                              name="youtube"
+                              value={profileData.youtube}
                               onChange={handleProfileChange}
                               className="bg-card/50 border-border/40"
                             />
                           </div>
                         </div>
-                        
-                        <div>
-                          <Label htmlFor="location">Cidade / Estado</Label>
-                          <div className="flex items-center gap-2">
-                            <MapPin className="w-4 h-4 text-muted-foreground" />
-                            <Input
-                              id="location"
-                              name="location"
-                              value={profileData.location}
-                              onChange={handleProfileChange}
-                              className="bg-card/50 border-border/40"
-                            />
-                          </div>
-                        </div>
-                        
-                        <div>
-                          <Label htmlFor="favSubmission">Finalização Favorita</Label>
-                          <Input
-                            id="favSubmission"
-                            name="favSubmission"
-                            value={profileData.favSubmission}
-                            onChange={handleProfileChange}
-                            className="bg-card/50 border-border/40"
-                          />
-                        </div>
-                        
+
                         <div>
                           <Label htmlFor="bio">Bio</Label>
                           <Textarea
@@ -406,6 +351,144 @@ const UserProfile = () => {
                             className="bg-card/50 border-border/40 resize-none"
                           />
                         </div>
+                      </div>
+                      {/* campos gerais user */}
+                    </div>
+                    
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="space-y-4">
+                        <h3 className="text-lg font-medium">Dados de Jiu-Jitsu</h3>
+                        
+                        <div>
+                          <Label htmlFor="faixa">Faixa</Label>
+                          <Select 
+                            name="faixa" 
+                            value={profileData.faixa}
+                            onValueChange={(value) => handleSelectChange("faixa", value)}
+                          >
+                            <SelectTrigger className="bg-card/50 border-border/40">
+                              <SelectValue placeholder="Selecione sua faixa" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="Branca">Branca</SelectItem>
+                              <SelectItem value="Azul">Azul</SelectItem>
+                              <SelectItem value="Roxa">Roxa</SelectItem>
+                              <SelectItem value="Marrom">Marrom</SelectItem>
+                              <SelectItem value="Preta">Preta</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        
+                        <div>
+                          <Label htmlFor="estilo">Estilo</Label>
+                          <div className="flex items-center gap-2">
+                            <Select
+                              name="estilo"
+                              value={profileData.estilo}
+                              onValueChange={(value) => handleSelectChange("estilo", value)}
+                            >
+                              <SelectTrigger className="bg-card/50 border-border/40">
+                                <SelectValue placeholder="Selecione seu estilo" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="Guardeiro">Guardeiro</SelectItem>
+                                <SelectItem value="Passador">Passador</SelectItem>
+                                <SelectItem value="Equilibrado">Equilibrado</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </div>
+                        </div>
+                        
+                        <div>
+                          <Label htmlFor="competidor">Competidor</Label>
+                          <div className="flex items-center gap-2">
+                            <Select
+                              name="competidor"
+                              value={profileData.competidor}
+                              onValueChange={(value) => handleSelectChange("competidor", value)}
+                            >
+                              <SelectTrigger className="bg-card/50 border-border/40">
+                                <SelectValue placeholder="Você compete?" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="Sim">Sim</SelectItem>
+                                <SelectItem value="Não">Não</SelectItem>
+                                <SelectItem value="Eventualmente">Eventualmente</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </div>
+                        </div>
+
+                        <div>
+                          <Label htmlFor="finalizacao">Finalização Favorita</Label>
+                          <Input
+                            id="finalizacao"
+                            name="finalizacao"
+                            value={profileData.finalizacao}
+                            onChange={handleProfileChange}
+                            className="bg-card/50 border-border/40"
+                          />
+                        </div>
+                      
+                      </div>
+                      
+                      <div className="space-y-4">
+                        <h3 className="text-lg font-medium">Localização</h3>
+                        
+                        <div>
+                          <Label htmlFor="academia">Academia</Label>
+                          <div className="flex items-center gap-2">
+                            <Input
+                              id="academia"
+                              name="academia"
+                              value={profileData.academia}
+                              onChange={handleProfileChange}
+                              className="bg-card/50 border-border/40"
+                            />
+                          </div>
+                        </div>
+                        
+                        <div>
+                          <Label htmlFor="cidade">Cidade</Label>
+                          <div className="flex items-center gap-2">
+                            <Input
+                              id="cidade"
+                              name="cidade"
+                              value={profileData.cidade}
+                              onChange={handleProfileChange}
+                              className="bg-card/50 border-border/40"
+                            />
+                          </div>
+                        </div>
+
+                        <div>
+                          <Label htmlFor="estado">Estado</Label>
+                          <div className="flex items-center gap-2">
+                            <Input
+                              id="estado"
+                              name="estado"
+                              value={profileData.estado}
+                              onChange={handleProfileChange}
+                              className="bg-card/50 border-border/40 uppercase"
+                              maxLength={2}
+                              minLength={2}
+                            />
+                          </div>
+                        </div>
+
+                        <div>
+                          <Label htmlFor="pais">País</Label>
+                          <div className="flex items-center gap-2">
+                            <Input
+                              id="pais"
+                              name="pais"
+                              value={profileData.pais}
+                              onChange={handleProfileChange}
+                              className="bg-card/50 border-border/40"
+                            />
+                          </div>
+                        </div>
+                    
                       </div>
                     </div>
                     
@@ -518,7 +601,8 @@ const UserProfile = () => {
                         Senha alterada com sucesso!
                       </div>
                     )}
-                  </form>                </TabsContent>
+                  </form>                
+                </TabsContent>
                 
                 <TabsContent value="settings">
                   <div className="space-y-6 max-w-md mx-auto">
@@ -582,8 +666,8 @@ const UserProfile = () => {
         </div>
         
         {/* Copyright footer */}
-        <div className="text-center mt-6">
-          <p className="text-xs text-muted-foreground">© 2025 BJJ Academy. Todos os direitos reservados.</p>
+        <div className="text-center mt-6 mb-4">
+          <p className="text-xs text-muted-foreground">© {new Date().getFullYear()} BJJ Academy. Todos os direitos reservados.</p>
         </div>
       </div>
     </div>

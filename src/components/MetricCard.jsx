@@ -11,7 +11,7 @@ export function MetricCard({ title, value, meta, icon: Icon, faltando, totalObs 
             <div className="space-y-1">
               <p className="text-2xl font-bold text-foreground">{value}</p>
               {meta && (
-                <p className="text-xs text-muted-foreground">Meta: {meta}</p>
+                <p className="text-xs text-muted-foreground">Objetivo: {meta}</p>
               )}
             </div>
             {faltando && (
@@ -20,7 +20,7 @@ export function MetricCard({ title, value, meta, icon: Icon, faltando, totalObs 
                 faltando.type === 'down' ? 'text-red-400' : 
                 'text-muted-foreground'
               }`}>
-                Faltando {faltando.text}
+                Ainda Faltando: {faltando.text}
               </div>
             )}
 
