@@ -49,7 +49,10 @@ import {
   Trophy,
   Camera,
   X,
-  Upload
+  Upload,
+  Eye,
+  EyeOff,
+  Check
 } from "lucide-react";
 
 const UserProfile = () => {
@@ -67,7 +70,7 @@ const UserProfile = () => {
     instagram: '@instagram',
     tiktok: '@tiktok',
     youtube: '@youtube',
-    perfilPublico: true,
+    perfilPublico: 'Fechado',
     academia: 'Gracie Barra',
     cidade: 'São Paulo',
     estado: 'SP',
@@ -98,6 +101,12 @@ const UserProfile = () => {
   const [previewImage, setPreviewImage] = useState(null);
   const [isUploadingImage, setIsUploadingImage] = useState(false);
   const fileInputRef = useRef(null);
+
+  // Estados para o modal de visibilidade do perfil
+  const [isVisibilityModalOpen, setIsVisibilityModalOpen] = useState(false);
+  const [newVisibility, setNewVisibility] = useState(null);
+  const [isUpdatingVisibility, setIsUpdatingVisibility] = useState(false);
+  const [visibilitySuccess, setVisibilitySuccess] = useState(false);
 
   // MUDANDO DADOS DOS INPUTS
   const handleProfileChange = (e) => {
@@ -310,6 +319,79 @@ const UserProfile = () => {
       console.error('Erro ao enviar imagem:', error);
       alert('Não foi possível fazer o upload da imagem. Tente novamente.');
       setIsUploadingImage(false);
+    }
+    */
+  };
+
+  // Funções para gerenciar a visibilidade do perfil
+  const handleOpenVisibilityModal = (isAberto) => {
+    setNewVisibility(isAberto);
+    setIsVisibilityModalOpen(true);
+  };
+
+  const handleUpdateProfileVisibility = async () => {
+    if (newVisibility === null) return;
+    
+    setIsUpdatingVisibility(true);
+    
+    // Simulação de envio para a API
+    setTimeout(() => {
+      // Chamada à API simulada para atualizar apenas a visibilidade
+      const novaVisibilidade = newVisibility ? 'Aberto' : 'Fechado';
+      console.log("Atualizando visibilidade do perfil para:", novaVisibilidade);
+      
+      // Atualiza o estado com a nova visibilidade
+      setProfileData(prev => ({
+        ...prev,
+        perfilPublico: novaVisibilidade
+      }));
+      
+      setIsUpdatingVisibility(false);
+      setIsVisibilityModalOpen(false);
+      
+      // Exibe mensagem de sucesso
+      setVisibilitySuccess(true);
+      setTimeout(() => {
+        setVisibilitySuccess(false);
+      }, 4000);
+    }, 1500);
+
+    /* Exemplo de como seria a implementação real com API
+    try {
+      const response = await fetch('https://sua-api.com/atualizar-visibilidade', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer seu-token-aqui'
+        },
+        body: JSON.stringify({
+          userId: 'id-do-usuario',
+          isPublic: newVisibility ? 'Aberto' : 'Fechado'
+        })
+      });
+      
+      if (response.ok) {
+        // Atualiza o estado com a nova visibilidade
+        setProfileData(prev => ({
+          ...prev,
+          perfilPublico: newVisibility ? 'Aberto' : 'Fechado'
+        }));
+        
+        setIsUpdatingVisibility(false);
+        setIsVisibilityModalOpen(false);
+        
+        // Exibe mensagem de sucesso
+        setVisibilitySuccess(true);
+        setTimeout(() => {
+          setVisibilitySuccess(false);
+        }, 4000);
+      } else {
+        throw new Error('Falha ao atualizar visibilidade do perfil');
+      }
+    } catch (error) {
+      console.error('Erro ao atualizar visibilidade:', error);
+      alert('Não foi possível atualizar a visibilidade do perfil. Tente novamente.');
+      setIsUpdatingVisibility(false);
     }
     */
   };
@@ -854,6 +936,107 @@ const UserProfile = () => {
                         <Shield className="h-5 w-5 text-bjj-gold" />
                         Configurações do Aplicativo
                       </h3>
+
+                      <div className="space-y-3">                        
+                        <div className="flex flex-col gap-3">
+                          <div className="p-3 rounded-lg border border-border/50 bg-card/30 flex justify-between items-center">
+                            <div className="flex items-center gap-3">
+                              <div className={`w-10 h-10 rounded-full flex items-center justify-center ${profileData.perfilPublico === 'Aberto' ? "bg-green-500/20" : "bg-slate-500/20"}`}>
+                                {profileData.perfilPublico === 'Aberto' ? (
+                                  <Eye className="h-5 w-5 text-green-400" />
+                                ) : (
+                                  <EyeOff className="h-5 w-5 text-slate-400" />
+                                )}
+                              </div>
+                              <div>
+                                <p className="font-medium">{profileData.perfilPublico === 'Aberto' ? "Perfil Aberto" : "Perfil Fechado"}</p>
+                                <p className="text-xs text-muted-foreground">
+                                  {profileData.perfilPublico === 'Aberto' 
+                                    ? "Seu perfil é visível para todos os usuários." 
+                                    : "Apenas você pode ver seu perfil."}
+                                </p>
+                              </div>
+                            </div>
+                            <Button 
+                              variant="outline"
+                              size="sm"
+                              onClick={() => handleOpenVisibilityModal(profileData.perfilPublico === 'Fechado')}
+                              className="border-border/40 h-8"
+                            >
+                              {profileData.perfilPublico === 'Aberto' ? "Tornar Fechado" : "Tornar Aberto"}
+                            </Button>
+                          </div>
+                          
+                          {visibilitySuccess && (
+                            <div className="bg-green-900/20 border border-green-800 text-green-400 px-4 py-2 rounded-md text-sm flex items-center">
+                              <div className="w-2 h-2 rounded-full bg-green-400 mr-2"></div>
+                              Visibilidade do perfil atualizada com sucesso!
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                      
+                      {/* Modal para confirmar alteração de visibilidade */}
+                      <Dialog open={isVisibilityModalOpen} onOpenChange={setIsVisibilityModalOpen}>
+                        <DialogContent className="bg-card/95 backdrop-blur-sm border-border/50 sm:max-w-md">
+                          <DialogHeader>
+                            <DialogTitle className="text-xl font-semibold flex items-center gap-2">
+                              {newVisibility ? (
+                                <Eye className="h-5 w-5 text-bjj-gold" />
+                              ) : (
+                                <EyeOff className="h-5 w-5 text-bjj-gold" />
+                              )}
+                              Alterar Visibilidade do Perfil
+                            </DialogTitle>
+                            <DialogDescription>
+                              Você está prestes a tornar seu perfil {newVisibility ? "aberto" : "fechado"}.
+                            </DialogDescription>
+                          </DialogHeader>
+                          
+                          <div className="py-4">
+                            <div className="p-3 rounded-lg border border-border/50 bg-card/30">
+                              {newVisibility ? (
+                                <p className="text-sm">
+                                  Com um perfil <span className="font-bold text-green-400">aberto</span>, todos os usuários da plataforma poderão visualizar suas informações, incluindo academia, faixa, estatísticas e outros dados de perfil.
+                                </p>
+                              ) : (
+                                <p className="text-sm">
+                                  Com um perfil <span className="font-bold text-slate-400">fechado</span>, apenas você verá suas informações. Isso oferece maior privacidade para seus dados.
+                                </p>
+                              )}
+                            </div>
+                          </div>
+                          
+                          <DialogFooter className="sm:justify-between flex flex-col-reverse sm:flex-row gap-2">
+                            <Button
+                              type="button"
+                              variant="outline"
+                              onClick={() => setIsVisibilityModalOpen(false)}
+                              className="border-border/40"
+                            >
+                              Cancelar
+                            </Button>
+                            <Button
+                              type="button"
+                              onClick={handleUpdateProfileVisibility}
+                              disabled={isUpdatingVisibility}
+                              className={`${newVisibility ? "bg-green-600 hover:bg-green-700" : "bg-slate-600 hover:bg-slate-700"} text-white`}
+                            >
+                              {isUpdatingVisibility ? (
+                                <>
+                                  <span className="animate-pulse mr-2">●</span>
+                                  Atualizando...
+                                </>
+                              ) : (
+                                <>
+                                  <Check className="mr-2 h-4 w-4" />
+                                  Confirmar Alteração
+                                </>
+                              )}
+                            </Button>
+                          </DialogFooter>
+                        </DialogContent>
+                      </Dialog>
                       
                       <Card className="bg-card/50">
                         <CardHeader className="pb-2">
