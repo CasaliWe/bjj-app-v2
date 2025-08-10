@@ -10,7 +10,6 @@
 ### /components:
 - /ui = contém todos os components do shadcn UI;
 - AppSidebar.jsx = menu lateral com todos os links;
-- InstallPWAButton.jsx = botão para fazer a instalação do app na tela inicial;
 - MetricCard.jsx = métricas que aparecem na rota /app;
 - MobileNav.jsx = navegação que aparece fixa no bottom apenas no mobile;
 - PWAInstallPrompt.jsx = aviso de instalação pwa após tempo inicial de acesso do user;

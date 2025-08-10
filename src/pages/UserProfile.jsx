@@ -1,11 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { 
   Card, 
   CardContent, 
   CardHeader, 
   CardTitle, 
-  CardDescription 
+  CardDescription, 
+  CardFooter 
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -18,6 +19,15 @@ import {
   TabsList, 
   TabsTrigger 
 } from "@/components/ui/tabs";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+  DialogClose,
+} from "@/components/ui/dialog";
 import {
   Form,
   FormControl,
@@ -36,9 +46,11 @@ import {
   Mail,
   Phone,
   Briefcase,
-  Trophy
+  Trophy,
+  Camera,
+  X,
+  Upload
 } from "lucide-react";
-import { InstallPWAButton } from "@/components/InstallPWAButton";
 
 const UserProfile = () => {
   const navigate = useNavigate();
@@ -79,14 +91,51 @@ const UserProfile = () => {
   const [profileSuccess, setProfileSuccess] = useState(false);
   const [passwordSuccess, setPasswordSuccess] = useState(false);
   const [passwordError, setPasswordError] = useState("");
+  
+  // Estados para o upload de imagem
+  const [isImageModalOpen, setIsImageModalOpen] = useState(false);
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [previewImage, setPreviewImage] = useState(null);
+  const [isUploadingImage, setIsUploadingImage] = useState(false);
+  const fileInputRef = useRef(null);
 
   // MUDANDO DADOS DOS INPUTS
   const handleProfileChange = (e) => {
     const { name, value } = e.target;
-    setProfileData(prev => ({
-      ...prev,
-      [name]: value
-    }));
+    
+    // Aplicar máscara de telefone
+    if (name === 'telefone') {
+      const formattedValue = formatPhoneNumber(value);
+      setProfileData(prev => ({
+        ...prev,
+        [name]: formattedValue
+      }));
+    } else {
+      setProfileData(prev => ({
+        ...prev,
+        [name]: value
+      }));
+    }
+  };
+  
+  // Função para formatar número de telefone
+  const formatPhoneNumber = (value) => {
+    // Remove todos os caracteres não numéricos
+    const phoneNumber = value.replace(/\D/g, '');
+    
+    // Aplica a formatação conforme a quantidade de dígitos
+    if (phoneNumber.length <= 2) {
+      return phoneNumber.length ? `(${phoneNumber}` : '';
+    } else if (phoneNumber.length <= 3) {
+      return `(${phoneNumber.slice(0, 2)}) ${phoneNumber.slice(2)}`;
+    } else if (phoneNumber.length <= 7) {
+      return `(${phoneNumber.slice(0, 2)}) ${phoneNumber.slice(2, 3)} ${phoneNumber.slice(3)}`;
+    } else if (phoneNumber.length <= 11) {
+      return `(${phoneNumber.slice(0, 2)}) ${phoneNumber.slice(2, 3)} ${phoneNumber.slice(3, 7)}-${phoneNumber.slice(7)}`;
+    } else {
+      // Limita a 11 dígitos (com DDD e 9 dígito)
+      return `(${phoneNumber.slice(0, 2)}) ${phoneNumber.slice(2, 3)} ${phoneNumber.slice(3, 7)}-${phoneNumber.slice(7, 11)}`;
+    }
   };
   
   // MUDANDO ITEM DO SELECT
@@ -117,7 +166,7 @@ const UserProfile = () => {
   };
 
 
-  // ATUALIZANDO IMPUTS DA SENHA
+  // ATUALIZANDO INPUTS DA SENHA
   const handlePasswordChange = (e) => {
     const { name, value } = e.target;
     setPasswordData(prev => ({
@@ -168,7 +217,102 @@ const UserProfile = () => {
     }, 1500);
   };
 
+  // Funções para gerenciar o upload da imagem
+  const handleOpenImageModal = () => {
+    setIsImageModalOpen(true);
+  };
 
+  const handleCloseImageModal = () => {
+    setIsImageModalOpen(false);
+    setSelectedImage(null);
+    setPreviewImage(null);
+  };
+
+  const handleImageSelect = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    if (!file.type.includes('image/')) {
+      alert('Por favor, selecione apenas arquivos de imagem.');
+      return;
+    }
+
+    setSelectedImage(file);
+    
+    // Cria um preview da imagem
+    const reader = new FileReader();
+    reader.onload = () => {
+      setPreviewImage(reader.result);
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleImageUpload = async () => {
+    if (!selectedImage) {
+      alert('Por favor, selecione uma imagem para upload.');
+      return;
+    }
+
+    setIsUploadingImage(true);
+
+    // Simulação de envio para a API
+    setTimeout(() => {
+      // Atualiza o estado com a nova imagem
+      setProfileData(prev => ({
+        ...prev,
+        imagem: previewImage // Em um cenário real, seria a URL retornada pela API
+      }));
+      
+      setIsUploadingImage(false);
+      setIsImageModalOpen(false);
+      
+      // Exibe mensagem de sucesso
+      setProfileSuccess(true);
+      setTimeout(() => {
+        setProfileSuccess(false);
+      }, 4000);
+    }, 1500);
+
+    /* Exemplo de como seria a implementação real
+    try {
+      const formData = new FormData();
+      formData.append('profileImage', selectedImage);
+      
+      const response = await fetch('https://sua-api.com/upload-profile-image', {
+        method: 'POST',
+        body: formData,
+        headers: {
+          'Authorization': 'Bearer seu-token-aqui'
+        }
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        
+        // Atualiza o estado com a URL da imagem retornada pelo servidor
+        setProfileData(prev => ({
+          ...prev,
+          imagem: data.imageUrl
+        }));
+        
+        setIsUploadingImage(false);
+        setIsImageModalOpen(false);
+        
+        // Exibe mensagem de sucesso
+        setProfileSuccess(true);
+        setTimeout(() => {
+          setProfileSuccess(false);
+        }, 4000);
+      } else {
+        throw new Error('Falha ao fazer upload da imagem');
+      }
+    } catch (error) {
+      console.error('Erro ao enviar imagem:', error);
+      alert('Não foi possível fazer o upload da imagem. Tente novamente.');
+      setIsUploadingImage(false);
+    }
+    */
+  };
 
   // VOLTANDO PARA PÁG ANTERIOR
   const handleBack = () => {
@@ -228,12 +372,109 @@ const UserProfile = () => {
                 <TabsContent value="profile">
                   <form onSubmit={handleProfileSubmit} className="space-y-6">
                     <div className="flex flex-col md:flex-row items-center gap-6 mb-8">
-                      <div className="w-32 h-32 rounded-full bg-bjj-gold/10 flex items-center justify-center flex-shrink-0 relative group">
-                        <User className="w-16 h-16 text-bjj-gold" />
-                        <div className="absolute inset-0 bg-black/50 rounded-full opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity cursor-pointer">
-                          <p className="text-white text-xs font-medium">Alterar foto</p>
+                      <div className="w-32 h-32 rounded-full bg-bjj-gold/10 flex items-center justify-center flex-shrink-0 relative group overflow-hidden">
+                        {profileData.imagem ? (
+                          <img 
+                            src={profileData.imagem} 
+                            alt="Foto de perfil" 
+                            className="w-full h-full object-cover"
+                          />
+                        ) : (
+                          <User className="w-16 h-16 text-bjj-gold" />
+                        )}
+                        <div 
+                          className="absolute inset-0 bg-black/50 rounded-full opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity cursor-pointer"
+                          onClick={handleOpenImageModal}
+                        >
+                          <div className="flex flex-col items-center">
+                            <Camera className="w-5 h-5 text-white mb-1" />
+                            <p className="text-white text-xs font-medium">Alterar foto</p>
+                          </div>
                         </div>
                       </div>
+                      
+                      {/* Modal para upload de imagem */}
+                      <Dialog open={isImageModalOpen} onOpenChange={setIsImageModalOpen}>
+                        <DialogContent className="bg-card/95 backdrop-blur-sm border-border/50 sm:max-w-md">
+                          <DialogHeader>
+                            <DialogTitle className="text-xl font-semibold flex items-center gap-2">
+                              <Camera className="h-5 w-5 text-bjj-gold" />
+                              Alterar Foto de Perfil
+                            </DialogTitle>
+                            <DialogDescription>
+                              Selecione uma nova foto para seu perfil
+                            </DialogDescription>
+                          </DialogHeader>
+                          
+                          <div className="flex flex-col items-center space-y-4 py-4">
+                            <div className="w-40 h-40 rounded-full bg-bjj-gold/10 flex items-center justify-center relative overflow-hidden border-2 border-bjj-gold/20">
+                              {previewImage ? (
+                                <img 
+                                  src={previewImage} 
+                                  alt="Preview" 
+                                  className="w-full h-full object-cover"
+                                />
+                              ) : profileData.imagem ? (
+                                <img 
+                                  src={profileData.imagem} 
+                                  alt="Foto atual" 
+                                  className="w-full h-full object-cover"
+                                />
+                              ) : (
+                                <User className="w-20 h-20 text-bjj-gold" />
+                              )}
+                            </div>
+                            
+                            <div className="space-y-2 w-full">
+                              <Label htmlFor="image-upload" className="text-sm font-medium">
+                                Escolha uma imagem
+                              </Label>
+                              <Input
+                                id="image-upload"
+                                type="file"
+                                accept="image/*"
+                                ref={fileInputRef}
+                                onChange={handleImageSelect}
+                                className="bg-card/50 border-border/40"
+                              />
+                              {selectedImage && (
+                                <p className="text-xs text-muted-foreground">
+                                  {selectedImage.name} ({Math.round(selectedImage.size / 1024)} KB)
+                                </p>
+                              )}
+                            </div>
+                          </div>
+                          
+                          <DialogFooter className="sm:justify-between flex flex-col-reverse sm:flex-row gap-2">
+                            <Button
+                              type="button"
+                              variant="outline"
+                              onClick={handleCloseImageModal}
+                              className="border-border/40"
+                            >
+                              Cancelar
+                            </Button>
+                            <Button
+                              type="button"
+                              onClick={handleImageUpload}
+                              disabled={!selectedImage || isUploadingImage}
+                              className="bg-bjj-gold hover:bg-bjj-gold/90 text-primary-foreground"
+                            >
+                              {isUploadingImage ? (
+                                <>
+                                  <span className="animate-pulse mr-2">●</span>
+                                  Salvando...
+                                </>
+                              ) : (
+                                <>
+                                  <Upload className="mr-2 h-4 w-4" />
+                                  Salvar Imagem
+                                </>
+                              )}
+                            </Button>
+                          </DialogFooter>
+                        </DialogContent>
+                      </Dialog>
                       
                       {/* campos gerais user */}
                       <div className="w-full space-y-2">                        
@@ -273,6 +514,8 @@ const UserProfile = () => {
                                 name="telefone"
                                 value={profileData.telefone}
                                 onChange={handleProfileChange}
+                                placeholder="(54) 9 9999-9999"
+                                maxLength={17}
                                 className="bg-card/50 border-border/40"
                               />
                             </div>
@@ -616,45 +859,17 @@ const UserProfile = () => {
                         <CardHeader className="pb-2">
                           <CardTitle className="text-base">Instalar Aplicativo</CardTitle>
                           <CardDescription>
-                            Instale o BJJ Academy na tela inicial do seu dispositivo para acesso offline e melhor experiência.
+                            Instale o BJJ Academy na tela inicial do seu dispositivo para acesso rápido e melhor experiência.
                           </CardDescription>
                         </CardHeader>
                         <CardContent>
-                          {/* Importamos o componente aqui */}
-                          <InstallPWAButton />
-                        </CardContent>
-                      </Card>
-                      
-                      <Card className="bg-card/50">
-                        <CardHeader className="pb-2">
-                          <CardTitle className="text-base">Notificações</CardTitle>
-                          <CardDescription>
-                            Configure como deseja receber notificações do aplicativo.
-                          </CardDescription>
-                        </CardHeader>
-                        <CardContent className="space-y-2">
-                          <div className="flex items-center justify-between">
-                            <Label htmlFor="notify-treinos" className="cursor-pointer flex items-center gap-2">
-                              Lembretes de Treino
-                            </Label>
-                            <input
-                              type="checkbox"
-                              id="notify-treinos"
-                              className="toggle toggle-primary"
-                              defaultChecked
-                            />
-                          </div>
-                          <div className="flex items-center justify-between">
-                            <Label htmlFor="notify-competicoes" className="cursor-pointer flex items-center gap-2">
-                              Alertas de Competições
-                            </Label>
-                            <input
-                              type="checkbox"
-                              id="notify-competicoes"
-                              className="toggle toggle-primary"
-                              defaultChecked
-                            />
-                          </div>
+                          {/* explicação de como fazer */}
+                          <ol className="list-decimal pl-5 space-y-2">
+                            <li className="text-sm">Acesse o site do BJJ Academy no seu navegador.</li>
+                            <li className="text-sm">Toque no ícone de compartilhamento (geralmente um quadrado com uma seta para cima).</li>
+                            <li className="text-sm">Selecione "Adicionar à Tela Inicial" ou "Instalar Aplicativo".</li>
+                            <li className="text-sm">Siga as instruções na tela para concluir a instalação.</li>
+                          </ol>
                         </CardContent>
                       </Card>
                     </div>

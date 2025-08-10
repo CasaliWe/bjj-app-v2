@@ -3,11 +3,12 @@
 ** Geral **
 - Logout;
 - colocar git demonstração no inicio;
-- colocar instalar nas config;
 - mudar a spash;
-- ios não aparece a msg baixar;
 - organizar rotas publicas | privadas;
 
 
 ** Início /app **
-- Puxar dados para preencher as const;
+- Puxar dados para preencher as consts -> user, metrics, recentActivities, treinosDados;
+
+** Perfil /perfil **
+- preencher dados user na const, fazer as chamadas da api para atualizar os dados;
