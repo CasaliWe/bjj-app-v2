@@ -1,6 +1,6 @@
 // Arquivo para administrar as preferências do PWA
 const PWA_STORAGE_KEY = 'bjj-academy-pwa-status';
-const PROMPT_DELAY_MS = 20000; // 20 segundos
+const PROMPT_DELAY_MS = 15000;
 
 export const getPwaStatus = () => {
   try {

@@ -2,12 +2,10 @@
 
 ** Geral **
 - Logout;
-- colocar gif demonstração no inicio;
 - organizar rotas publicas | privadas;
-
-** Início /app **
-- Puxar dados para preencher as consts -> user, metrics, recentActivities, treinosDados;
-
-** Perfil /perfil **
-- preencher dados user na const, fazer as chamadas da api para atualizar os dados;
-- fazer ativação de conta plus;
+- splash pwa vite config;
+- melhorar o seo e o thumb na index.html;
+- fazer contexto global para os dados do user;
+- recortar tamanho de icon certo;
+- trocar nome do titulo da pág;
+- fazer o plus code na config e mostrar na logo que está plus;

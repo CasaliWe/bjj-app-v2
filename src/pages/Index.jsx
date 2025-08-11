@@ -1,13 +1,17 @@
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
 import { MobileNav } from "@/components/MobileNav";
-import { MetricCard } from "@/components/MetricCard";
-import { QuickActions } from "@/components/QuickActions";
-import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Calendar, Book, Award, TrendingUp, Clock, Target, Repeat, Dumbbell, User, LogOut, Medal, Trophy, BookOpen, Shield, Shirt, CircleOff, Users, MapPin, Star, Plus, Pencil } from "lucide-react";
+import { Calendar, Book, Award, TrendingUp, Target, User, LogOut } from "lucide-react";
 import {sair} from "@/services/auth/logout";
+
+// components
+import { MetricCard } from "@/components/inicio/MetricCard";
+import { QuickActions } from "@/components/inicio/QuickActions";
+import { MeusDados } from "@/components/inicio/MeusDados";
+import { AtividadesRecentes } from "@/components/inicio/AtividadesRecentes";
+
+
 
 const Index = () => {
   const navigate = useNavigate();
@@ -22,7 +26,7 @@ const Index = () => {
     idade: 28,
     peso: 75,
     faixa: 'Azul',
-    imagem: '/user.jpeg',
+    imagem: '',
     telefone: '(11) 98765-4321',
     instagram: '@instagram',
     tiktok: '@tiktok',
@@ -36,6 +40,40 @@ const Index = () => {
     competidor: 'Sim',
     finalizacao: 'Triângulo',
     bio: 'Praticante de Jiu-Jitsu há 3 anos, focado em competições e desenvolvimento técnico. Especialista em guarda e jogo de lapela. Buscando evoluir em raspagens e finalizações.',
+    plano: 'Plus'
+  }
+
+  const treinosDados = {
+    gi: {
+      total: 128,
+      esteMes: 8,
+      ultimaVez: "12 de Agosto"
+    },
+    noGi: {
+      total: 59,
+      esteMes: 4,
+      ultimaVez: "09 de Agosto"
+    },
+    competicoesGi: {
+      eventos: 5,
+      lutas: 1,
+      vitorias: 2,
+      derrotas: 2,
+      finalizacoes: 1,
+      primeiroLugar: 2,
+      segundoLugar: 1,
+      terceiroLugar: 5
+    },
+    competicoesNoGi: {
+      eventos: 5,
+      lutas: 1,
+      vitorias: 2,
+      derrotas: 2,
+      finalizacoes: 1,
+      primeiroLugar: 2,
+      segundoLugar: 1,
+      terceiroLugar: 5
+    }
   }
 
   const metrics = {
@@ -82,43 +120,12 @@ const Index = () => {
     }
   ];
 
-  const treinosDados = {
-    gi: {
-      total: 128,
-      esteMes: 8,
-      ultimaVez: "12 de Agosto"
-    },
-    noGi: {
-      total: 59,
-      esteMes: 4,
-      ultimaVez: "09 de Agosto"
-    },
-    competicoesGi: {
-      eventos: 5,
-      lutas: 1,
-      vitorias: 2,
-      derrotas: 2,
-      finalizacoes: 1,
-      primeiroLugar: 2,
-      segundoLugar: 1,
-      terceiroLugar: 5
-    },
-    competicoesNoGi: {
-      eventos: 5,
-      lutas: 1,
-      vitorias: 2,
-      derrotas: 2,
-      finalizacoes: 1,
-      primeiroLugar: 2,
-      segundoLugar: 1,
-      terceiroLugar: 5
-    }
-  }
 
   return (
     <SidebarProvider>
       <div className="min-h-screen flex w-full bg-background">
         <AppSidebar />
+
         <main className="flex-1 flex flex-col pb-16 md:pb-0">         
           {/* Header */}
           <header className="bg-card border-b border-border p-4 md:p-6">
@@ -151,9 +158,11 @@ const Index = () => {
               </div>
             </div>
           </header>
+          {/* Header */}
 
           {/* Content */}
           <div className="flex-1 p-4 md:p-6 space-y-6 animate-fade-in">
+
             {/* Métricas principais */}
             <section>
               <h2 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
@@ -167,288 +176,34 @@ const Index = () => {
                 <MetricCard title="Observações Gerais" value={metrics.observacoesMes} icon={Target}  totalObs={metrics.observacoesTotal} />
               </div>            
             </section>
+            {/* Métricas principais */}
 
-            {/* Meus Dados Gerais (atualizado conforme solicitação) */}
+            {/* Meus Dados Gerais */}
             <section className="mb-6">
-              <Card className="bg-card border-border">                
-                <CardHeader>
-                  <div className="flex justify-between items-center">
-                    <CardTitle className="text-lg font-semibold text-foreground flex items-center gap-2">
-                      <User className="w-5 h-5 text-bjj-gold" />
-                      Meus Dados Gerais
-                    </CardTitle>
-                    <Button 
-                      variant="outline" 
-                      size="sm"
-                      className="h-8 text-xs border-bjj-gold/30 text-bjj-gold hover:bg-bjj-gold/10"
-                      onClick={() => navigate('/perfil')}
-                    >
-                      <Pencil className="h-3 w-3 mr-1" /> Editar
-                    </Button>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    {/* Coluna 1: Dados Pessoais e Foto */}
-                    <div className="md:col-span-1">
-                      <div className="flex flex-col items-center text-center mb-4">                        
-                        <div className="w-32 h-32 rounded-full bg-bjj-gold/10 flex items-center justify-center mb-4 overflow-hidden">
-                          {/* <User className="w-16 h-16 text-bjj-gold" /> */}
-                          <img src={user.imagem} alt="User" className="w-full h-full object-cover" />
-                        </div>
-                        <h3 className="font-semibold text-lg mb-0">{user.nome}</h3>
-                        <p className="mb-1 text-sm">{user.idade} Anos</p>
-                        <p className="text-sm text-bjj-gold">Faixa {user.faixa}</p>
-                        {/* verificando se veio instagram. tik tok, youtube, cada um delees, se veio mostra o icone que é uma importação placeholder via url da platagorma sem usar lucide e com link que leva apra ela... */}
-                        <div className="flex space-x-2 mt-2">
-                          {user.instagram && (
-                            <a href={`${user.instagram}`} target="_blank" rel="noopener noreferrer">
-                              <img src="/instagram.png" alt="Instagram" className="w-5 h-5 text-bjj-gold" />
-                            </a>
-                          )}
-                          {user.tiktok && (
-                            <a href={`${user.tiktok}`} target="_blank" rel="noopener noreferrer">
-                              <img src="/tiktok.png" alt="TikTok" className="w-5 h-5 text-bjj-gold" />
-                            </a>
-                          )}
-                          {user.youtube && (
-                            <a href={`${user.youtube}`} target="_blank" rel="noopener noreferrer">
-                              <img src="/youtube.png" alt="YouTube" className="w-5 h-5 text-bjj-gold" />
-                            </a>
-                          )}
-                        </div>
-                      </div>
-                      
-                      <div className="space-y-2 mt-4 text-sm">
-                        <div className="grid grid-cols-3 gap-2 items-center">
-                          <span className="text-muted-foreground">Email:</span>
-                          <span className="col-span-2">{user.email}</span>
-                        </div>
-                        <div className="grid grid-cols-3 gap-2 items-center">
-                          <span className="text-muted-foreground">Telefone:</span>
-                          <span className="col-span-2">{user.telefone}</span>
-                        </div>
-                        <div className="grid grid-cols-3 gap-2 items-center">
-                          <span className="text-muted-foreground">Peso:</span>
-                          <span className="col-span-2">{user.peso} kg</span>
-                        </div>
-                        <div className="grid grid-cols-3 gap-2 items-center">
-                          <span className="text-muted-foreground">Academia:</span>
-                          <span className="col-span-2">{user.academia}</span>
-                        </div>
-                        <div className="grid grid-cols-3 gap-2 items-center">
-                          <span className="text-muted-foreground">Localização:</span>
-                          <span className="col-span-2">{user.cidade} - {user.estado} - {user.pais}</span>
-                        </div>
-                        <div className="grid grid-cols-3 gap-2 items-center">
-                          <span className="text-muted-foreground">Estilo:</span>
-                          <span className="col-span-2">
-                            <span className="inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium bg-bjj-gold/10 text-bjj-gold">
-                              <Shield className="w-3 h-3 mr-1" />
-                              {user.estilo === 'Guardeiro' ? 'Guardeiro' : user.estilo === 'Passador' ? 'Passador' : 'Equilibrado'}
-                            </span>
-                          </span>
-                        </div>
-                        <div className="grid grid-cols-3 gap-2 items-center">
-                          <span className="text-muted-foreground">Competidor:</span>
-                          <span className="col-span-2">
-                            <span className="inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium bg-bjj-gold/10 text-bjj-gold">
-                              <Trophy className="w-3 h-3 mr-1" /> 
-                              {user.competidor === 'Sim' ? 'Ativo' : user.competidor === 'Não' ? 'Inativo' : 'Eventualmente'}
-                            </span>
-                          </span>
-                        </div>
-                        <div className="grid grid-cols-3 gap-2 items-center">
-                          <span className="text-muted-foreground">Finalização:</span>
-                          <span className="col-span-2">{user.finalizacao}</span>
-                        </div>
-                      </div>
-                      
-                      <div className="mt-4 pt-3 border-t border-border/50">
-                        <h4 className="text-sm font-medium mb-2">Bio:</h4>
-                        <p className="text-xs text-muted-foreground">
-                          {user.bio}
-                        </p>
-                      </div>
-                    </div>
-                    
-                    {/* Coluna 2: Histórico de Treinos */}
-                    <div className="md:col-span-1">
-                      <h3 className="font-medium text-base mb-4">Histórico de Treinos</h3>
-                      
-                      <div className="space-y-4">
-                        <div className="bg-card/50 border border-border/50 rounded-lg p-4">                          <h4 className="text-sm font-medium flex items-center gap-2 mb-3">
-                            <Shirt className="w-4 h-4 text-bjj-gold" /> Com Kimono (Gi)
-                          </h4>
-                          
-                          <div className="space-y-2">
-                            <div className="grid grid-cols-2 gap-2 text-sm">
-                              <span className="text-muted-foreground">Total Treinos:</span>
-                              <span className="font-medium">{treinosDados.gi.total}</span>
-                            </div>
-                            <div className="grid grid-cols-2 gap-2 text-sm">
-                              <span className="text-muted-foreground">Este Mês:</span>
-                              <span className="font-medium">{treinosDados.gi.esteMes}</span>
-                            </div>
-                            <div className="grid grid-cols-2 gap-2 text-sm">
-                              <span className="text-muted-foreground">Última Vez:</span>
-                              <span className="font-medium">{treinosDados.gi.ultimaVez}</span>
-                            </div>
-                          </div>
-                        </div>
-                        
-                        <div className="bg-card/50 border border-border/50 rounded-lg p-4">                          <h4 className="text-sm font-medium flex items-center gap-2 mb-3">
-                            <CircleOff className="w-4 h-4 text-bjj-gold" /> Sem Kimono (No-Gi)
-                          </h4>
-                          
-                          <div className="space-y-2">
-                            <div className="grid grid-cols-2 gap-2 text-sm">
-                              <span className="text-muted-foreground">Total Treinos:</span>
-                              <span className="font-medium">{treinosDados.noGi.total}</span>
-                            </div>
-                            <div className="grid grid-cols-2 gap-2 text-sm">
-                              <span className="text-muted-foreground">Este Mês:</span>
-                              <span className="font-medium">{treinosDados.noGi.esteMes}</span>
-                            </div>
-                            <div className="grid grid-cols-2 gap-2 text-sm">
-                              <span className="text-muted-foreground">Última Vez:</span>
-                              <span className="font-medium">{treinosDados.noGi.ultimaVez}</span>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    
-                    {/* Coluna 3: Histórico de Competições */}
-                    <div className="md:col-span-1">
-                      <h3 className="font-medium text-base mb-4">Histórico de Competições</h3>
-                      
-                      <div className="space-y-4">
-                        <div className="bg-card/50 border border-border/50 rounded-lg p-4">                          <h4 className="text-sm font-medium flex items-center gap-2 mb-3">
-                            <Shirt className="w-4 h-4 text-bjj-gold" /> Gi (Kimono)
-                          </h4>
-                          
-                          <div className="grid grid-cols-2 gap-3 text-sm mb-3">
-                            <div>
-                              <p className="text-muted-foreground text-xs mb-1">Eventos</p>
-                              <p className="font-medium">{treinosDados.competicoesGi.eventos}</p>
-                            </div>
-                            <div>
-                              <p className="text-muted-foreground text-xs mb-1">Lutas</p>
-                              <p className="font-medium">{treinosDados.competicoesGi.lutas}</p>
-                            </div>
-                            <div>
-                              <p className="text-muted-foreground text-xs mb-1">Vitórias</p>
-                              <p className="font-medium text-green-400">{treinosDados.competicoesGi.vitorias}</p>
-                            </div>
-                            <div>
-                              <p className="text-muted-foreground text-xs mb-1">Derrotas</p>
-                              <p className="font-medium text-red-400">{treinosDados.competicoesGi.derrotas}</p>
-                            </div>
-                            <div>
-                              <p className="text-muted-foreground text-xs mb-1">Finalizações</p>
-                              <p className="font-medium">{treinosDados.competicoesGi.finalizacoes}</p>
-                            </div>
-                          </div>
-                          
-                          <div className="flex items-center justify-between border-t border-border/30 pt-3">
-                            <div className="flex items-center gap-1">
-                              <div className="w-5 h-5 rounded-full bg-yellow-500"></div>
-                              <span className="text-xs">{treinosDados.competicoesGi.primeiroLugar}</span>
-                            </div>
-                            <div className="flex items-center gap-1">
-                              <div className="w-5 h-5 rounded-full bg-gray-300"></div>
-                              <span className="text-xs">{treinosDados.competicoesGi.segundoLugar}</span>
-                            </div>
-                            <div className="flex items-center gap-1">
-                              <div className="w-5 h-5 rounded-full bg-amber-700"></div>
-                              <span className="text-xs">{treinosDados.competicoesGi.terceiroLugar}</span>
-                            </div>
-                          </div>
-                        </div>
-                        
-                        <div className="bg-card/50 border border-border/50 rounded-lg p-4">                          <h4 className="text-sm font-medium flex items-center gap-2 mb-3">
-                            <CircleOff className="w-4 h-4 text-bjj-gold" /> No-Gi (Sem Kimono)
-                          </h4>
-                          
-                          <div className="grid grid-cols-2 gap-3 text-sm mb-3">
-                            <div>
-                              <p className="text-muted-foreground text-xs mb-1">Eventos</p>
-                              <p className="font-medium">{treinosDados.competicoesNoGi.eventos}</p>
-                            </div>
-                            <div>
-                              <p className="text-muted-foreground text-xs mb-1">Lutas</p>
-                              <p className="font-medium">{treinosDados.competicoesNoGi.lutas}</p>
-                            </div>
-                            <div>
-                              <p className="text-muted-foreground text-xs mb-1">Vitórias</p>
-                              <p className="font-medium text-green-400">{treinosDados.competicoesNoGi.vitorias}</p>
-                            </div>
-                            <div>
-                              <p className="text-muted-foreground text-xs mb-1">Derrotas</p>
-                              <p className="font-medium text-red-400">{treinosDados.competicoesNoGi.derrotas}</p>
-                            </div>
-                            <div>
-                              <p className="text-muted-foreground text-xs mb-1">Finalizações</p>
-                              <p className="font-medium">{treinosDados.competicoesNoGi.finalizacoes}</p>
-                            </div>
-                          </div>
-                          
-                          <div className="flex items-center justify-between border-t border-border/30 pt-3">
-                            <div className="flex items-center gap-1">
-                              <div className="w-5 h-5 rounded-full bg-yellow-500"></div>
-                              <span className="text-xs">{treinosDados.competicoesNoGi.primeiroLugar}</span>
-                            </div>
-                            <div className="flex items-center gap-1">
-                              <div className="w-5 h-5 rounded-full bg-gray-300"></div>
-                              <span className="text-xs">{treinosDados.competicoesNoGi.segundoLugar}</span>
-                            </div>
-                            <div className="flex items-center gap-1">
-                              <div className="w-5 h-5 rounded-full bg-amber-700"></div>
-                              <span className="text-xs">{treinosDados.competicoesNoGi.terceiroLugar}</span>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
+              <MeusDados user={user} treinosDados={treinosDados} />
             </section>
+            {/* Meus Dados Gerais */}
 
+            {/* Ações rápidas e Recentes */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
               {/* Ações rápidas */}
               <div className="lg:col-span-1">
                 <QuickActions />
               </div>
+              {/* Ações rápidas */}
 
               {/* Atividades recentes */}
               <div className="lg:col-span-2">
-                <Card className="bg-card border-border">
-                  <CardHeader>
-                    <CardTitle className="text-lg font-semibold text-foreground flex items-center gap-2">
-                      <Clock className="w-5 h-5 text-bjj-gold" />
-                      Atividades Recentes
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    {recentActivities.map((activity, index) => (
-                      <div key={index} className="flex items-start gap-3 p-3 rounded-lg hover:bg-muted/50 transition-colors duration-200">
-                        <div className="p-2 bg-bjj-gold/10 rounded-lg">
-                          <Target className="w-4 h-4 text-bjj-gold" />
-                        </div>
-                        <div className="flex-1 space-y-1">
-                          <h4 className="font-medium text-foreground text-sm">{activity.title}</h4>
-                          <p className="text-muted-foreground text-xs">{activity.description}</p>
-                          <p className="text-bjj-gold text-xs font-medium">{activity.time}</p>
-                        </div>
-                      </div>
-                    ))}
-                  </CardContent>
-                </Card>
+                <AtividadesRecentes recentActivities={recentActivities} />
               </div>
+              {/* Atividades recentes */}
+
             </div>
+            {/* Ações rápidas e Recentes */}
+
           </div>
+          {/* Content */}
         </main>
         
         <MobileNav />
