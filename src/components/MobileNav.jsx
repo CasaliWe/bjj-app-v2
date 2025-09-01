@@ -1,6 +1,5 @@
 
-import { Home, Book, Calendar, Award, FileText } from "lucide-react";
-import { useState } from "react";
+import { Home, Book, Calendar, Award } from "lucide-react";
 
 const menuItems = [
   { title: "Início", url: "/app", icon: Home },
