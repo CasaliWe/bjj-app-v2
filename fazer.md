@@ -8,3 +8,6 @@
 - fazer o plus code na config e mostrar na logo que está plus;
 - fazer personalização de número da meta do mês;
 - fazer pagamento no aba config (pensar no modo);
+
+- fazer login com google também;
+- colocar recap e limite de criação de conta para controlar em caso de gargalo;
