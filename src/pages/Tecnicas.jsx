@@ -53,6 +53,9 @@ import {
   Heart,
 } from "lucide-react";
 
+// upgrade
+import UpgradeModal from "@/components/upgrade/UpgradeModal";
+
 // Dados fictícios simulando os dados que virão da API
 const MOCK_TECNICAS = [
   {
@@ -971,6 +974,10 @@ const Tecnicas = () => {  const [tecnicas, setTecnicas] = useState(MOCK_TECNICAS
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* Modal de upgrade para o plano Plus */}
+        <UpgradeModal />
+      {/* Modal de upgrade para o plano Plus */}
     </SidebarProvider>
   );
 };

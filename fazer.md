@@ -3,7 +3,6 @@
 ** Geral **
 - Logout;
 - organizar rotas publicas | privadas;
-- fazer o plus code na config;
 - fazer pagamento no aba config (pensar no modo);
 
 - fazer login com google também;

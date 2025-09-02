@@ -25,16 +25,16 @@ const Index = () => {
   const navigate = useNavigate();
 
   // Estados para armazenar dados
+  const { user } = useUser();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [metrics, setMetrics] = useState(null);
-  const { user } = useUser();
   const [treinosDados, setTreinosDados] = useState(null);
   const [recentActivities, setRecentActivities] = useState([]);
-
-  // Função para abrir o modal
+  
+  // Função para abrir o modal de objetivos
   const abrirModal = () => setIsModalOpen(true);
   
-  // Função para fechar o modal
+  // Função para fechar o modal de objetivos
   const fecharModal = () => setIsModalOpen(false);
   
   // Função para atualizar progresso (objetivos) *********************************
@@ -63,7 +63,7 @@ const Index = () => {
     sair();
   };
 
-  // Carregar dados iniciais
+  // Carregar dados iniciais *********************************
   useEffect(() => {
     
     // Dados de treinos
@@ -289,6 +289,7 @@ const Index = () => {
             onUpdateMetrics={atualizarMetricas}
           />
         )}
+        {/* Modal para atualizar objetivos */}
 
       </div>
     </SidebarProvider>
