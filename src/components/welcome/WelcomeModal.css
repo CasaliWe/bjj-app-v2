@@ -1,0 +1,16 @@
+/* WelcomeModal.css */
+
+/* Oculta o botão de fechar do dialog */
+.welcome-modal-dialog [aria-label="Close"] {
+  display: none !important;
+}
+
+/* Desativa eventos de clique na sobreposição (overlay) */
+.welcome-modal-overlay {
+  pointer-events: none !important;
+}
+
+/* Reativa eventos de clique no conteúdo do modal */
+.welcome-modal-content {
+  pointer-events: all !important;
+}

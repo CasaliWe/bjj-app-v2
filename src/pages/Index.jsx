@@ -19,6 +19,9 @@ import { MeusDados } from "@/components/inicio/MeusDados";
 import { AtividadesRecentes } from "@/components/inicio/AtividadesRecentes";
 import ObjetivosModal from "@/components/inicio/ObjetivosModal";
 
+// welcome component
+import WelcomeModal from "@/components/welcome/WelcomeModal";
+
 
 
 const Index = () => {
@@ -290,6 +293,10 @@ const Index = () => {
           />
         )}
         {/* Modal para atualizar objetivos */}
+
+        {/* Modal de boas-vindas para novos usuários */}
+        <WelcomeModal />
+        {/* Modal de boas-vindas para novos usuários */}
 
       </div>
     </SidebarProvider>

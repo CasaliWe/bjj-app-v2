@@ -7,3 +7,4 @@
         {/* Modal de upgrade para o plano Plus */}
             <UpgradeModal />
         {/* Modal de upgrade para o plano Plus */}
+- vai apenas nas páginas importantes;
