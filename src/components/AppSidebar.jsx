@@ -15,8 +15,11 @@ import {
   SidebarHeader,
 } from "@/components/ui/sidebar";
 
-
+// logout 
 import {sair} from "@/services/auth/logout";
+
+// context user
+import { useUser } from "@/contexts/UserContext";
 
 
 
@@ -105,6 +108,11 @@ const menuItems = [  {
 ];
 
 export function AppSidebar() {
+  // Acessando o contexto do usuário
+  const { user } = useUser();
+  
+  // Verificar se o usuário tem plano Plus
+  const isPlus = user?.plano === 'Plus';
 
   const logout = () => {
     sair();
@@ -119,7 +127,15 @@ export function AppSidebar() {
             <span className="text-bjj-dark font-bold text-sm">BJJ</span>
           </div>
           <div>
-            <h2 className="text-sidebar-foreground font-semibold text-lg">Academy</h2>
+            <h2 className="text-sidebar-foreground font-semibold text-lg flex items-center gap-1.5">
+              Academy
+              {isPlus && (
+                <span className="px-1.5 py-0.5 text-xs font-bold rounded-sm bg-gradient-to-r from-amber-500 to-yellow-600 text-black relative overflow-hidden animate-pulse-subtle border border-amber-600/30">
+                  PLUS
+                  <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-yellow-100/30 to-transparent animate-shimmer"></span>
+                </span>
+              )}
+            </h2>
             <p className="text-sidebar-foreground/60 text-xs">Plataforma de Jiu-Jitsu</p>
           </div>
         </div>

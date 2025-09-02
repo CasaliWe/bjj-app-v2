@@ -30,6 +30,9 @@ const UserProfile = () => {
   
   // Usando o contexto do usuário
   const { user, setUser } = useUser();
+
+  // Verificar se o usuário tem plano Plus
+  const isPlus = user?.plano === 'Plus';
   
   // Estado local para edição - inicializado com um objeto vazio caso user seja null
   const [profileData, setProfileData] = useState({});
@@ -62,7 +65,15 @@ const UserProfile = () => {
               <span className="text-bjj-dark font-bold text-lg">BJJ</span>
             </div>
             <div>
-              <h1 className="text-2xl mb-2 font-bold text-foreground">Academy</h1>
+              <h1 className="text-2xl mb-2 font-bold text-foreground">
+                <span className="mr-1">Academy</span>
+                {isPlus && (
+                  <span className="px-1.5 py-0.5 text-xs font-bold rounded-sm bg-gradient-to-r from-amber-500 to-yellow-600 text-black relative overflow-hidden animate-pulse-subtle border border-amber-600/30">
+                    PLUS
+                    <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-yellow-100/30 to-transparent"></span>
+                  </span>
+                )}
+              </h1>
               <p className="text-muted-foreground text-xs">Perfil do Usuário</p>
             </div>
           </div>

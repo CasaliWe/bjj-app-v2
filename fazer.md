@@ -3,8 +3,7 @@
 ** Geral **
 - Logout;
 - organizar rotas publicas | privadas;
-- trocar nome do titulo da pág;
-- fazer o plus code na config e mostrar na logo que está plus;
+- fazer o plus code na config;
 - fazer pagamento no aba config (pensar no modo);
 
 - fazer login com google também;
