@@ -33,7 +33,7 @@ export const UserProvider = ({ children }) => {
       competidor: 'Sim',
       finalizacao: 'Triângulo',
       bio: 'Praticante de Jiu-Jitsu há 3 anos, focado em competições e desenvolvimento técnico. Especialista em guarda e jogo de lapela. Buscando evoluir em raspagens e finalizações.',
-      plano: 'Grátis'
+      plano: 'Plus'
     });
 
     // AQUI: Faça a chamada para a API para receber os dados do usuário
