@@ -6,6 +6,9 @@ import { Calendar, Book, Award, TrendingUp, Target, User, LogOut } from "lucide-
 import {sair} from "@/services/auth/logout";
 import { useState, useEffect } from "react";
 
+// contexts
+import { useUser } from "@/contexts/UserContext";
+
 // UI components
 import { Button } from "@/components/ui/button";
 
@@ -24,7 +27,7 @@ const Index = () => {
   // Estados para armazenar dados
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [metrics, setMetrics] = useState(null);
-  const [user, setUser] = useState(null);
+  const { user } = useUser();
   const [treinosDados, setTreinosDados] = useState(null);
   const [recentActivities, setRecentActivities] = useState([]);
 
@@ -34,7 +37,7 @@ const Index = () => {
   // Função para fechar o modal
   const fecharModal = () => setIsModalOpen(false);
   
-  // Função para atualizar as métricas
+  // Função para atualizar progresso (objetivos) *********************************
   const atualizarMetricas = (novasMetricas) => {
     setMetrics(novasMetricas);
 
@@ -62,29 +65,6 @@ const Index = () => {
 
   // Carregar dados iniciais
   useEffect(() => {
-    // Dados do usuário
-    setUser({
-      nome: 'Weslei Casali',
-      email: 'weslei.casali@example.com',
-      idade: 28,
-      peso: 75,
-      faixa: 'Azul',
-      imagem: 'user.jpeg',
-      telefone: '(11) 98765-4321',
-      instagram: '@instagram',
-      tiktok: '@tiktok',
-      youtube: '@youtube',
-      perfilPublico: 'Fechado',
-      academia: 'Gracie Barra',
-      cidade: 'São Paulo',
-      estado: 'SP',
-      pais: 'Brasil',
-      estilo: 'Guardeiro',
-      competidor: 'Sim',
-      finalizacao: 'Triângulo',
-      bio: 'Praticante de Jiu-Jitsu há 3 anos, focado em competições e desenvolvimento técnico. Especialista em guarda e jogo de lapela. Buscando evoluir em raspagens e finalizações.',
-      plano: 'Plus'
-    });
     
     // Dados de treinos
     setTreinosDados({
@@ -168,10 +148,7 @@ const Index = () => {
     
     // Buscando dados da API (exemplo para implementação futura)
     // const fetchData = async () => {
-    //   try {
-    //     const userResponse = await api.get('/user');
-    //     setUser(userResponse.data);
-    //     
+    //   try {     
     //     const treinosResponse = await api.get('/treinos');
     //     setTreinosDados(treinosResponse.data);
     //     

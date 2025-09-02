@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { 
   Card, 
   CardContent, 
@@ -17,6 +17,9 @@ import {
   User
 } from "lucide-react";
 
+// contexts
+import { useUser } from "@/contexts/UserContext";
+
 // components
 import { Informacoes } from "@/components/perfil/Informacoes";
 import { AlterarSenha } from "@/components/perfil/AlterarSenha";
@@ -25,29 +28,18 @@ import { Configuracoes } from "@/components/perfil/Configuracoes";
 
 const UserProfile = () => {
   
-  // DADOS PERFIL
-  const [profileData, setProfileData] = useState({
-    nome: 'Weslei Casali',
-    email: 'weslei.casali@example.com',
-    idade: 28,
-    peso: 75,
-    faixa: 'Azul',
-    imagem: 'user.jpeg',
-    telefone: '(11) 98765-4321',
-    instagram: '@instagram',
-    tiktok: '@tiktok',
-    youtube: '@youtube',
-    perfilPublico: 'Fechado',
-    academia: 'Gracie Barra',
-    cidade: 'São Paulo',
-    estado: 'SP',
-    pais: 'Brasil',
-    estilo: 'Guardeiro',
-    competidor: 'Sim',
-    finalizacao: 'Triângulo',
-    bio: 'Praticante de Jiu-Jitsu há 3 anos, focado em competições e desenvolvimento técnico. Especialista em guarda e jogo de lapela. Buscando evoluir em raspagens e finalizações.',
-    plano: 'Plus'
-  });
+  // Usando o contexto do usuário
+  const { user, setUser } = useUser();
+  
+  // Estado local para edição - inicializado com um objeto vazio caso user seja null
+  const [profileData, setProfileData] = useState({});
+  
+  // Atualiza o profileData quando o usuário é carregado do contexto
+  useEffect(() => {
+    if (user) {
+      setProfileData({ ...user });
+    }
+  }, [user]);
   
   // VOLTANDO PARA PÁG ANTERIOR
   const handleBack = () => {
