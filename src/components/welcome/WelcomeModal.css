@@ -14,3 +14,41 @@
 .welcome-modal-content {
   pointer-events: all !important;
 }
+
+/* Estilos para o indicador de passos */
+.welcome-modal-content .h-2\.5 {
+  transition: all 0.3s ease;
+}
+
+/* Corrige problemas de margem/borda */
+.welcome-modal-content,
+.welcome-modal-content .border-bjj-gold\/30 {
+  border-color: rgba(217, 119, 6, 0.3) !important;
+}
+
+/* Ajustes para mobile */
+@media (max-width: 639px) {
+  .welcome-modal-dialog [data-state="open"] {
+    width: 95% !important;
+    max-width: 95% !important;
+    margin: 0 auto;
+  }
+
+  .welcome-modal-content {
+    padding: 16px !important;
+    max-width: 100% !important;
+    margin: 0 auto;
+    border-width: 1px !important;
+  }
+  
+  /* Ajuste para cards em dispositivos móveis */
+  .welcome-modal-content .bg-card {
+    padding: 12px !important;
+  }
+  
+  /* Garantir que não há scroll horizontal */
+  .welcome-modal-content .overflow-x-hidden {
+    margin: 0 -8px 0 -8px;
+    padding: 0 8px 0 8px;
+  }
+}
