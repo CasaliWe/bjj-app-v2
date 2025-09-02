@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import { 
   Card, 
   CardContent, 
@@ -27,6 +28,8 @@ import { Configuracoes } from "@/components/perfil/Configuracoes";
 
 
 const UserProfile = () => {
+  // Usando o hook useLocation para acessar a URL atual
+  const location = useLocation();
   
   // Usando o contexto do usuário
   const { user, setUser } = useUser();
@@ -37,12 +40,41 @@ const UserProfile = () => {
   // Estado local para edição - inicializado com um objeto vazio caso user seja null
   const [profileData, setProfileData] = useState({});
   
+  // Estado para controlar a tab ativa
+  const [activeTab, setActiveTab] = useState('profile');
+  
   // Atualiza o profileData quando o usuário é carregado do contexto
   useEffect(() => {
     if (user) {
       setProfileData({ ...user });
     }
   }, [user]);
+  
+  // Verifica se há parâmetros na URL e define a tab ativa
+  useEffect(() => {
+    // Obtém os parâmetros da URL
+    const searchParams = new URLSearchParams(location.search);
+    const tabParam = searchParams.get('tab');
+    
+    // Se houver um parâmetro 'tab', define a tab ativa de acordo
+    if (tabParam) {
+      switch (tabParam.toLowerCase()) {
+        case 'configuracoes':
+          setActiveTab('settings');
+          break;
+        case 'senha':
+          setActiveTab('password');
+          break;
+        case 'perfil':
+        case 'informacoes':
+          setActiveTab('profile');
+          break;
+        default:
+          // Mantém a tab padrão se o parâmetro não for reconhecido
+          setActiveTab('profile');
+      }
+    }
+  }, [location.search]);
   
   // VOLTANDO PARA PÁG ANTERIOR
   const handleBack = () => {
@@ -104,7 +136,7 @@ const UserProfile = () => {
             </CardHeader>
 
             <CardContent>              
-              <Tabs defaultValue="profile" className="w-full">
+              <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
 
                 <TabsList className="grid w-full grid-cols-1 sm:grid-cols-3 gap-2 mb-28 md:mb-16">
                   <TabsTrigger value="profile">Informações</TabsTrigger>
