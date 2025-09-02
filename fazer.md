@@ -1,7 +1,6 @@
 ### FAZER:
 
 ** Geral **
-- aviso boas vindas com instruções;
 - fazer pagamento no aba config (pensar no modo);
 
 - fazer todo login com google e email;
