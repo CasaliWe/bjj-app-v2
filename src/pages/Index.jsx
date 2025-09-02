@@ -4,79 +4,150 @@ import { MobileNav } from "@/components/MobileNav";
 import { useNavigate } from "react-router-dom";
 import { Calendar, Book, Award, TrendingUp, Target, User, LogOut } from "lucide-react";
 import {sair} from "@/services/auth/logout";
+import { useState, useEffect } from "react";
+
+// UI components
+import { Button } from "@/components/ui/button";
 
 // components
 import { MetricCard } from "@/components/inicio/MetricCard";
 import { QuickActions } from "@/components/inicio/QuickActions";
 import { MeusDados } from "@/components/inicio/MeusDados";
 import { AtividadesRecentes } from "@/components/inicio/AtividadesRecentes";
+import ObjetivosModal from "@/components/inicio/ObjetivosModal";
 
 
 
 const Index = () => {
   const navigate = useNavigate();
 
+  // Estados para armazenar dados
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [metrics, setMetrics] = useState(null);
+  const [user, setUser] = useState(null);
+  const [treinosDados, setTreinosDados] = useState(null);
+  const [recentActivities, setRecentActivities] = useState([]);
+
+  // Função para abrir o modal
+  const abrirModal = () => setIsModalOpen(true);
+  
+  // Função para fechar o modal
+  const fecharModal = () => setIsModalOpen(false);
+  
+  // Função para atualizar as métricas
+  const atualizarMetricas = (novasMetricas) => {
+    setMetrics(novasMetricas);
+    
+    // AQUI: Após atualizar o estado local, você pode enviar os novos valores para a API
+    // const atualizarMetricasAPI = async (metricasAtualizadas) => {
+    //   try {
+    //     await api.put('/metrics', {
+    //       tecnicasMeta: metricasAtualizadas.tecnicasMeta,
+    //       treinosMeta: metricasAtualizadas.treinosMeta,
+    //       competicoesMeta: metricasAtualizadas.competicoesMeta
+    //     });
+    //   } catch (error) {
+    //     console.error('Erro ao atualizar métricas na API:', error);
+    //   }
+    // };
+    // atualizarMetricasAPI(novasMetricas);
+  };
+
+  // Função para logout
   const logout = () => {
     sair();
   };
 
-  const user = {
-    nome: 'Weslei Casali',
-    email: 'weslei.casali@example.com',
-    idade: 28,
-    peso: 75,
-    faixa: 'Azul',
-    imagem: '',
-    telefone: '(11) 98765-4321',
-    instagram: '@instagram',
-    tiktok: '@tiktok',
-    youtube: '@youtube',
-    perfilPublico: true,
-    academia: 'Gracie Barra',
-    cidade: 'São Paulo',
-    estado: 'SP',
-    pais: 'Brasil',
-    estilo: 'Guardeiro',
-    competidor: 'Sim',
-    finalizacao: 'Triângulo',
-    bio: 'Praticante de Jiu-Jitsu há 3 anos, focado em competições e desenvolvimento técnico. Especialista em guarda e jogo de lapela. Buscando evoluir em raspagens e finalizações.',
-    plano: 'Plus'
-  }
-
-  const treinosDados = {
-    gi: {
-      total: 128,
-      esteMes: 8,
-      ultimaVez: "12 de Agosto"
-    },
-    noGi: {
-      total: 59,
-      esteMes: 4,
-      ultimaVez: "09 de Agosto"
-    },
-    competicoesGi: {
-      eventos: 5,
-      lutas: 1,
-      vitorias: 2,
-      derrotas: 2,
-      finalizacoes: 1,
-      primeiroLugar: 2,
-      segundoLugar: 1,
-      terceiroLugar: 5
-    },
-    competicoesNoGi: {
-      eventos: 5,
-      lutas: 1,
-      vitorias: 2,
-      derrotas: 2,
-      finalizacoes: 1,
-      primeiroLugar: 2,
-      segundoLugar: 1,
-      terceiroLugar: 5
-    }
-  }
-
-  const metrics = {
+  // Carregar dados iniciais
+  useEffect(() => {
+    // Dados do usuário
+    setUser({
+      nome: 'Weslei Casali',
+      email: 'weslei.casali@example.com',
+      idade: 28,
+      peso: 75,
+      faixa: 'Azul',
+      imagem: '',
+      telefone: '(11) 98765-4321',
+      instagram: '@instagram',
+      tiktok: '@tiktok',
+      youtube: '@youtube',
+      perfilPublico: 'Fechado',
+      academia: 'Gracie Barra',
+      cidade: 'São Paulo',
+      estado: 'SP',
+      pais: 'Brasil',
+      estilo: 'Guardeiro',
+      competidor: 'Sim',
+      finalizacao: 'Triângulo',
+      bio: 'Praticante de Jiu-Jitsu há 3 anos, focado em competições e desenvolvimento técnico. Especialista em guarda e jogo de lapela. Buscando evoluir em raspagens e finalizações.',
+      plano: 'Plus'
+    });
+    
+    // Dados de treinos
+    setTreinosDados({
+      gi: {
+        total: 128,
+        esteMes: 8,
+        ultimaVez: "12 de Agosto"
+      },
+      noGi: {
+        total: 59,
+        esteMes: 4,
+        ultimaVez: "09 de Agosto"
+      },
+      competicoesGi: {
+        eventos: 5,
+        lutas: 1,
+        vitorias: 2,
+        derrotas: 2,
+        finalizacoes: 1,
+        primeiroLugar: 2,
+        segundoLugar: 1,
+        terceiroLugar: 5
+      },
+      competicoesNoGi: {
+        eventos: 5,
+        lutas: 1,
+        vitorias: 2,
+        derrotas: 2,
+        finalizacoes: 1,
+        primeiroLugar: 2,
+        segundoLugar: 1,
+        terceiroLugar: 5
+      }
+    });
+    
+    // Dados de atividades recentes
+    setRecentActivities([
+      {
+        type: "treino",
+        title: "Treino de Gi",
+        description: "Trabalhei guard pass e finalizações",
+        time: "14 de agosto",
+      },
+      {
+        type: "tecnica",
+        title: "Triângulo da Guarda Fechada",
+        description: "Adicionei variação com lapela",
+        time: "13 de agosto",
+      },
+      {
+        type: "competicao",
+        title: "Copa Regional de Jiu-Jitsu",
+        description: "2º lugar na categoria azul adulto",
+        time: "12 de agosto",
+      },
+      {
+        type: "competicao",
+        title: "Copa Regional de Jiu-Jitsu",
+        description: "2º lugar na categoria azul adulto",
+        time: "12 de agosto",
+      }
+    ]);
+    
+    // Dados de métricas
+    setMetrics({
       tecnicas: "50",
       tecnicasMeta: "55",
       tecnicasFaltando: "5",
@@ -91,34 +162,28 @@ const Index = () => {
       upDownCompeticoes: "down",
       observacoesTotal: "12",
       observacoesMes: "8"
-  };
-
-  const recentActivities = [
-    {
-      type: "treino",
-      title: "Treino de Gi",
-      description: "Trabalhei guard pass e finalizações",
-      time: "14 de agosto",
-    },
-    {
-      type: "tecnica",
-      title: "Triângulo da Guarda Fechada",
-      description: "Adicionei variação com lapela",
-      time: "13 de agosto",
-    },
-    {
-      type: "competicao",
-      title: "Copa Regional de Jiu-Jitsu",
-      description: "2º lugar na categoria azul adulto",
-      time: "12 de agosto",
-    },
-    {
-      type: "competicao",
-      title: "Copa Regional de Jiu-Jitsu",
-      description: "2º lugar na categoria azul adulto",
-      time: "12 de agosto",
-    }
-  ];
+    });
+    
+    // Buscando dados da API (exemplo para implementação futura)
+    // const fetchData = async () => {
+    //   try {
+    //     const userResponse = await api.get('/user');
+    //     setUser(userResponse.data);
+    //     
+    //     const treinosResponse = await api.get('/treinos');
+    //     setTreinosDados(treinosResponse.data);
+    //     
+    //     const atividadesResponse = await api.get('/atividades');
+    //     setRecentActivities(atividadesResponse.data);
+    //     
+    //     const metricsResponse = await api.get('/metrics');
+    //     setMetrics(metricsResponse.data);
+    //   } catch (error) {
+    //     console.error('Erro ao buscar dados:', error);
+    //   }
+    // };
+    // fetchData();
+  }, []);
 
 
   return (
@@ -133,11 +198,15 @@ const Index = () => {
               <div className="flex items-center gap-4">
                 <SidebarTrigger className="md:hidden text-bjj-gold hover:text-bjj-gold/80 h-10 w-10 flex items-center justify-center" />
                 <div className="hidden md:block">
-                  <h1 className="text-2xl font-bold text-foreground">Olá, {user.nome.split(" ")[0]}! 👋</h1>
+                  <h1 className="text-2xl font-bold text-foreground">
+                    {user ? `Olá, ${user.nome.split(" ")[0]}! 👋` : 'Carregando...'}
+                  </h1>
                   <p className="text-muted-foreground">Bem-vindo de volta à sua jornada no Jiu-Jitsu</p>
                 </div>
                 <div className="md:hidden">
-                  <h1 className="text-xl font-bold text-foreground">Olá, {user.nome.split(" ")[0]}! 👋</h1>
+                  <h1 className="text-xl font-bold text-foreground">
+                    {user ? `Olá, ${user.nome.split(" ")[0]}! 👋` : 'Carregando...'}
+                  </h1>
                 </div>
               </div>
                 <div className="flex items-center gap-2">
@@ -165,22 +234,42 @@ const Index = () => {
 
             {/* Métricas principais */}
             <section>
-              <h2 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
-                <TrendingUp className="w-5 h-5 text-bjj-gold" />
-                Seu Progresso
-              </h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                <MetricCard title="Técnicas no mês" value={metrics.tecnicas} meta={metrics.tecnicasMeta} icon={Book} faltando={{ type: metrics.upDownTecnicas, text: metrics.tecnicasFaltando }} />
-                <MetricCard title="Treinos no Mês" value={metrics.treinos} meta={metrics.treinosMeta} icon={Calendar} faltando={{ type: metrics.upDownTreinos, text: metrics.treinosFaltando }} />
-                <MetricCard title="Competições no Mês" value={metrics.competicoes} meta={metrics.competicoesMeta} icon={Award} faltando={{ type: metrics.upDownCompeticoes, text: metrics.competicoesFaltando }} />
-                <MetricCard title="Observações Gerais" value={metrics.observacoesMes} icon={Target}  totalObs={metrics.observacoesTotal} />
-              </div>            
+              <div className="flex justify-between items-center mb-4">
+                <h2 className="text-lg font-semibold text-foreground flex items-center gap-2">
+                  <TrendingUp className="w-5 h-5 text-bjj-gold" />
+                  Seu Progresso
+                </h2>
+                
+                <Button 
+                  onClick={abrirModal} 
+                  variant="outline"
+                  className="text-bjj-gold border-bjj-gold hover:bg-bjj-gold/10 hover:text-bjj-gold"
+                  disabled={!metrics}
+                >
+                  Atualizar objetivos
+                </Button>
+              </div>
+              
+              {metrics ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                  <MetricCard title="Técnicas no mês" value={metrics.tecnicas} meta={metrics.tecnicasMeta} icon={Book} faltando={{ type: metrics.upDownTecnicas, text: metrics.tecnicasFaltando }} />
+                  <MetricCard title="Treinos no Mês" value={metrics.treinos} meta={metrics.treinosMeta} icon={Calendar} faltando={{ type: metrics.upDownTreinos, text: metrics.treinosFaltando }} />
+                  <MetricCard title="Competições no Mês" value={metrics.competicoes} meta={metrics.competicoesMeta} icon={Award} faltando={{ type: metrics.upDownCompeticoes, text: metrics.competicoesFaltando }} />
+                  <MetricCard title="Observações Gerais" value={metrics.observacoesMes} icon={Target}  totalObs={metrics.observacoesTotal} />
+                </div>
+              ) : (
+                <div className="text-center py-6">Carregando métricas...</div>
+              )}          
             </section>
             {/* Métricas principais */}
 
             {/* Meus Dados Gerais */}
             <section className="mb-6">
-              <MeusDados user={user} treinosDados={treinosDados} />
+              {user && treinosDados ? (
+                <MeusDados user={user} treinosDados={treinosDados} />
+              ) : (
+                <div className="text-center py-6">Carregando dados...</div>
+              )}
             </section>
             {/* Meus Dados Gerais */}
 
@@ -195,7 +284,11 @@ const Index = () => {
 
               {/* Atividades recentes */}
               <div className="lg:col-span-2">
-                <AtividadesRecentes recentActivities={recentActivities} />
+                {recentActivities.length > 0 ? (
+                  <AtividadesRecentes recentActivities={recentActivities} />
+                ) : (
+                  <div className="text-center py-6">Carregando atividades recentes...</div>
+                )}
               </div>
               {/* Atividades recentes */}
 
@@ -207,6 +300,17 @@ const Index = () => {
         </main>
         
         <MobileNav />
+
+        {/* Modal para atualizar objetivos */}
+        {metrics && (
+          <ObjetivosModal 
+            isOpen={isModalOpen}
+            onClose={fecharModal}
+            metrics={metrics}
+            onUpdateMetrics={atualizarMetricas}
+          />
+        )}
+
       </div>
     </SidebarProvider>
   );
