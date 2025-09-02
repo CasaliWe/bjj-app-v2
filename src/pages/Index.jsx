@@ -37,6 +37,8 @@ const Index = () => {
   // Função para atualizar as métricas
   const atualizarMetricas = (novasMetricas) => {
     setMetrics(novasMetricas);
+
+    console.log("Métricas atualizadas:", novasMetricas);
     
     // AQUI: Após atualizar o estado local, você pode enviar os novos valores para a API
     // const atualizarMetricasAPI = async (metricasAtualizadas) => {
@@ -67,7 +69,7 @@ const Index = () => {
       idade: 28,
       peso: 75,
       faixa: 'Azul',
-      imagem: '',
+      imagem: 'user.jpeg',
       telefone: '(11) 98765-4321',
       instagram: '@instagram',
       tiktok: '@tiktok',

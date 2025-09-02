@@ -32,7 +32,7 @@ const UserProfile = () => {
     idade: 28,
     peso: 75,
     faixa: 'Azul',
-    imagem: '',
+    imagem: 'user.jpeg',
     telefone: '(11) 98765-4321',
     instagram: '@instagram',
     tiktok: '@tiktok',

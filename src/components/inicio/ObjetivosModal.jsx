@@ -27,10 +27,6 @@ const ObjetivosModal = ({ isOpen, onClose, metrics, onUpdateMetrics }) => {
       ...prev,
       [name]: value
     }));
-
-    // Calcula e atualiza os valores em tempo real no componente pai
-    const newMetrics = calculateMetrics(name, value, metrics);
-    onUpdateMetrics(newMetrics);
   };
 
   // Função para calcular os valores de "faltando" e "upDown"
@@ -90,16 +86,16 @@ const ObjetivosModal = ({ isOpen, onClose, metrics, onUpdateMetrics }) => {
   // Função para salvar as alterações
   const handleSalvarObjetivos = () => {
     const updatedMetrics = recalcularTodasMetricas();
-    
+
+    // verifica se tem algum vazio '' 
+    const hasEmptyFields = Object.values(localMetrics).some(value => value === '');
+    if (hasEmptyFields) {
+      alert("Todos os campos devem ser preenchidos.");
+      return;
+    }
+
     // Atualiza as métricas no componente pai
     onUpdateMetrics(updatedMetrics);
-    
-    // Log para depuração
-    console.log("Objetivos atualizados:", {
-      tecnicasMeta: localMetrics.tecnicasMeta,
-      treinosMeta: localMetrics.treinosMeta,
-      competicoesMeta: localMetrics.competicoesMeta
-    });
     
     // Fecha o modal
     onClose();
