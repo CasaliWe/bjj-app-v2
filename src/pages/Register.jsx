@@ -31,10 +31,37 @@ const Register = () => {
   const isMobile = useIsMobile();
 
   // CloudFlare Turnstile (CAPTCHA) setup **********************************************************
-  const TURNSTILE_SITE_KEY = "1x00000000000000000000AA"; // SUBSTITUA pelo seu site key real do CloudFlare Turnstile
+  const TURNSTILE_SITE_KEY = "0x4AAAAAABycgUBdscrBJu1h"; // Sua chave real do CloudFlare Turnstile
   
+  // Hook para monitorar continuamente o token do Turnstile
   useEffect(() => {
-    // Carrega o script CloudFlare Turnstile
+    // Flag para evitar verificações desnecessárias
+    let isCheckingToken = false;
+    
+    // Função para verificar o token no DOM
+    const checkTurnstileToken = () => {
+      if (isCheckingToken || turnstileToken) return;
+      
+      isCheckingToken = true;
+      const tokenInput = document.querySelector('input[name="cf-turnstile-response"]');
+      
+      if (tokenInput && tokenInput.value) {
+        setTurnstileToken(tokenInput.value);
+        console.log("Token Turnstile detectado pelo observer");
+      }
+      
+      isCheckingToken = false;
+    };
+    
+    // Iniciar verificação periódica (a cada 500ms)
+    const tokenInterval = setInterval(checkTurnstileToken, 500);
+    
+    // Configurar um MutationObserver para detectar mudanças no DOM
+    const observer = new MutationObserver((mutations) => {
+      checkTurnstileToken();
+    });
+    
+    // Carregar o script do Turnstile
     const loadTurnstile = () => {
       const script = document.createElement("script");
       script.src = "https://challenges.cloudflare.com/turnstile/v0/api.js";
@@ -42,15 +69,34 @@ const Register = () => {
       script.defer = true;
       document.body.appendChild(script);
       
-      return () => {
-        document.body.removeChild(script);
+      // Após carregar o script, observe mudanças no DOM
+      script.onload = () => {
+        // Observar mudanças em todo o corpo do documento
+        observer.observe(document.body, { 
+          childList: true, 
+          subtree: true,
+          attributes: true,
+          attributeFilter: ['value']
+        });
+        
+        // Verificação inicial após o carregamento
+        setTimeout(checkTurnstileToken, 1000);
       };
+      
+      return script;
     };
     
-    const cleanup = loadTurnstile();
+    const script = loadTurnstile();
     
-    return cleanup;
-  }, []);
+    // Limpeza
+    return () => {
+      clearInterval(tokenInterval);
+      observer.disconnect();
+      if (script.parentNode) {
+        script.parentNode.removeChild(script);
+      }
+    };
+  }, [turnstileToken]);
 
   // Reset de token do Turnstile quando necessário
   const resetTurnstile = () => {
@@ -92,8 +138,15 @@ const Register = () => {
     
     // Validação do Turnstile (CAPTCHA)
     if (!turnstileToken) {
-      newErrors.general = "Por favor, confirme que você não é um robô";
-      isValid = false;
+      // Tenta obter o token diretamente do DOM - para casos onde a validação é invisível
+      const autoToken = document.querySelector('input[name="cf-turnstile-response"]')?.value;
+      if (autoToken) {
+        // Se encontrar o token no DOM, use-o
+        setTurnstileToken(autoToken);
+      } else {
+        newErrors.general = "Por favor, confirme que você não é um robô";
+        isValid = false;
+      }
     }
     
     setErrors(newErrors);
@@ -474,7 +527,14 @@ const Register = () => {
                       data-sitekey={TURNSTILE_SITE_KEY}
                       data-callback={(token) => setTurnstileToken(token)}
                       data-theme="dark"
+                      data-action="register"
                     ></div>
+                    {turnstileToken && (
+                      <p className="text-green-500 text-xs mt-1 flex items-center">
+                        <Check className="h-3 w-3 mr-1" />
+                        Verificação concluída
+                      </p>
+                    )}
                   </div>
 
                   {/* Botão de cadastro */}
