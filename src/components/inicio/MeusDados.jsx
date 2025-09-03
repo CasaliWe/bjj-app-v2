@@ -41,6 +41,7 @@ export function MeusDados({user, treinosDados}) {
                                 <User className="w-16 h-16 text-bjj-gold" />
                             )}
                         </div>
+                        <p className="text-[10px] font-light mb-2">ID: {user.bjj_id}</p>
                         <h3 className="font-semibold text-lg mb-0">{user.nome}</h3>
                         <p className="mb-1 text-sm">{user.idade} Anos</p>
                         <p className="text-sm text-bjj-gold">Faixa {user.faixa}</p>

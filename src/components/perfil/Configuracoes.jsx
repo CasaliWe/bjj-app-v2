@@ -22,8 +22,11 @@ import {
   Shield,
   Eye,
   EyeOff,
-  Check
+  Check,
+  QrCode
 } from "lucide-react";
+
+import Assinatura from "./Assinatura";
 
 
 export function Configuracoes({profileData, setProfileData}) {
@@ -184,6 +187,56 @@ export function Configuracoes({profileData, setProfileData}) {
             </DialogContent>
           </Dialog>
           {/* Modal para confirmar alteração de visibilidade do perfil */}
+          
+          {/* Assinatura do app - apenas PIX */}
+          <div className="p-3 rounded-lg border border-border/50 bg-card/30">
+            <div className="flex flex-col space-y-3">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full flex items-center justify-center bg-purple-500/20">
+                  <QrCode className="h-5 w-5 text-purple-400" />
+                </div>
+                <div>
+                  <p className="font-medium">Assinatura Premium</p>
+                  <p className="text-xs text-muted-foreground">
+                    Desbloqueie todos os recursos premium com pagamento via PIX.
+                  </p>
+                </div>
+              </div>
+              
+              <div className="text-sm px-2">
+                <p className="mb-3">
+                  Por apenas <span className="font-semibold text-purple-400">R$32,90/mês</span>, tenha acesso a:
+                </p>
+                <ul className="text-xs space-y-1 mb-4">
+                  <li className="flex items-center gap-2">
+                    <span className="w-1 h-1 rounded-full bg-purple-500"></span>
+                    Acesso ilimitado às técnicas e vídeos
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <span className="w-1 h-1 rounded-full bg-purple-500"></span>
+                    Plano de treino personalizado
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <span className="w-1 h-1 rounded-full bg-purple-500"></span>
+                    Assistente IA para dúvidas
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <span className="w-1 h-1 rounded-full bg-purple-500"></span>
+                    Métricas avançadas de progresso
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <span className="w-1 h-1 rounded-full bg-purple-500"></span>
+                    E muito mais...
+                  </li>
+                </ul>
+              </div>
+              
+              {/* Componente de Assinatura */}
+              <Assinatura />
+              {/* Componente de Assinatura */}
+            </div>
+          </div>
+          {/* Assinatura do app */}
           
           {/* Explicação download pwa  */}
           <Card className="bg-card/50">

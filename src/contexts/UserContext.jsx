@@ -34,7 +34,9 @@ export const UserProvider = ({ children }) => {
       finalizacao: 'Triângulo',
       bio: 'Praticante de Jiu-Jitsu há 3 anos, focado em competições e desenvolvimento técnico. Especialista em guarda e jogo de lapela. Buscando evoluir em raspagens e finalizações.',
       primeiroAcesso: false,
-      plano: 'Plus'
+      plano: 'Plus',
+      vencimento: '10/10/2025',
+      bjj_id: '3264347'
     });
 
     // AQUI: Faça a chamada para a API para receber os dados do usuário
