@@ -45,21 +45,21 @@ const Login = () => {
     }
   };
   
-  // Login com Google *********************************************
+  // Login com Google 
   const handleGoogleLogin = async () => {
     setIsLoading(true);
     setLoginError("");
     
     try {
-      // Aqui você implementará a requisição para sua API PHP
-      // Este é apenas um esboço da função que você preencherá depois
-      await loginGoogle();
+      // fazendo login com google
+      const res = await loginGoogle();
 
-      // Exemplo: const response = await fetch('sua-api-php/auth/google', { method: 'POST' });
-      // if (!response.ok) throw new Error('Falha ao autenticar com Google');
-      
       // Após autenticação bem-sucedida
-      navigate("/app");
+      if(res){
+        navigate("/app");
+      }else{
+        alert("Erro ao autenticar com Google. Tente novamente.");
+      }
     } catch (error) {
       setLoginError(error.message || "Erro ao fazer login com Google. Tente novamente mais tarde.");
     } finally {

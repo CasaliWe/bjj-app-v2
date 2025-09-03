@@ -26,8 +26,8 @@ const PasswordRecovery = () => {
   const turnstileRef = useRef(null);
   const isMobile = useIsMobile();
   
-  // CloudFlare Turnstile (CAPTCHA) setup **********************************************************
-  const TURNSTILE_SITE_KEY = "0x4AAAAAABycgUBdscrBJu1h"; // Sua chave real do CloudFlare Turnstile
+  // CloudFlare Turnstile (CAPTCHA) setup 
+  const TURNSTILE_SITE_KEY = import.meta.env.VITE_CLOUDFLARE_TURNSTILE;
   
   // Hook para monitorar continuamente o token do Turnstile
   useEffect(() => {

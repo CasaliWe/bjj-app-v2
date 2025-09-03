@@ -30,9 +30,9 @@ const Register = () => {
   const turnstileRef = useRef(null);
   const isMobile = useIsMobile();
 
-  // CloudFlare Turnstile (CAPTCHA) setup **********************************************************
-  const TURNSTILE_SITE_KEY = "0x4AAAAAABycgUBdscrBJu1h"; // Sua chave real do CloudFlare Turnstile
-  
+  // CloudFlare Turnstile (CAPTCHA) setup 
+  const TURNSTILE_SITE_KEY = import.meta.env.VITE_CLOUDFLARE_TURNSTILE;
+
   // Hook para monitorar continuamente o token do Turnstile
   useEffect(() => {
     // Limpar qualquer token existente quando o componente monta
@@ -256,16 +256,20 @@ const Register = () => {
     }
   };
   
-  // Login com Google *********************************************************************
+  // Login com Google
   const handleGoogleLogin = async () => {
     setIsLoading(true);
     setErrors(prev => ({ ...prev, general: "" }));
     
     try {
-      await loginGoogle();
+      const res = await loginGoogle();
 
       // Após autenticação bem-sucedida
-      navigate("/app");
+      if(res){
+        navigate("/app");
+      }else{
+        alert("Erro ao autenticar com Google. Tente novamente.");
+      }
     } catch (error) {
       setErrors(prev => ({ 
         ...prev, 

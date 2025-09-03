@@ -1,6 +1,7 @@
 ### FAZER:
 
 ** Geral **
+- fazer .env funcionar em .js (no login.js está key sem .env);
 - colocar turns em todos os lugares com form;
 - fazer aba aula gif;
 - organizar rotas publicas | privadas;
