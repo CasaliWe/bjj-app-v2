@@ -1,11 +1,10 @@
 ### FAZER:
 
 ** Geral **
+- colocar turns em todos os lugares com form;
 - fazer aba aula gif;
-- fazer todo login com google e email;
-- Logout;
 - organizar rotas publicas | privadas;
-- colocar recap e limite de criação de conta para controlar em caso de gargalo;
+- colocar limite de criação de conta;
 - fazer rede social;
 - puxar coisas da ibjjf;
 - fazer a ia ter como fase oq foi adicionado pelo user;
