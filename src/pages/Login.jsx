@@ -13,7 +13,9 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const isMobile = useIsMobile();
-    const handleLogin = (e) => {
+  
+  // fazer login ***************************************************
+  const handleLogin = (e) => {
     e.preventDefault();
     // Aqui seria a lógica de autenticação
     console.log("Login com:", { email, password });
@@ -59,7 +61,9 @@ const Login = () => {
       {/* Círculos decorativos sutis - Visíveis apenas no desktop */}
       <div className="absolute top-20 left-20 w-32 h-32 bg-bjj-gold/5 rounded-full blur-xl hidden lg:block" />
       <div className="absolute bottom-20 right-20 w-40 h-40 bg-bjj-gold/5 rounded-full blur-2xl hidden lg:block" />
+      {/* Círculos decorativos sutis - Visíveis apenas no desktop */}
       
+      {/* content login */}
       <div className="flex-grow flex items-center justify-center">
         <div className="w-full max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-12 items-center relative z-10">
           {/* Lado esquerdo - Informações da plataforma */}
@@ -116,9 +120,10 @@ const Login = () => {
             
             {/* Copyright - versão desktop */}
             <div className="text-center lg:text-left pt-4">
-              <p className="text-sm text-muted-foreground">© 2025 BJJ Academy. Todos os direitos reservados.</p>
+              <p className="text-sm text-muted-foreground">© {new Date().getFullYear()} BJJ Academy. Todos os direitos reservados.</p>
             </div>
           </div>
+          {/* Lado esquerdo - Informações da plataforma */}
           
           {/* Seção mobile - Logo e título para telas pequenas */}
           <div className="md:hidden text-center mb-8">
@@ -150,6 +155,7 @@ const Login = () => {
               ))}
             </div>
           </div>
+          {/* Seção mobile - Logo e título para telas pequenas */}
           
           {/* Lado direito - Card de login */}
           <div className="flex justify-center lg:justify-end">
@@ -290,13 +296,17 @@ const Login = () => {
               </CardContent>
             </Card>
           </div>
+          {/* Lado direito - Card de login */}
         </div>
       </div>
+      {/* content login */}
       
       {/* Copyright para mobile - movido para fora do grid e para o final da página */}
       <div className="md:hidden text-center mt-8 pt-4">
-        <p className="text-xs text-muted-foreground">© 2025 BJJ Academy. Todos os direitos reservados.</p>
+            <p className="text-xs text-muted-foreground">© {new Date().getFullYear()} BJJ Academy. Todos os direitos reservados.</p>
       </div>
+      {/* Copyright para mobile - movido para fora do grid e para o final da página */}
+
     </div>
   );
 };
