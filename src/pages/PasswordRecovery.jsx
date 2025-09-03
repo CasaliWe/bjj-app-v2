@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
-import { Shield, Mail, ArrowLeft, AlertCircle } from "lucide-react";
+import { Shield, Mail, ArrowLeft, AlertCircle, Check } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -22,7 +22,133 @@ const PasswordRecovery = () => {
   const [showDialog, setShowDialog] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [emailError, setEmailError] = useState("");
+  const [turnstileToken, setTurnstileToken] = useState("");
+  const turnstileRef = useRef(null);
   const isMobile = useIsMobile();
+  
+  // CloudFlare Turnstile (CAPTCHA) setup **********************************************************
+  const TURNSTILE_SITE_KEY = "0x4AAAAAABycgUBdscrBJu1h"; // Sua chave real do CloudFlare Turnstile
+  
+  // Hook para monitorar continuamente o token do Turnstile
+  useEffect(() => {
+    // Limpar qualquer token existente quando o componente monta
+    setTurnstileToken("");
+    
+    // Flag para evitar verificações desnecessárias
+    let isCheckingToken = false;
+    
+    // Função para verificar o token no DOM
+    const checkTurnstileToken = () => {
+      if (isCheckingToken || turnstileToken) return;
+      
+      isCheckingToken = true;
+      const tokenInput = document.querySelector('input[name="cf-turnstile-response"]');
+      
+      if (tokenInput && tokenInput.value) {
+        setTurnstileToken(tokenInput.value);
+        console.log("Token Turnstile detectado pelo observer");
+      }
+      
+      isCheckingToken = false;
+    };
+    
+    // Iniciar verificação periódica (a cada 500ms)
+    const tokenInterval = setInterval(checkTurnstileToken, 500);
+    
+    // Configurar um MutationObserver para detectar mudanças no DOM
+    const observer = new MutationObserver((mutations) => {
+      checkTurnstileToken();
+    });
+    
+    // Função para remover e recarregar o script do Turnstile
+    const reloadTurnstile = () => {
+      // Remover qualquer script anterior do Turnstile
+      const oldScript = document.querySelector('script[src*="challenges.cloudflare.com/turnstile"]');
+      if (oldScript && oldScript.parentNode) {
+        oldScript.parentNode.removeChild(oldScript);
+      }
+      
+      // Remover qualquer iframe do Turnstile para forçar recriação
+      const oldIframes = document.querySelectorAll('iframe[src*="challenges.cloudflare.com"]');
+      oldIframes.forEach(iframe => {
+        if (iframe.parentNode) {
+          iframe.parentNode.removeChild(iframe);
+        }
+      });
+      
+      // Limpar o container do Turnstile
+      if (turnstileRef.current) {
+        turnstileRef.current.innerHTML = '';
+      }
+      
+      // Carregar novo script
+      const script = document.createElement("script");
+      script.src = "https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit";
+      script.async = true;
+      script.defer = true;
+      document.body.appendChild(script);
+      
+      // Após carregar o script, observe mudanças no DOM e renderize o widget
+      script.onload = () => {
+        // Observar mudanças em todo o corpo do documento
+        observer.observe(document.body, { 
+          childList: true, 
+          subtree: true,
+          attributes: true,
+          attributeFilter: ['value']
+        });
+        
+        // Renderizar o widget explicitamente
+        if (window.turnstile && turnstileRef.current) {
+          window.turnstile.render(turnstileRef.current, {
+            sitekey: TURNSTILE_SITE_KEY,
+            callback: (token) => {
+              setTurnstileToken(token);
+              console.log("Token Turnstile gerado via callback");
+            },
+            theme: 'dark',
+            action: 'password_recovery'
+          });
+        }
+        
+        // Verificação inicial após o carregamento
+        setTimeout(checkTurnstileToken, 1000);
+      };
+      
+      return script;
+    };
+    
+    const script = reloadTurnstile();
+    
+    // Limpeza
+    return () => {
+      clearInterval(tokenInterval);
+      observer.disconnect();
+      if (script && script.parentNode) {
+        script.parentNode.removeChild(script);
+      }
+    };
+  }, []);
+
+  // Reset de token do Turnstile quando necessário
+  const resetTurnstile = () => {
+    setTurnstileToken("");
+    if (window.turnstile && turnstileRef.current) {
+      // Limpar o container primeiro
+      turnstileRef.current.innerHTML = '';
+      
+      // Re-renderizar o widget
+      window.turnstile.render(turnstileRef.current, {
+        sitekey: TURNSTILE_SITE_KEY,
+        callback: (token) => {
+          setTurnstileToken(token);
+          console.log("Token Turnstile gerado após reset");
+        },
+        theme: 'dark',
+        action: 'password_recovery'
+      });
+    }
+  };
   
   // chamada para api *****************************************************
   const handleRecovery = (e) => {
@@ -30,14 +156,38 @@ const PasswordRecovery = () => {
     setIsSubmitting(true);
     setEmailError("");
     
+    // Verificar se o token do Turnstile está presente
+    const tokenInput = document.querySelector('input[name="cf-turnstile-response"]');
+    const autoToken = tokenInput?.value;
+    
+    if (!turnstileToken && !autoToken) {
+      setEmailError("Por favor, confirme que você não é um robô");
+      setIsSubmitting(false);
+      return;
+    }
+    
+    // Se encontramos o token no DOM mas não no estado, atualizamos o estado
+    if (!turnstileToken && autoToken) {
+      setTurnstileToken(autoToken);
+    }
+    
     // Simulação de verificação de email existente
     if (email === "erro@teste.com") {
       setTimeout(() => {
         setIsSubmitting(false);
         setEmailError("E-mail não encontrado em nosso sistema. Verifique se digitou corretamente.");
+        resetTurnstile();
       }, 1000);
       return;
     }
+    
+    // Preparar dados para enviar à API
+    const recoveryData = {
+      email,
+      turnstileToken: turnstileToken || autoToken
+    };
+    
+    console.log("Dados de recuperação:", recoveryData);
     
     // Simulando uma requisição de recuperação de senha para emails válidos
     setTimeout(() => {
@@ -205,6 +355,20 @@ const PasswordRecovery = () => {
                         className={`pl-10 ${emailError ? "border-red-500 focus:ring-red-500" : ""}`}
                       />
                     </div>
+                  </div>
+
+                  {/* CloudFlare Turnstile (CAPTCHA) */}
+                  <div className="mt-4">
+                    <div 
+                      ref={turnstileRef}
+                      className="cf-turnstile"
+                    ></div>
+                    {turnstileToken && (
+                      <p className="text-green-500 text-xs mt-1 flex items-center">
+                        <Check className="h-3 w-3 mr-1" />
+                        Verificação concluída
+                      </p>
+                    )}
                   </div>
 
                   {/* Botão de envio */}
