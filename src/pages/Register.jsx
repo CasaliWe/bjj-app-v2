@@ -35,6 +35,9 @@ const Register = () => {
   
   // Hook para monitorar continuamente o token do Turnstile
   useEffect(() => {
+    // Limpar qualquer token existente quando o componente monta
+    setTurnstileToken("");
+    
     // Flag para evitar verificações desnecessárias
     let isCheckingToken = false;
     
@@ -61,15 +64,35 @@ const Register = () => {
       checkTurnstileToken();
     });
     
-    // Carregar o script do Turnstile
-    const loadTurnstile = () => {
+    // Função para remover e recarregar o script do Turnstile
+    const reloadTurnstile = () => {
+      // Remover qualquer script anterior do Turnstile
+      const oldScript = document.querySelector('script[src*="challenges.cloudflare.com/turnstile"]');
+      if (oldScript && oldScript.parentNode) {
+        oldScript.parentNode.removeChild(oldScript);
+      }
+      
+      // Remover qualquer iframe do Turnstile para forçar recriação
+      const oldIframes = document.querySelectorAll('iframe[src*="challenges.cloudflare.com"]');
+      oldIframes.forEach(iframe => {
+        if (iframe.parentNode) {
+          iframe.parentNode.removeChild(iframe);
+        }
+      });
+      
+      // Limpar o container do Turnstile
+      if (turnstileRef.current) {
+        turnstileRef.current.innerHTML = '';
+      }
+      
+      // Carregar novo script
       const script = document.createElement("script");
-      script.src = "https://challenges.cloudflare.com/turnstile/v0/api.js";
+      script.src = "https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit";
       script.async = true;
       script.defer = true;
       document.body.appendChild(script);
       
-      // Após carregar o script, observe mudanças no DOM
+      // Após carregar o script, observe mudanças no DOM e renderize o widget
       script.onload = () => {
         // Observar mudanças em todo o corpo do documento
         observer.observe(document.body, { 
@@ -79,6 +102,18 @@ const Register = () => {
           attributeFilter: ['value']
         });
         
+        // Renderizar o widget explicitamente
+        if (window.turnstile && turnstileRef.current) {
+          window.turnstile.render(turnstileRef.current, {
+            sitekey: TURNSTILE_SITE_KEY,
+            callback: (token) => {
+              setTurnstileToken(token);
+            },
+            theme: 'dark',
+            action: 'register'
+          });
+        }
+        
         // Verificação inicial após o carregamento
         setTimeout(checkTurnstileToken, 1000);
       };
@@ -86,22 +121,34 @@ const Register = () => {
       return script;
     };
     
-    const script = loadTurnstile();
+    const script = reloadTurnstile();
     
     // Limpeza
     return () => {
       clearInterval(tokenInterval);
       observer.disconnect();
-      if (script.parentNode) {
+      if (script && script.parentNode) {
         script.parentNode.removeChild(script);
       }
     };
-  }, [turnstileToken]);
+  }, []);
 
   // Reset de token do Turnstile quando necessário
   const resetTurnstile = () => {
+    setTurnstileToken("");
     if (window.turnstile && turnstileRef.current) {
-      window.turnstile.reset(turnstileRef.current);
+      // Limpar o container primeiro
+      turnstileRef.current.innerHTML = '';
+      
+      // Re-renderizar o widget
+      window.turnstile.render(turnstileRef.current, {
+        sitekey: TURNSTILE_SITE_KEY,
+        callback: (token) => {
+          setTurnstileToken(token);
+        },
+        theme: 'dark',
+        action: 'register'
+      });
     }
   };
 
@@ -523,11 +570,7 @@ const Register = () => {
                   <div className="mt-2">
                     <div 
                       ref={turnstileRef}
-                      className="cf-turnstile" 
-                      data-sitekey={TURNSTILE_SITE_KEY}
-                      data-callback={(token) => setTurnstileToken(token)}
-                      data-theme="dark"
-                      data-action="register"
+                      className="cf-turnstile"
                     ></div>
                     {turnstileToken && (
                       <p className="text-green-500 text-xs mt-1 flex items-center">
