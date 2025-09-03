@@ -36,7 +36,7 @@ export const UserProvider = ({ children }) => {
       primeiroAcesso: false,
       plano: 'Plus',
       vencimento: '10/10/2025',
-      bjj_id: '3264347'
+      bjj_id: 'w0001'
     });
 
     // AQUI: Faça a chamada para a API para receber os dados do usuário
