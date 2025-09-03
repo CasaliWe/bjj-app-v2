@@ -1,11 +1,12 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
-import { Shield, Mail, ArrowLeft } from "lucide-react";
+import { Shield, Mail, ArrowLeft, AlertCircle } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import {
   Dialog,
   DialogContent,
@@ -20,13 +21,25 @@ const PasswordRecovery = () => {
   const [email, setEmail] = useState("");
   const [showDialog, setShowDialog] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [emailError, setEmailError] = useState("");
   const isMobile = useIsMobile();
   
+  // chamada para api *****************************************************
   const handleRecovery = (e) => {
     e.preventDefault();
     setIsSubmitting(true);
+    setEmailError("");
     
-    // Simulando uma requisição de recuperação de senha
+    // Simulação de verificação de email existente
+    if (email === "erro@teste.com") {
+      setTimeout(() => {
+        setIsSubmitting(false);
+        setEmailError("E-mail não encontrado em nosso sistema. Verifique se digitou corretamente.");
+      }, 1000);
+      return;
+    }
+    
+    // Simulando uma requisição de recuperação de senha para emails válidos
     setTimeout(() => {
       setIsSubmitting(false);
       setShowDialog(true);
@@ -48,7 +61,9 @@ const PasswordRecovery = () => {
       {/* Círculos decorativos sutis - Visíveis apenas no desktop */}
       <div className="absolute top-20 left-20 w-32 h-32 bg-bjj-gold/5 rounded-full blur-xl hidden lg:block" />
       <div className="absolute bottom-20 right-20 w-40 h-40 bg-bjj-gold/5 rounded-full blur-2xl hidden lg:block" />
+      {/* Círculos decorativos sutis - Visíveis apenas no desktop */}
       
+      {/* content recuperar */}
       <div className="flex-grow flex items-center justify-center">
         <div className="w-full max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-12 items-center relative z-10">
           {/* Lado esquerdo - Informações da plataforma */}
@@ -108,6 +123,7 @@ const PasswordRecovery = () => {
               <p className="text-sm text-muted-foreground">© 2025 BJJ Academy. Todos os direitos reservados.</p>
             </div>
           </div>
+          {/* Lado esquerdo - Informações da plataforma */}
           
           {/* Seção mobile - Logo e título para telas pequenas */}
           <div className="md:hidden text-center mb-8">
@@ -129,6 +145,7 @@ const PasswordRecovery = () => {
               Recupere o acesso à sua conta
             </p>
           </div>
+          {/* Seção mobile - Logo e título para telas pequenas */}
           
           {/* Lado direito - Card de recuperação de senha */}
           <div className="flex justify-center lg:justify-end">
@@ -160,6 +177,14 @@ const PasswordRecovery = () => {
                 </div>
 
                 <form onSubmit={handleRecovery} className="space-y-4">
+                  {/* Mensagem de erro */}
+                  {emailError && (
+                    <Alert variant="destructive" className="bg-red-500/10 text-red-500 border-red-500/20 py-2">
+                      <AlertCircle className="h-4 w-4" />
+                      <AlertDescription>{emailError}</AlertDescription>
+                    </Alert>
+                  )}
+
                   {/* Campo de email */}
                   <div className="space-y-2">
                     <Label htmlFor="email" className="text-sm font-medium text-foreground">
@@ -172,9 +197,12 @@ const PasswordRecovery = () => {
                         type="email" 
                         placeholder="seu@email.com" 
                         value={email}
-                        onChange={(e) => setEmail(e.target.value)}
+                        onChange={(e) => {
+                          setEmail(e.target.value);
+                          if (emailError) setEmailError("");
+                        }}
                         required
-                        className="pl-10"
+                        className={`pl-10 ${emailError ? "border-red-500 focus:ring-red-500" : ""}`}
                       />
                     </div>
                   </div>
@@ -245,13 +273,18 @@ const PasswordRecovery = () => {
               </CardContent>
             </Card>
           </div>
+          {/* Lado direito - Card de recuperação de senha */}
+
         </div>
       </div>
+      {/* content recuperar */}
       
       {/* Copyright para mobile - movido para fora do grid e para o final da página */}
       <div className="md:hidden text-center mt-8 pt-4">
-        <p className="text-xs text-muted-foreground">© 2025 BJJ Academy. Todos os direitos reservados.</p>
+        <p className="text-xs text-muted-foreground">© {new Date().getFullYear()} BJJ Academy. Todos os direitos reservados.</p>
       </div>
+      {/* Copyright para mobile - movido para fora do grid e para o final da página */}
+
 
       {/* Modal de confirmação */}
       <Dialog open={showDialog} onOpenChange={setShowDialog}>
@@ -259,7 +292,7 @@ const PasswordRecovery = () => {
           <DialogHeader>
             <DialogTitle className="text-xl font-bold">E-mail enviado com sucesso!</DialogTitle>
             <DialogDescription className="mt-2">
-              Enviamos instruções para recuperação de senha para <span className="font-medium text-foreground">{email}</span>.
+              Enviamos um nova senha para seu e-mail <span className="font-medium text-foreground">{email}</span>.
             </DialogDescription>
           </DialogHeader>
           <div className="py-4">
