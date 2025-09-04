@@ -8,7 +8,6 @@
 - anotar dependencias na doc;
 - anotar como o sistema de login está feito;
 - fazer smooth comp;
-- fazer gameficação;
 - fazer aba aula gif;
 - organizar rotas publicas | privadas;
 - colocar limite de criação de conta;
