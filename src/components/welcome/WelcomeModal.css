@@ -29,8 +29,8 @@
 /* Ajustes para mobile */
 @media (max-width: 639px) {
   .welcome-modal-dialog [data-state="open"] {
-    width: 95% !important;
-    max-width: 95% !important;
+    width: calc(100% - 24px) !important; /* 12px em cada lado */
+    max-width: calc(100% - 24px) !important;
     margin: 0 auto;
   }
 

@@ -349,10 +349,10 @@ const WelcomeModal = ({ forceShow = false }) => {
         if (open) setIsOpen(true);
       }}
       modal={true}
-      className="welcome-modal-dialog"
+      className="welcome-modal-dialog relative"
     >
       <DialogContent 
-        className="sm:max-w-xl md:max-w-2xl border border-bjj-gold/30 bg-gradient-to-b from-background to-background/95 max-h-[90vh] overflow-hidden flex flex-col min-h-[550px] welcome-modal-content px-4 sm:px-6"
+        className="sm:max-w-xl md:max-w-2xl border border-bjj-gold/30 bg-gradient-to-b from-background to-background/95 max-h-[90vh] overflow-hidden flex flex-col min-h-[550px] welcome-modal-content w-[calc(100%-24px)] sm:w-auto mx-auto px-4 sm:px-6"
       >
         <DialogHeader className="flex-shrink-0 pb-2">
           <DialogTitle className="text-center flex flex-col items-center gap-2">
@@ -370,11 +370,11 @@ const WelcomeModal = ({ forceShow = false }) => {
           {renderStepIndicator()}
         </div>
         
-        <div className="overflow-y-auto flex-grow pr-1 pb-4 overflow-x-hidden">
+        <div className="overflow-y-auto flex-grow pr-1 pb-4 overflow-x-hidden px-1">
           {renderStepContent()}
         </div>
         
-        <DialogFooter className="flex-shrink-0 flex flex-col gap-2 mt-2">
+        <DialogFooter className="flex-shrink-0 flex flex-col gap-2 mt-2 px-1">
           {renderNavButtons()}
           
           <p className="text-xs text-center text-muted-foreground pt-1">

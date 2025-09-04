@@ -14,6 +14,7 @@ export const UserProvider = ({ children }) => {
   useEffect(() => {
     // Dados mockados para desenvolvimento
     setUser({
+      id: 1,
       nome: 'Weslei Pinto',
       email: 'weslei.casali@example.com',
       idade: 28,

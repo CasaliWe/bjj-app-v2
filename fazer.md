@@ -2,7 +2,6 @@
 
 ** Geral **
 - colocar turns em todos os lugares com form;
-- fazer avisos do sistema;
 - fazer o id ser a letra + 4 numero sequnciais e quando chegar no limite ai random;
 - anotar todos os lugares que tem apresentação do app;
 - anotar dependencias na doc;
