@@ -1,5 +1,5 @@
 // Configurações para autenticação com Google
-const GOOGLE_CLIENT_ID = "753263780680-7tdjrdmft3af7slfiof4048tacbopaik.apps.googleusercontent.com"; // Substitua pelo seu Client ID do Google
+const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID; 
 
 // LOGIN COM EMAIL E SENHA ****************************
 export const login = async (email, password) => {

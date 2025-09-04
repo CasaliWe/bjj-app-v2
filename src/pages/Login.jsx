@@ -27,7 +27,7 @@ const Login = () => {
     setLoginError("");
     
     try {
-      // Aqui seria a lógica de autenticação
+      // lógica de autenticação
       await login(email, password);
       
       // Simulação de erro - remover isso quando implementar a autenticação real

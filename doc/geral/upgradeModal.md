@@ -7,4 +7,4 @@
         {/* Modal de upgrade para o plano Plus */}
             <UpgradeModal />
         {/* Modal de upgrade para o plano Plus */}
-- vai apenas nas páginas importantes;
+- vai apenas nas páginas importantes que desejo não dar o acesso em caso de plano grátis;

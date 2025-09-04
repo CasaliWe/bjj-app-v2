@@ -1,0 +1,2 @@
+### Doc para logout:
+- 
