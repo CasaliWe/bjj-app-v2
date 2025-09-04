@@ -8,6 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter }
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import Exp, { useExp } from "@/components/exp/Exp";
 import {
   Select,
   SelectContent,
@@ -171,13 +172,15 @@ const MOCK_POSICOES = [
   "Raspagem"
 ];
 
-const Tecnicas = () => {  const [tecnicas, setTecnicas] = useState(MOCK_TECNICAS);
+const Tecnicas = () => {  
+  const [tecnicas, setTecnicas] = useState(MOCK_TECNICAS);
   const [posicoesCadastradas, setPosicoesCadastradas] = useState(MOCK_POSICOES);
   const [filtroCategoria, setFiltroCategoria] = useState("todas");
   const [filtroPosicao, setFiltroPosicao] = useState("todas");
   const [modalAberto, setModalAberto] = useState(false);
   const [modalDestaques, setModalDestaques] = useState(false);
   const [editandoTecnica, setEditandoTecnica] = useState(null);
+  const { mostrarExp } = useExp();
   const [novaTecnica, setNovaTecnica] = useState({
     nome: "",
     categoria: "",
@@ -253,9 +256,13 @@ const Tecnicas = () => {  const [tecnicas, setTecnicas] = useState(MOCK_TECNICAS
     if (editandoTecnica) {
       // Atualizar técnica existente
       setTecnicas(tecnicas.map(t => t.id === tecnicaFinal.id ? tecnicaFinal : t));
+      // Ganhar experiência por editar
+      mostrarExp(20, "Você ganhou 20 exp por editar uma técnica!");
     } else {
       // Adicionar nova técnica
       setTecnicas([...tecnicas, tecnicaFinal]);
+      // Ganhar experiência por adicionar nova técnica
+      mostrarExp(150, "Você ganhou 150 exp por adicionar uma nova técnica!");
     }
 
     // Reset do formulário e fechamento do modal
@@ -291,11 +298,19 @@ const Tecnicas = () => {  const [tecnicas, setTecnicas] = useState(MOCK_TECNICAS
 
   // Função para destacar/remover destaque da técnica
   const toggleDestaque = (id) => {
+    const tecnica = tecnicas.find(t => t.id === id);
+    const novoDestaque = !tecnica.destacado;
+    
     setTecnicas(
       tecnicas.map(t => 
-        t.id === id ? { ...t, destacado: !t.destacado } : t
+        t.id === id ? { ...t, destacado: novoDestaque } : t
       )
     );
+    
+    // Se estiver destacando (não removendo o destaque), mostrar modal de experiência
+    if (novoDestaque) {
+      mostrarExp(15, `Você ganhou 15 exp por destacar a técnica "${tecnica.nome}"!`);
+    }
   };
   // Técnicas filtradas de acordo com os filtros selecionados
   const tecnicasFiltradas = tecnicas.filter(tecnica => {
@@ -976,10 +991,17 @@ const Tecnicas = () => {  const [tecnicas, setTecnicas] = useState(MOCK_TECNICAS
       </Dialog>
 
       {/* Modal de upgrade para o plano Plus */}
-        <UpgradeModal />
+      <UpgradeModal />
       {/* Modal de upgrade para o plano Plus */}
     </SidebarProvider>
   );
 };
 
-export default Tecnicas;
+// Componente Wrapper com o Exp
+const TecnicasWithExp = () => (
+  <Exp>
+    <Tecnicas />
+  </Exp>
+);
+
+export default TecnicasWithExp;
