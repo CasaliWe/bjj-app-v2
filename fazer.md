@@ -1,9 +1,8 @@
 ### FAZER:
 
 ** Geral **
-- fazer .env funcionar em .js (no login.js está key sem .env);
 - colocar turns em todos os lugares com form;
-- fazer cookies service;
+- fazer avisos do sistema;
 - fazer o id ser a letra + 4 numero sequnciais e quando chegar no limite ai random;
 - anotar todos os lugares que tem apresentação do app;
 - anotar dependencias na doc;
@@ -24,4 +23,7 @@
 - criar conta email para centralizar tudo;
 - criar conta google cloud para pegar a key;
 - criar conta cloud flare para pegar key;
-- 
+- criar notion para organizar tudo;
+
+- fazer sorteio;
+- link indicação;
