@@ -37,6 +37,7 @@ export const UserProvider = ({ children }) => {
       primeiroAcesso: false,
       plano: 'Plus',
       vencimento: '10/10/2025',
+      exp: 1500,
       bjj_id: 'w0001'
     });
 

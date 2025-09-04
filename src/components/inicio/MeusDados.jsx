@@ -44,7 +44,8 @@ export function MeusDados({user, treinosDados}) {
                         <p className="text-[10px] font-light mb-2">ID: {user.bjj_id}</p>
                         <h3 className="font-semibold text-lg mb-0">{user.nome}</h3>
                         <p className="mb-1 text-sm">{user.idade} Anos</p>
-                        <p className="text-sm text-bjj-gold">Faixa {user.faixa}</p>
+                        <p className="mb-1 text-sm text-bjj-gold">Faixa {user.faixa}</p>
+                        <p className="mb-2 text-[12px] text-gray-400">Exp: {user.exp} pontos</p>
                         <div className="flex space-x-2 mt-2">
                             {user.instagram && (
                             <a href={`${user.instagram}`} target="_blank" rel="noopener noreferrer">

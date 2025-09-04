@@ -1,6 +1,7 @@
 ### FAZER:
 
 ** Geral **
+- fazer busca por user, e mostrar perfil caso seja publico;
 - colocar turns em todos os lugares com form;
 - fazer o id ser a letra + 4 numero sequnciais e quando chegar no limite ai random;
 - anotar todos os lugares que tem apresentação do app;
