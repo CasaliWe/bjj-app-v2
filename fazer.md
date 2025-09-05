@@ -26,3 +26,5 @@
 
 - fazer sorteio;
 - link indicação;
+
+- Ver referencias no instagram pra conteúdo de divulgação;
