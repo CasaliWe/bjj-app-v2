@@ -1,6 +1,11 @@
 ### FAZER:
 
 ** Geral **
+- adicionar wpp;
+- fazer parte de verificar wpp;
+- banner info inicial;
+- voz bruce buffer;
+- metricas semanais e mensais via agente wpp;
 - fazer busca por user, e mostrar perfil caso seja publico;
 - colocar turns em todos os lugares com form;
 - fazer o id ser a letra + 4 numero sequnciais e quando chegar no limite ai random;

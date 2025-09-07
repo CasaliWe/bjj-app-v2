@@ -17,6 +17,8 @@ export const UserProvider = ({ children }) => {
       id: 1,
       nome: 'Weslei Pinto',
       email: 'weslei.casali@example.com',
+      whatsapp: '(54) 9 9153-8488',
+      whatsapp_verificado: true,
       idade: 28,
       peso: 75,
       faixa: 'Azul',
