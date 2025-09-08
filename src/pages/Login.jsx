@@ -9,6 +9,8 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
 import { login, loginGoogle } from "@/services/auth/login";
+import {setAuthToken} from "@/services/cookies/cookies";
+
 
 
 const Login = () => {
@@ -28,16 +30,13 @@ const Login = () => {
     
     try {
       // lógica de autenticação
-      await login(email, password);
-      
-      // Simulação de erro - remover isso quando implementar a autenticação real
-      // e substituir pela lógica de verificação da resposta da API
-      if (email === "erro@teste.com") {
-        throw new Error("E-mail ou senha incorretos. Por favor, tente novamente.");
+      const response = await login(email, password);
+      if(response.success){
+        setAuthToken(response.data.token);
+        navigate("/app");
+      }else{
+        throw new Error(response.message || "E-mail ou senha incorretos. Por favor, tente novamente.");
       }
-      
-      // Se autenticação for bem-sucedida, navega para o dashboard
-      navigate("/app");
     } catch (error) {
       setLoginError(error.message || "Erro ao fazer login! Verifique os dados.");
     } finally {

@@ -1,5 +1,9 @@
 import { createContext, useState, useContext, useEffect } from 'react';
 
+import {getAuthToken} from "@/services/cookies/cookies";
+
+const URL = import.meta.env.VITE_API_URL;
+
 // Criando o contexto
 const UserContext = createContext();
 
@@ -12,48 +16,35 @@ export const UserProvider = ({ children }) => {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    // Dados mockados para desenvolvimento
-    setUser({
-      id: 1,
-      nome: 'Weslei Pinto',
-      email: 'weslei.casali@example.com',
-      whatsapp: '(54) 9 9153-8488',
-      whatsapp_verificado: true,
-      idade: 28,
-      peso: 75,
-      faixa: 'Azul',
-      imagem: 'user.jpeg',
-      telefone: '(11) 98765-4321',
-      instagram: '@instagram',
-      tiktok: '@tiktok',
-      youtube: '@youtube',
-      perfilPublico: 'Fechado',
-      academia: 'Gracie Barra',
-      cidade: 'São Paulo',
-      estado: 'SP',
-      pais: 'Brasil',
-      estilo: 'Guardeiro',
-      competidor: 'Sim',
-      finalizacao: 'Triângulo',
-      bio: 'Praticante de Jiu-Jitsu há 3 anos, focado em competições e desenvolvimento técnico. Especialista em guarda e jogo de lapela. Buscando evoluir em raspagens e finalizações.',
-      primeiroAcesso: false,
-      plano: 'Plus',
-      vencimento: '10/10/2025',
-      exp: 1500,
-      bjj_id: 'w0001'
-    });
-
-    // AQUI: Faça a chamada para a API para receber os dados do usuário
-    // Exemplo:
-    // const fetchUserData = async () => {
-    //   try {
-    //     const response = await api.get('/user');
-    //     setUser(response.data);
-    //   } catch (error) {
-    //     console.error('Erro ao buscar dados do usuário:', error);
-    //   }
-    // };
-    // fetchUserData();
+    // buscando dados do user na API
+    const fetchUserData = async () => {
+      try {
+        if(getAuthToken()){
+          const response = await fetch(`${URL}/endpoint/auth/user.php`, {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${getAuthToken()}`
+            }
+          });
+          const data = await response.json();
+          if(data.success){
+            setUser(data.data);
+          }else{
+            setUser(null);
+            console.error('Erro ao buscar dados do usuário:', data.message);
+            window.location.href = '/login';
+          }
+        }else{
+          setUser(null);
+          console.error('Usuário não autenticado');
+          window.location.href = '/login'; 
+        }
+      } catch (error) {
+        console.error('Erro ao buscar dados do usuário:', error);
+      }
+    };
+    fetchUserData();
   }, []);
 
   // Valores e funções que serão disponibilizados pelo contexto

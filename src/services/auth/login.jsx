@@ -1,35 +1,20 @@
 // Configurações para autenticação com Google
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID; 
+const URL = import.meta.env.VITE_API_URL; 
+
 
 // LOGIN COM EMAIL E SENHA ****************************
-export const login = async (email, password) => {
+export const login = async (email, senha) => {
   try {
-    // Aqui você implementará a requisição para sua API PHP
-    // Exemplo:
-    // const response = await fetch('sua-api-php/auth/login', {
-    //   method: 'POST',
-    //   headers: {
-    //     'Content-Type': 'application/json',
-    //   },
-    //   body: JSON.stringify({ email, password }),
-    // });
-    // 
-    // if (!response.ok) {
-    //   const errorData = await response.json();
-    //   throw new Error(errorData.message || 'Erro ao fazer login');
-    // }
-    // 
-    // const userData = await response.json();
-    // return userData;
-    
-    console.log("Login com:", { email, password });
-    
-    // Simulação temporária (remover quando implementar a API)
-    return {
-      id: 1,
-      name: "Usuário Teste",
-      email: email
-    };
+      const response = await fetch(`${URL}endpoint/auth/login.php`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, senha }),
+      });
+      const data = await response.json();
+      return data;
   } catch (error) {
     console.error("Erro no login:", error.message);
     throw error;
