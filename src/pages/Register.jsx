@@ -9,6 +9,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
 import {loginGoogle} from "@/services/auth/login";
+import {cadastrar} from "@/services/auth/register";
 
 const Register = () => {
   const navigate = useNavigate();
@@ -209,14 +210,7 @@ const Register = () => {
     
     setIsLoading(true);
     
-    try {
-      // Simulação de verificação de email já cadastrado (remover quando integrar com API real)
-      if (email === "erro@teste.com") {
-        setErrors(prev => ({ ...prev, email: "Este e-mail já está cadastrado" }));
-        resetTurnstile();
-        return;
-      }
-      
+    try {      
       // Dados para enviar à API
       const userData = {
         username,
@@ -224,31 +218,24 @@ const Register = () => {
         password,
         turnstileToken
       };
-      
-      console.log("Dados de registro:", userData);
-      
-      // Aqui você implementará a requisição para sua API PHP
-      // Exemplo:
-      // const response = await fetch('sua-api-php/auth/register', {
-      //   method: 'POST',
-      //   headers: {
-      //     'Content-Type': 'application/json',
-      //   },
-      //   body: JSON.stringify(userData),
-      // });
-      // 
-      // const data = await response.json();
-      // 
-      // if (!response.ok) {
-      //   throw new Error(data.message || 'Erro ao registrar');
-      // }
-      
-      // Após registro bem-sucedido
-      navigate("/app");
+
+      const response = await cadastrar(userData);
+
+      if(response.success){
+        // salvar token e levar para /app ****************************************
+        console.log("Resposta do cadastro:", response);
+        // navigate("/app");
+      }else{
+        setErrors(prev => ({ 
+          ...prev, 
+          general: response.message || "Erro ao criar conta. Tente novamente mais tarde."
+        }));
+        resetTurnstile();
+      }
     } catch (error) {
       setErrors(prev => ({ 
         ...prev, 
-        general: error.message || "Erro ao criar conta. Tente novamente mais tarde." 
+        general: "Erro ao criar conta. Tente novamente mais tarde." 
       }));
       resetTurnstile();
     } finally {
