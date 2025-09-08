@@ -48,63 +48,64 @@ const menuItems = [  {
     description: "Competições participadas"
   },
   {
-    title: "Objetivos",
-    url: "/objetivos",
-    icon: Target,
-    description: "Metas e progresso"
-  },
-  {
     title: "Observações Gerais",
     url: "/observacoes",
     icon: FileText,
     description: "Notas e observações"
-  },  {
-    title: "Plano de Jogo",
-    url: "/plano-de-jogo",
-    icon: Gamepad2,
-    description: "Estratégia para a luta"
-  },
-  {
-    title: "Vídeos",
-    url: "/videos",
-    icon: Video,
-    description: "Vídeos sobre Jiu-Jitsu"
-  },
-  {
-    title: "Notícias",
-    url: "/noticias",
-    icon: Newspaper,
-    description: "Notícias de esportes de combate"
-  },
-  {
-    title: "Métricas",
-    url: "/metricas",
-    icon: LineChart,
-    description: "Estatísticas do usuário"
-  },  {
-    title: "Dojo Market",
-    url: "/dojo-market",
-    icon: ShoppingBag,
-    description: "Compra e venda de equipamentos"
-  },
-  {
-    title: "Drills",
-    url: "/drills",
-    icon: Dumbbell,
-    description: "Vídeos ensinando drills"
-  },
-  {
-    title: "Alongamentos",
-    url: "/alongamentos",
-    icon: Layers,
-    description: "Vídeos de alongamentos"
-  },
-  {
-    title: "I.A Sensei",
-    url: "/ia-sensei",
-    icon: Bot,
-    description: "Chat com Inteligência Artificial"
-  },
+  }, 
+  // {
+  //   title: "Objetivos",
+  //   url: "/objetivos",
+  //   icon: Target,
+  //   description: "Metas e progresso"
+  // }, 
+  // {
+  //   title: "Plano de Jogo",
+  //   url: "/plano-de-jogo",
+  //   icon: Gamepad2,
+  //   description: "Estratégia para a luta"
+  // },
+  // {
+  //   title: "Vídeos",
+  //   url: "/videos",
+  //   icon: Video,
+  //   description: "Vídeos sobre Jiu-Jitsu"
+  // },
+  // {
+  //   title: "Notícias",
+  //   url: "/noticias",
+  //   icon: Newspaper,
+  //   description: "Notícias de esportes de combate"
+  // },
+  // {
+  //   title: "Métricas",
+  //   url: "/metricas",
+  //   icon: LineChart,
+  //   description: "Estatísticas do usuário"
+  // },  {
+  //   title: "Dojo Market",
+  //   url: "/dojo-market",
+  //   icon: ShoppingBag,
+  //   description: "Compra e venda de equipamentos"
+  // },
+  // {
+  //   title: "Drills",
+  //   url: "/drills",
+  //   icon: Dumbbell,
+  //   description: "Vídeos ensinando drills"
+  // },
+  // {
+  //   title: "Alongamentos",
+  //   url: "/alongamentos",
+  //   icon: Layers,
+  //   description: "Vídeos de alongamentos"
+  // },
+  // {
+  //   title: "I.A Sensei",
+  //   url: "/ia-sensei",
+  //   icon: Bot,
+  //   description: "Chat com Inteligência Artificial"
+  // },
 ];
 
 export function AppSidebar() {
