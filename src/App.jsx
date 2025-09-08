@@ -2,9 +2,10 @@
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { PWAInstallPrompt } from "@/components/PWAInstallPrompt";
 import TitleUpdater from "@/components/TitleUpdater";
+import { isAuthenticated } from "./services/cookies/cookies";
 
 // CONTEXTS
 import { UserProvider } from "./contexts/UserContext";
@@ -42,6 +43,33 @@ import Alongamentos from "./pages/Alongamentos";
 
 const queryClient = new QueryClient();
 
+// Componente para rotas privadas ****************
+const PrivateRoute = ({ children }) => {
+  // Usa a função isAuthenticated do serviço de cookies
+  const isAuth = isAuthenticated();
+  
+  // Se não estiver autenticado, redireciona para login
+  if (!isAuth) {
+    return <Navigate to="/login" replace />;
+  }
+  
+  // Se estiver autenticado, permite o acesso à rota
+  return children;
+};
+
+// Componente para rotas públicas que usuários logados não devem acessar ****************
+const AuthRedirectRoute = ({ children }) => {
+  // Usa a função isAuthenticated do serviço de cookies
+  const isAuth = isAuthenticated();
+  
+  // Se estiver autenticado, redireciona para a página principal da aplicação
+  if (isAuth) {
+    return <Navigate to="/app" replace />;
+  }
+  
+  // Se não estiver autenticado, permite o acesso à rota pública
+  return children;
+};
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
@@ -53,31 +81,37 @@ const App = () => (
         <BrowserRouter>        
           <TitleUpdater />
           <Routes>
+            {/* Rotas privadas - Requerem autenticação */}
+            <Route path="/app" element={<PrivateRoute><Index /></PrivateRoute>} />
+            <Route path="/perfil" element={<PrivateRoute><UserProfile /></PrivateRoute>} />
+            <Route path="/tecnicas" element={<PrivateRoute><Tecnicas /></PrivateRoute>} />
+            <Route path="/treinos" element={<PrivateRoute><Treinos /></PrivateRoute>} />
+            <Route path="/competicoes" element={<PrivateRoute><Competicoes /></PrivateRoute>} />
+            <Route path="/observacoes" element={<PrivateRoute><Observacoes /></PrivateRoute>} />
+            
+            {/* Rotas públicas com redirecionamento para usuários autenticados */}
+            <Route path="/login" element={<AuthRedirectRoute><Login /></AuthRedirectRoute>} />
+            <Route path="/register" element={<AuthRedirectRoute><Register /></AuthRedirectRoute>} />
+            <Route path="/recuperar-senha" element={<AuthRedirectRoute><PasswordRecovery /></AuthRedirectRoute>} />
+            
+            {/* Rotas públicas que podem ser acessadas por todos */}
             <Route path="/" element={<LandingPage />} />
-            <Route path="/app" element={<Index />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
-            <Route path="/recuperar-senha" element={<PasswordRecovery />} />
             <Route path="/termos-de-uso" element={<TermsOfUse />} />
             <Route path="/politica-de-privacidade" element={<PrivacyPolicy />} />
             <Route path="/suporte" element={<Support />} />
             <Route path="/sobre-nos" element={<AboutUs />} />
             <Route path="/contato" element={<Contact />} />
-            <Route path="/perfil" element={<UserProfile />} />
-            <Route path="/ia-sensei" element={<IASensei />} />
-            <Route path="/tecnicas" element={<Tecnicas />} />
-            <Route path="/treinos" element={<Treinos />} />
-            <Route path="/competicoes" element={<Competicoes />} />
-            <Route path="/objetivos" element={<Objetivos />} />
-            <Route path="/observacoes" element={<Observacoes />} />
-            <Route path="/plano-de-jogo" element={<PlanoDeJogo />} />
+            <Route path="*" element={<NotFound />} />
+
+            {/* <Route path="/plano-de-jogo" element={<PlanoDeJogo />} />
             <Route path="/videos" element={<Videos />} />
             <Route path="/noticias" element={<Noticias />} />
             <Route path="/metricas" element={<Metricas />} />
             <Route path="/dojo-market" element={<DojoMarket />} />
             <Route path="/drills" element={<Drills />} />
             <Route path="/alongamentos" element={<Alongamentos />} />
-            <Route path="*" element={<NotFound />} />
+            <Route path="/objetivos" element={<Objetivos />} />
+            <Route path="/ia-sensei" element={<IASensei />} /> */}
           </Routes>
         </BrowserRouter>
       </TooltipProvider>

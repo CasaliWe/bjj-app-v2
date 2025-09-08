@@ -10,6 +10,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 
 import {loginGoogle} from "@/services/auth/login";
 import {cadastrar} from "@/services/auth/register";
+import {setAuthToken} from "@/services/cookies/cookies";
 
 const Register = () => {
   const navigate = useNavigate();
@@ -223,8 +224,8 @@ const Register = () => {
 
       if(response.success){
         // salvar token e levar para /app ****************************************
-        console.log("Resposta do cadastro:", response);
-        // navigate("/app");
+        setAuthToken(response.data.token);
+        navigate("/app");
       }else{
         setErrors(prev => ({ 
           ...prev, 
