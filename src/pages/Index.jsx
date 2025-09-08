@@ -25,6 +25,9 @@ import WelcomeModal from "@/components/welcome/WelcomeModal";
 // Sistema components
 import AvisoModal from "@/components/sistema/AvisoModal";
 
+// hooks
+import { useGetUser } from "@/hooks/use-getUser";
+
 
 
 const Index = () => {
@@ -36,6 +39,9 @@ const Index = () => {
   const [metrics, setMetrics] = useState(null);
   const [treinosDados, setTreinosDados] = useState(null);
   const [recentActivities, setRecentActivities] = useState([]);
+
+  // Hook para buscar dados do usuário
+  const { fetchUserData } = useGetUser();
   
   // Função para abrir o modal de objetivos
   const abrirModal = () => setIsModalOpen(true);
@@ -152,22 +158,8 @@ const Index = () => {
       observacoesMes: "8"
     });
     
-    // Buscando dados da API (exemplo para implementação futura)
-    // const fetchData = async () => {
-    //   try {     
-    //     const treinosResponse = await api.get('/treinos');
-    //     setTreinosDados(treinosResponse.data);
-    //     
-    //     const atividadesResponse = await api.get('/atividades');
-    //     setRecentActivities(atividadesResponse.data);
-    //     
-    //     const metricsResponse = await api.get('/metrics');
-    //     setMetrics(metricsResponse.data);
-    //   } catch (error) {
-    //     console.error('Erro ao buscar dados:', error);
-    //   }
-    // };
-    // fetchData();
+    // Buscar dados do usuário
+    fetchUserData();
   }, []);
 
 

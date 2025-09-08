@@ -71,8 +71,8 @@ export function MeusDados({user, treinosDados}) {
                             <span className="col-span-2">{user.email}</span>
                         </div>
                         <div className="grid grid-cols-3 gap-2 items-center">
-                            <span className="text-muted-foreground">Telefone:</span>
-                            <span className="col-span-2">{user.telefone}</span>
+                            <span className="text-muted-foreground">Whatsapp:</span>
+                            <span className="col-span-2">{user.whatsapp}</span>
                         </div>
                         <div className="grid grid-cols-3 gap-2 items-center">
                             <span className="text-muted-foreground">Peso:</span>

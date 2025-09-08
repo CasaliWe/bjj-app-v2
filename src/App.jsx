@@ -73,12 +73,12 @@ const AuthRedirectRoute = ({ children }) => {
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <UserProvider>
-      <TooltipProvider>
-        <PWAInstallPrompt />
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>        
+    <BrowserRouter>
+      <UserProvider>
+        <TooltipProvider>
+          <PWAInstallPrompt />
+          <Toaster />
+          <Sonner />      
           <TitleUpdater />
           <Routes>
             {/* Rotas privadas - Requerem autenticação */}
@@ -113,9 +113,9 @@ const App = () => (
             <Route path="/objetivos" element={<Objetivos />} />
             <Route path="/ia-sensei" element={<IASensei />} /> */}
           </Routes>
-        </BrowserRouter>
-      </TooltipProvider>
-    </UserProvider>
+        </TooltipProvider>
+      </UserProvider>
+    </BrowserRouter>
   </QueryClientProvider>
 );
 

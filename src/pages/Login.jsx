@@ -32,7 +32,7 @@ const Login = () => {
       // lógica de autenticação
       const response = await login(email, password);
       if(response.success){
-        setAuthToken(response.data.token);
+        setAuthToken(response.token);
         navigate("/app");
       }else{
         throw new Error(response.message || "E-mail ou senha incorretos. Por favor, tente novamente.");
@@ -44,7 +44,7 @@ const Login = () => {
     }
   };
   
-  // Login com Google 
+  // Login com Google **********************************************
   const handleGoogleLogin = async () => {
     setIsLoading(true);
     setLoginError("");

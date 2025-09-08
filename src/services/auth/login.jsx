@@ -66,12 +66,9 @@ const initializeGoogleLogin = (resolve, reject) => {
     scope: "email profile",
     ux_mode: "popup",
     callback: (response) => {
-      if (response.code) {
-        console.log("Código dentro do login.js:", response.code);
-        
-        // enviar para api e fazer o processo jwt ***************************************
-        
-        resolve(true);
+      if (response.code) {        
+        // retornando o código de autorização para o chamador da função *******************
+        resolve(response.code);
       } else {
         reject(new Error("Falha ao obter código de autorização do Google"));
       }

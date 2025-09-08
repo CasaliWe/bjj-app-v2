@@ -57,9 +57,9 @@ const Register = () => {
       
       isCheckingToken = false;
     };
-    
-    // Iniciar verificação periódica (a cada 500ms)
-    const tokenInterval = setInterval(checkTurnstileToken, 500);
+
+    // Iniciar verificação periódica (a cada 1000ms)
+    const tokenInterval = setInterval(checkTurnstileToken, 1000);
     
     // Configurar um MutationObserver para detectar mudanças no DOM
     const observer = new MutationObserver((mutations) => {
@@ -223,8 +223,8 @@ const Register = () => {
       const response = await cadastrar(userData);
 
       if(response.success){
-        // salvar token e levar para /app ****************************************
-        setAuthToken(response.data.token);
+        // Armazenar o token de autenticação
+        setAuthToken(response.token);
         navigate("/app");
       }else{
         setErrors(prev => ({ 
@@ -244,7 +244,7 @@ const Register = () => {
     }
   };
   
-  // Login com Google
+  // Login com Google **************************************************
   const handleGoogleLogin = async () => {
     setIsLoading(true);
     setErrors(prev => ({ ...prev, general: "" }));
