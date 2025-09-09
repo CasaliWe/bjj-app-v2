@@ -1,18 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "../ui/dialog";
 import { Button } from "../ui/button";
 import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
 import { Label } from "../ui/label";
-import { QrCode, CheckCircle, LockKeyhole, Calendar, ArrowRight, RotateCcw } from "lucide-react";
+import { Input } from "../ui/input";
+import { QrCode, CheckCircle, LockKeyhole, Calendar, ArrowRight, RotateCcw, User } from "lucide-react";
 import { useUser } from "@/contexts/UserContext";
 
-/**
- * Componente de Assinatura para gerenciar pagamentos via Asaas (apenas PIX)
- * 
- * Este componente renderiza um botão que abre um modal para pagamento de mensalidade
- * usando PIX via integração com a API do Asaas.
- * 
- */
+import { getAuthToken } from '@/services/cookies/cookies';
+
+
+
 const Assinatura = () => {
   // Obter dados do usuário do contexto global
   const { user } = useUser();
@@ -22,9 +20,11 @@ const Assinatura = () => {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [pixCopied, setPixCopied] = useState(false);
-  const [step, setStep] = useState('select-plan'); // 'select-plan', 'show-pix', 'success'
+  const [step, setStep] = useState('cpf-input'); // 'cpf-input', 'select-plan', 'show-pix', 'success'
   const [selectedPlan, setSelectedPlan] = useState('1');
   const [pixDadosApi, setPixDadosApi] = useState(null);
+  const [cpf, setCpf] = useState('');
+  const [cpfError, setCpfError] = useState('');
 
   // Dados dos planos
   const plans = {
@@ -59,39 +59,119 @@ const Assinatura = () => {
   };
 
   // buscando qrcode **********************************************
-  const generatePixQrCode = () => {
+  const generatePixQrCode = async () => {
     setLoading(true);
-    
-    // Simulação de chamada à API - substituir com chamada real
-    setTimeout(() => {
-      console.log('Plano selecionado:', plans[selectedPlan].months);
-      console.log(' Valor:', plans[selectedPlan].totalPrice);
 
-      // faz o fecth aqui....
+    // monta os dados para enviar para a API
+    const apiData = {
+      cpf: cpf.replace(/\D/g, ''),
+      valor: plans[selectedPlan].totalPrice,
+      meses: plans[selectedPlan].months
+    };
 
-      // salva oq a api retornou
-      setPixDadosApi({
-        key: 'sdoifdoiwfsdifhiosdifhsdf',
-        qrcode: 'qrcode123456',
-        id_processo: 'processo123456'
+    // fazendo a chamada para a API
+    try {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}endpoint/asaas/gerar-pix.php`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${getAuthToken()}`
+        },
+        body: JSON.stringify(apiData)
       });
-
+      const data = await response.json();
+      if(data.success){
+          // salva oq a api retornou
+          setPixDadosApi({
+            key: data.pixCode,
+            qrcode: data.qrcode,
+            id_processo: data.pix_id
+         });
+          setStep('show-pix');
+          setLoading(false);
+      }else{
+        console.error("Erro na resposta da API:", data.message);
+        setLoading(false);
+      }
+    } catch (error) {
+      console.error("Erro na requisição da API:", error);
       setLoading(false);
-      setStep('show-pix');
-    }, 1500);
+    }
+  };
+
+
+  // verificando pagamento *****************************************
+  const checkPaymentStatus = async () => {
+    setLoading(true);
+
+    // fazendo a chamada para a API
+    try {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}endpoint/asaas/verificar-pagamento.php`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${getAuthToken()}`
+        },
+        body: JSON.stringify({ id: pixDadosApi.id_processo })
+      });
+      const data = await response.json();
+      if(data.success){
+          if(data.pagamento){
+            setLoading(false);
+            setSuccess(true);
+          }else{
+            alert("Pagamento ainda não confirmado. Por favor, aguarde alguns instantes e tente novamente.");
+            setLoading(false);
+          }
+      }else{
+        console.error("Erro na resposta da API:", data.message);
+        setLoading(false);
+      }
+    } catch (error) {
+      console.error("Erro na requisição da API:", error);
+      setLoading(false);
+    }
   };
   
+
+  // Função para aplicar a máscara do CPF
+  const handleCpfChange = (e) => {
+    let value = e.target.value;
+    // Remove todos os caracteres não numéricos
+    value = value.replace(/\D/g, '');
+    
+    // Aplica a máscara xxx.xxx.xxx-xx
+    if (value.length <= 11) {
+      value = value.replace(/^(\d{3})(\d)/g, '$1.$2');
+      value = value.replace(/^(\d{3})\.(\d{3})(\d)/g, '$1.$2.$3');
+      value = value.replace(/\.(\d{3})(\d)/g, '.$1-$2');
+    }
+    
+    setCpf(value);
+    // Limpa o erro quando o usuário digita
+    if (cpfError) setCpfError('');
+  };
   
-  // verificando pagamento *****************************************
-  const checkPaymentStatus = () => {
-    setLoading(true);
+  // Função para verificar se o CPF tem o formato correto
+  const validateCpf = () => {
+    // Verifica se há 11 dígitos numéricos
+    const cpfNumeros = cpf.replace(/\D/g, '');
     
-    // faz a chama a api....
+    if (cpfNumeros.length !== 11) {
+      setCpfError('CPF deve conter 11 dígitos');
+      return false;
+    }
     
-    setTimeout(() => {
-      setLoading(false);
-      setSuccess(true);
-    }, 1500);
+    // Validação básica apenas para garantir que o formato está correto
+    return true;
+  };
+  
+  // Função para prosseguir para a seleção de plano após validar o CPF
+  const handleCpfSubmit = () => {
+    const isValid = validateCpf();
+    if (isValid) {
+      setStep('select-plan');
+    }
   };
 
 
@@ -117,9 +197,11 @@ const Assinatura = () => {
     
     // Reset do estado após fechar o modal
     setTimeout(() => {
-      setStep('select-plan');
+      setStep('cpf-input');
       setSuccess(false);
       setSelectedPlan('1');
+      setCpf('');
+      setCpfError('');
     }, 300);
   };
 
@@ -136,7 +218,7 @@ const Assinatura = () => {
             <Button 
               onClick={() => {
                 setOpen(true);
-                setStep('select-plan');
+                setStep('cpf-input');
               }}
               className="flex items-center gap-2 bg-green-600 hover:bg-green-700 w-full"
             >
@@ -148,7 +230,7 @@ const Assinatura = () => {
           <Button 
             onClick={() => {
               setOpen(true);
-              setStep('select-plan');
+              setStep('cpf-input');
             }}
             className="flex items-center gap-2 bg-purple-600 hover:bg-purple-700"
           >
@@ -164,8 +246,10 @@ const Assinatura = () => {
         if (!isOpen) {
           setOpen(false);
           setTimeout(() => {
-            setStep('select-plan');
+            setStep('cpf-input');
             setSuccess(false);
+            setCpf('');
+            setCpfError('');
           }, 300);
         }
       }}>
@@ -176,6 +260,11 @@ const Assinatura = () => {
                 <>
                   <CheckCircle className="w-5 h-5 text-green-500" />
                   Pagamento Confirmado!
+                </>
+              ) : step === 'cpf-input' ? (
+                <>
+                  <User className="w-5 h-5 text-purple-500" />
+                  Identificação do Cliente
                 </>
               ) : step === 'select-plan' ? (
                 <>
@@ -212,6 +301,38 @@ const Assinatura = () => {
                 onClick={handleFinish}
               >
                 Continuar para o Dashboard
+              </Button>
+            </div>
+          ) : step === 'cpf-input' ? (
+            // Tela de entrada de CPF
+            <div className="flex flex-col items-center py-2">
+              <p className="text-sm text-center mb-4">
+                Informe seu CPF para prosseguir com a assinatura:
+              </p>
+              
+              <div className="w-full mb-4">
+                <Label htmlFor="cpf" className="text-sm mb-1 block">CPF</Label>
+                <Input
+                  id="cpf"
+                  type="text"
+                  placeholder="000.000.000-00"
+                  value={cpf}
+                  onChange={handleCpfChange}
+                  maxLength={14}
+                  className={`w-full ${cpfError ? 'border-red-500' : ''}`}
+                />
+                {cpfError && (
+                  <p className="text-xs text-red-500 mt-1">{cpfError}</p>
+                )}
+              </div>
+              
+              <Button 
+                className="w-full" 
+                onClick={handleCpfSubmit}
+                disabled={cpf.replace(/\D/g, '').length !== 11}
+              >
+                Continuar
+                <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
             </div>
           ) : step === 'select-plan' ? (
@@ -288,13 +409,21 @@ const Assinatura = () => {
               
               {loading ? (
                 // Estado de carregamento
-                <div className="w-36 h-36 bg-gray-100 flex items-center justify-center mb-4 rounded-lg">
+                <div className="w-48 h-48 bg-gray-100 flex items-center justify-center mb-4 rounded-lg">
                   <div className="animate-spin w-8 h-8 border-2 border-purple-500 border-t-transparent rounded-full"></div>
                 </div>
               ) : (
                 // QR Code
-                <div className="w-48 h-48 bg-gray-100 flex items-center justify-center mb-4 rounded-lg">
-                  <QrCode className="w-20 h-20 text-gray-400" />
+                <div className="w-48 h-48 bg-white flex items-center justify-center mb-4 rounded-lg border border-gray-200 overflow-hidden">
+                  {pixDadosApi && pixDadosApi.qrcode ? (
+                    <img 
+                      src={`data:image/png;base64,${pixDadosApi.qrcode}`}
+                      alt="QR Code PIX" 
+                      className="w-full h-full object-contain"
+                    />
+                  ) : (
+                    <QrCode className="w-20 h-20 text-gray-400" />
+                  )}
                 </div>
               )}
               
@@ -382,7 +511,7 @@ const Assinatura = () => {
             </div>
           )}
           
-          {!success && step === 'select-plan' && (
+          {!success && step === 'cpf-input' && (
             <DialogFooter className="pt-2">
               <Button 
                 variant="outline" 
@@ -392,6 +521,30 @@ const Assinatura = () => {
               >
                 Cancelar
               </Button>
+            </DialogFooter>
+          )}
+          
+          {!success && step === 'select-plan' && (
+            <DialogFooter className="pt-2">
+              <div className="w-full flex gap-2">
+                <Button 
+                  variant="outline" 
+                  onClick={() => setStep('cpf-input')}
+                  className="flex-1"
+                  size="sm"
+                >
+                  <RotateCcw className="w-3 h-3 mr-1" />
+                  Voltar
+                </Button>
+                <Button 
+                  variant="outline" 
+                  onClick={() => setOpen(false)}
+                  className="flex-1"
+                  size="sm"
+                >
+                  Cancelar
+                </Button>
+              </div>
             </DialogFooter>
           )}
         </DialogContent>

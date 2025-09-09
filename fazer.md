@@ -1,5 +1,6 @@
 ### PENDENTE:
 
+
 - pagamento api;
 - modal boas vindas;
 - objetivos, treinos, competicoes /app;
