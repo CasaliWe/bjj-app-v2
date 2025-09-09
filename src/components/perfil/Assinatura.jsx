@@ -58,7 +58,7 @@ const Assinatura = () => {
     }
   };
 
-  // buscando qrcode *****************************
+  // buscando qrcode **********************************************
   const generatePixQrCode = () => {
     setLoading(true);
     
@@ -81,6 +81,19 @@ const Assinatura = () => {
     }, 1500);
   };
   
+  
+  // verificando pagamento *****************************************
+  const checkPaymentStatus = () => {
+    setLoading(true);
+    
+    // faz a chama a api....
+    
+    setTimeout(() => {
+      setLoading(false);
+      setSuccess(true);
+    }, 1500);
+  };
+
 
   // Função para copiar a chave PIX para a área de transferência
   const handleCopyPix = () => {    
@@ -95,18 +108,7 @@ const Assinatura = () => {
       });
   };
   
-  // verificando pagamento *****************************************
-  const checkPaymentStatus = () => {
-    setLoading(true);
-    
-    // faz a chama a api....
-    
-    setTimeout(() => {
-      setLoading(false);
-      setSuccess(true);
-    }, 1500);
-  };
-  
+
   // redirecionando para a dashboard
   const handleFinish = () => {
     setOpen(false);
@@ -129,7 +131,7 @@ const Assinatura = () => {
           <div className="w-full">
             <div className="bg-white border border-gray-200 rounded-md p-3 mb-3 text-center">
               <p className="text-sm font-medium text-green-600">Plano Plus Ativo</p>
-              <p className="text-xs text-gray-500">Válido até {user.vencimento}</p>
+              <p className="text-xs text-gray-500">Válido até {new Date(user.vencimento).toLocaleDateString("pt-BR")}</p>
             </div>
             <Button 
               onClick={() => {
@@ -196,7 +198,7 @@ const Assinatura = () => {
               <p className="text-center mb-2 font-medium">
                 Seu pagamento foi processado com sucesso!
               </p>
-              <div className="bg-green-50 p-3 rounded-md mb-3 text-center">
+              <div className="bg-gray-700 p-3 rounded-md mb-3 text-center">
                 <p className="text-sm">
                   <span className="font-medium">Plano contratado:</span> {plans[selectedPlan].label}
                 </p>
@@ -225,7 +227,7 @@ const Assinatura = () => {
                 onValueChange={setSelectedPlan}
               >
                 {Object.entries(plans).map(([key, plan]) => (
-                  <div key={key} className="flex items-center space-x-2 border p-3 rounded-md mb-2 hover:bg-gray-50 cursor-pointer">
+                  <div key={key} className="flex items-center space-x-2 border p-3 rounded-md mb-2 hover:bg-gray-700 cursor-pointer">
                     <RadioGroupItem value={key} id={`plan-${key}`} />
                     <Label 
                       htmlFor={`plan-${key}`}
