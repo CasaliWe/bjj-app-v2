@@ -67,8 +67,26 @@ const initializeGoogleLogin = (resolve, reject) => {
     ux_mode: "popup",
     callback: (response) => {
       if (response.code) {        
-        // retornando o código de autorização para o chamador da função *******************
-        resolve(response.code);
+        // req para api ******************************************************
+        fetch(`${URL}endpoint/auth/loginGoogle.php`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ token: response.code }),
+        })
+        .then(res => res.json())
+        .then(data => {
+          if (data.success) {
+            resolve(data.token);
+          } else {
+            reject(new Error(data.message || "Erro ao fazer login com Google"));
+          }
+        })
+        .catch(error => {
+          console.error("Erro na requisição para a API:", error);
+          reject(error);
+        });
       } else {
         reject(new Error("Falha ao obter código de autorização do Google"));
       }
