@@ -9,6 +9,9 @@ import {
   Lock
 } from "lucide-react";
 
+import { getAuthToken } from '@/services/cookies/cookies';
+
+
 
 export function AlterarSenha() {
 
@@ -36,7 +39,7 @@ export function AlterarSenha() {
   };
   
   // ATUALIZANDO A SENHA VIA API ****************************
-  const handlePasswordSubmit = (e) => {
+  const handlePasswordSubmit = async (e) => {
     e.preventDefault();
     setPasswordError("");
     
@@ -52,26 +55,41 @@ export function AlterarSenha() {
     }
     
     setIsSubmittingPassword(true);
-    
-    // Simular uma chamada de API
-    setTimeout(() => {
-      setIsSubmittingPassword(false);
 
-      console.log("Dados da senha atualizados:", passwordData);
-
-      setPasswordSuccess(true);
-      
-      // Limpar os campos de senha
-      setPasswordData({
-        currentPassword: "",
-        newPassword: "",
-        confirmPassword: ""
+    // chamando a api para atualizar a senha
+    try {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}endpoint/user/atualizar-senha.php`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${getAuthToken()}`
+        },
+        body: JSON.stringify({
+          senha: passwordData.newPassword,
+          senha_atual: passwordData.currentPassword
+        })
       });
-      
-      setTimeout(() => {
-        setPasswordSuccess(false);
-      }, 4000);
-    }, 1500);
+      const data = await response.json();
+
+      if (data.success) {
+        setPasswordSuccess(true);
+        setPasswordData({
+          currentPassword: "",
+          newPassword: "",
+          confirmPassword: ""
+        });
+        setIsSubmittingPassword(false);
+        setTimeout(() => {
+          setPasswordSuccess(false);
+        }, 4000);
+      } else {
+        setPasswordError(data.message || "Erro ao atualizar a senha.");
+        setIsSubmittingPassword(false);
+      }
+    } catch (error) {
+      console.error("Erro na requisição:", error);
+      setPasswordError("Erro na requisição. Tente novamente.");
+    }
   };
 
 
@@ -93,9 +111,9 @@ export function AlterarSenha() {
                     type="password"
                     value={passwordData.currentPassword}
                     onChange={handlePasswordChange}
-                    required
                     className="bg-card/50 border-border/40"
                 />
+                <p className="text-[10px] text-muted-foreground">Em caso de login com Google, deixar esse campo em branco</p>
               </div>
               
               <div className="space-y-2">
