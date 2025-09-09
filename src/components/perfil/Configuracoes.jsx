@@ -28,6 +28,9 @@ import {
 
 import Assinatura from "./Assinatura";
 
+import { getAuthToken } from '@/services/cookies/cookies';
+
+
 
 export function Configuracoes({profileData, setProfileData}) {
 
@@ -48,28 +51,46 @@ export function Configuracoes({profileData, setProfileData}) {
     if (newVisibility === null) return;
     
     setIsUpdatingVisibility(true);
-    
-    // Simulação de envio para a API
-    setTimeout(() => {
-      // Chamada à API simulada para atualizar apenas a visibilidade
-      const novaVisibilidade = newVisibility ? 'Aberto' : 'Fechado';
-      console.log("Atualizando visibilidade do perfil para:", novaVisibilidade);
-      
-      // Atualiza o estado com a nova visibilidade
-      setProfileData(prev => ({
-        ...prev,
-        perfilPublico: novaVisibilidade
-      }));
-      
+
+    // fazendo a chamada para a API para atualizar a visibilidade do perfil
+    try {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}endpoint/user/atualizar-visibilidade.php`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${getAuthToken()}`
+        },
+        body: JSON.stringify({
+          perfilPublico: newVisibility ? 'Aberto' : 'Fechado'
+        })
+      });
+      const data = await response.json();
+      if(data.success){
+        // Atualiza o estado com a nova visibilidade
+        setProfileData(prev => ({
+          ...prev,
+          perfilPublico: newVisibility ? 'Aberto' : 'Fechado'
+        }));
+
+        setIsUpdatingVisibility(false);
+        setIsVisibilityModalOpen(false);
+        
+        // Exibe mensagem de sucesso
+        setVisibilitySuccess(true);
+        setTimeout(() => {
+          setVisibilitySuccess(false);
+        }, 4000);
+      }else{
+        console.error("Erro na resposta da API:", data.message);
+        setIsUpdatingVisibility(false);
+        setIsVisibilityModalOpen(false);
+      }
+    } catch (error) {
+      console.error("Erro ao atualizar visibilidade do perfil:", error);
       setIsUpdatingVisibility(false);
       setIsVisibilityModalOpen(false);
-      
-      // Exibe mensagem de sucesso
-      setVisibilitySuccess(true);
-      setTimeout(() => {
-        setVisibilitySuccess(false);
-      }, 4000);
-    }, 1500);
+    }
+  
   };
 
   return(
