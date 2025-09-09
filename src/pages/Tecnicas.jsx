@@ -54,6 +54,9 @@ import {
   Heart,
 } from "lucide-react";
 
+// hooks
+import { useGetUser } from "@/hooks/use-getUser";
+
 // upgrade
 import UpgradeModal from "@/components/upgrade/UpgradeModal";
 
@@ -193,6 +196,9 @@ const Tecnicas = () => {
     destacado: false
   });
 
+  // Hook para buscar dados do usuário
+  const { fetchUserData } = useGetUser();
+
   // Função para adicionar novo passo ou observação
   const adicionarItem = (tipo) => {
     if (tipo === "passo") {
@@ -321,6 +327,11 @@ const Tecnicas = () => {
 
   // Técnicas destacadas
   const tecnicasDestacadas = tecnicas.filter(t => t.destacado);
+
+  useEffect(() => {
+    // Buscar dados do usuário ao montar o componente
+    fetchUserData();
+  }, []);
 
   return (
     <SidebarProvider>
