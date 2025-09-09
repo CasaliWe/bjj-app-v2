@@ -1,14 +1,18 @@
 ### PENDENTE:
 
 
-- pagamento api;
-- modal boas vindas;
+*** fazendo no momento ***
 - objetivos, treinos, competicoes /app;
 - atividades recentes /app;
+- fazer o preço vir do banco;
+- banner info inicial;
+- fazer busca por user, e mostrar perfil caso seja publico;
+- aviso de 100 treino ou 10 tecnicas com exp;
 - aba tec;
 - aba treinos;
 - aba obervações;
-- aba check list;
+- aba plano de jogo;
+- aba check list com conclusão já adicionando tecnica;
 - adicionar modal block nas rotas que desejo nao ter acesso gratis;
 - pag termos e politica;
 - atualizar todos os lugares que tem aviso ou explicações de funcionamento do app;
@@ -16,26 +20,13 @@
 - sobre nós;
 - contato;
 - suporte;
-
-
+- organizar código e doc para essa primeira v;
 
 
 *** padronizar ***
-- colocar turns em todos os lugares com form;
-- fazer o id ser a letra + 4 numero sequnciais e quando chegar no limite ai random;
-- anotar todos os lugares que tem apresentação do app;
-- anotar dependencias na doc;
+- colocar turns em todos os lugares públicos com form;
 - fazer doc de tudo que for implementando;
 - colocar em url de teste, tanto api quanto front antes de ir pra prod definitiva (demo).
-
-*** fazer agora ***
-- adicionar wpp;
-- fazer parte de verificar wpp;
-- banner info inicial;
-- fazer busca por user, e mostrar perfil caso seja publico;
-- organizar rotas publicas | privadas;
-- colocar limite de criação de conta;
-- aviso de 100 treino ou 10 tecnicas com exp;
 
 
 *** funcionalidades futuras ***
@@ -51,11 +42,9 @@
 - mandar no wpp a tec do dia para o user abrir o app;
 - luta da semana incorporada do yt diretamente dentro do app;
 - timer específico para cada treino;
-- checklist de objetiovs para treinar;
 - lembrete de treinar via wpp;
 - rever técnica daquelas que já adicionou;
 - desafio da semana, forum postar video somando 1 mes ganha 1 mensalidade grátis;
-- plano de jogo;
 - notícias;
 - métricas;
 - dojo;
@@ -67,10 +56,10 @@
 - criar conta google cloud para pegar a key;
 - criar conta cloud flare para pegar key;
 - criar notion para organizar tudo;
+- configurar asaas key, url, webhook;
 - criar wpp;
 - criar instagram, tik tok, youtube;
 - email;
-- landing page;
 - posts divulgação;
 - vídeo divulgação;
 - Ver referencias no instagram pra conteúdo de divulgação;
