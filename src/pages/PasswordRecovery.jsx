@@ -151,7 +151,7 @@ const PasswordRecovery = () => {
   };
   
   // chamada para api *****************************************************
-  const handleRecovery = (e) => {
+  const handleRecovery = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
     setEmailError("");
@@ -171,30 +171,38 @@ const PasswordRecovery = () => {
       setTurnstileToken(autoToken);
     }
     
-    // Simulação de verificação de email existente
-    if (email === "erro@teste.com") {
-      setTimeout(() => {
-        setIsSubmitting(false);
-        setEmailError("E-mail não encontrado em nosso sistema. Verifique se digitou corretamente.");
-        resetTurnstile();
-      }, 1000);
-      return;
-    }
-    
     // Preparar dados para enviar à API
     const recoveryData = {
       email,
-      turnstileToken: turnstileToken || autoToken
+      token: turnstileToken || autoToken
     };
-    
-    console.log("Dados de recuperação:", recoveryData);
-    
-    // Simulando uma requisição de recuperação de senha para emails válidos
-    setTimeout(() => {
+
+    // enviando para api
+    try {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}endpoint/user/recuperar-senha.php`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(recoveryData)
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        setIsSubmitting(false);
+        resetTurnstile();
+        setShowDialog(true);
+      }else{
+        setIsSubmitting(false);
+        resetTurnstile();
+        setEmailError(data.message || "Ocorreu um erro ao enviar a solicitação.");
+      }
+    } catch (error) {
+      console.error("Erro ao enviar solicitação de recuperação:", error);
       setIsSubmitting(false);
-      setShowDialog(true);
-      console.log("Recuperação solicitada para:", email);
-    }, 1500);
+      setEmailError("Ocorreu um erro ao enviar a solicitação. Tente novamente mais tarde.");
+    }
   };
   
   const handleBackToLogin = () => {
