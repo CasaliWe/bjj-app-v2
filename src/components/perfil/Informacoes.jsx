@@ -22,6 +22,9 @@ import {
   Upload
 } from "lucide-react";
 
+import { getAuthToken } from '@/services/cookies/cookies';
+
+
 
 export function Informacoes({profileData, setProfileData}) {
 
@@ -41,7 +44,7 @@ export function Informacoes({profileData, setProfileData}) {
       const { name, value } = e.target;
       
       // Aplicar máscara de telefone
-      if (name === 'telefone') {
+      if (name === 'whatsapp') {
         const formattedValue = formatPhoneNumber(value);
         setProfileData(prev => ({
           ...prev,
@@ -115,26 +118,31 @@ export function Informacoes({profileData, setProfileData}) {
       reader.readAsDataURL(file);
     };
 
-    // ATUALIZANDO DADOS DO USER VIA API ****************
-    const handleProfileSubmit = (e) => {
+    // ATUALIZANDO DADOS DO USER VIA API **************************
+    const handleProfileSubmit = async (e) => {
       e.preventDefault();
       setIsSubmittingProfile(true);
-      
-      // Simular uma chamada de API
-      setTimeout(() => {
-        setIsSubmittingProfile(false);
 
-        console.log("Dados do perfil atualizados:", profileData);
-
+      try {
+        const response = await fetch(`${import.meta.env.VITE_API_URL}endpoint/user/updateProfile.php`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${getAuthToken()}`
+          },
+          body: JSON.stringify(profileData)
+        });
+        const data = await response.json();
         setProfileSuccess(true);
-        
-        setTimeout(() => {
-          setProfileSuccess(false);
-        }, 4000);
-      }, 1500);
+        console.log("Perfil atualizado com sucesso:", data);
+      } catch (error) {
+        console.error("Erro ao atualizar perfil:", error);
+      } finally {
+        setIsSubmittingProfile(false);
+      }
     };
 
-    // CHAMANDO API PARA ATUALIZAR IMAGEM ***************
+    // CHAMANDO API PARA ATUALIZAR IMAGEM *************************
     const handleImageUpload = async () => {
       if (!selectedImage) {
         alert('Por favor, selecione uma imagem para upload.');
@@ -297,6 +305,7 @@ export function Informacoes({profileData, setProfileData}) {
                             id="email"
                             name="email"
                             type="email"
+                            disabled
                             value={profileData.email}
                             onChange={handleProfileChange}
                             className="bg-card/50 border-border/40"
@@ -305,48 +314,60 @@ export function Informacoes({profileData, setProfileData}) {
                       </div>
                   </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
                       <div>
-                        <Label htmlFor="telefone">Telefone</Label>
-                        <div className="flex items-center gap-2">
-                            <Input
-                            id="telefone"
-                            name="telefone"
-                            value={profileData.telefone}
-                            onChange={handleProfileChange}
-                            placeholder="(54) 9 9999-9999"
-                            maxLength={17}
-                            className="bg-card/50 border-border/40"
-                            />
-                        </div>
+                        <Label htmlFor="whatsapp">Whatsapp</Label>
+                        <Input
+                          id="whatsapp"
+                          name="whatsapp"
+                          value={profileData.whatsapp}
+                          onChange={handleProfileChange}
+                          placeholder="(54) 9 9999-9999"
+                          maxLength={17}
+                          className="bg-card/50 border-border/40 w-full"
+                        />
                       </div>
+                      <div>
+                        <Label htmlFor="whatsapp_verificado">Autorizar mensagens</Label>
+                        <Select 
+                          name="whatsapp_verificado" 
+                          value={profileData.whatsapp_verificado ? "1" : "0"}
+                          onValueChange={(value) => handleSelectChange("whatsapp_verificado", value === "1" ? 1 : 0)}
+                        >
+                          <SelectTrigger className="bg-card/50 border-border/40">
+                            <SelectValue placeholder="Selecione" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="1">Sim</SelectItem>
+                            <SelectItem value="0">Não</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                  </div>
 
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
                       <div>
                         <Label htmlFor="idade">Idade</Label>
-                        <div className="flex items-center gap-2">
-                            <Input
-                            id="idade"
-                            name="idade"
-                            type="number"
-                            value={profileData.idade}
-                            onChange={handleProfileChange}
-                            className="bg-card/50 border-border/40"
-                            />
-                        </div>
+                        <Input
+                          id="idade"
+                          name="idade"
+                          type="number"
+                          value={profileData.idade}
+                          onChange={handleProfileChange}
+                          className="bg-card/50 border-border/40"
+                        />
                       </div>
                       
                       <div>
                         <Label htmlFor="peso">Peso</Label>
-                        <div className="flex items-center gap-2">
-                            <Input
-                            id="peso"
-                            name="peso"
-                            type="number"
-                            value={profileData.peso}
-                            onChange={handleProfileChange}
-                            className="bg-card/50 border-border/40"
-                            />
-                        </div>
+                        <Input
+                          id="peso"
+                          name="peso"
+                          type="number"
+                          value={profileData.peso}
+                          onChange={handleProfileChange}
+                          className="bg-card/50 border-border/40"
+                        />
                       </div>
                   </div>
 

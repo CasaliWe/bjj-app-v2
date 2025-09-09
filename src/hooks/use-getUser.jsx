@@ -14,7 +14,7 @@ export const useGetUser = () => {
     // Função para buscar dados do usuário na API
     const fetchUserData = async () => {
       try {
-          const response = await fetch(`${URL}endpoint/auth/user.php`, {
+          const response = await fetch(`${URL}endpoint/user/getData.php`, {
             method: 'GET',
             headers: {
               'Content-Type': 'application/json',

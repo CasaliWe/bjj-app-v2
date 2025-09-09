@@ -26,10 +26,16 @@ import { Informacoes } from "@/components/perfil/Informacoes";
 import { AlterarSenha } from "@/components/perfil/AlterarSenha";
 import { Configuracoes } from "@/components/perfil/Configuracoes";
 
+// hooks
+import { useGetUser } from "@/hooks/use-getUser";
+
 
 const UserProfile = () => {
   // Usando o hook useLocation para acessar a URL atual
   const location = useLocation();
+
+  // Hook para buscar dados do usuário
+  const { fetchUserData } = useGetUser();
   
   // Usando o contexto do usuário
   const { user, setUser } = useUser();
@@ -74,6 +80,8 @@ const UserProfile = () => {
           setActiveTab('profile');
       }
     }
+
+    fetchUserData();
   }, [location.search]);
   
   // VOLTANDO PARA PÁG ANTERIOR
