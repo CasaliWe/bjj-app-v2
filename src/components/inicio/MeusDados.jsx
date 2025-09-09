@@ -33,7 +33,7 @@ export function MeusDados({user, treinosDados}) {
                         <div className="w-32 h-32 rounded-full bg-bjj-gold/10 flex items-center justify-center mb-4 overflow-hidden">
                             {user.imagem ? (
                                 <img 
-                                src={user.imagem} 
+                                src={`${import.meta.env.VITE_API_URL}admin/assets/imagens/arquivos/perfil/${user.imagem}`} 
                                 alt="Foto de perfil" 
                                 className="w-full h-full object-cover"
                                 />

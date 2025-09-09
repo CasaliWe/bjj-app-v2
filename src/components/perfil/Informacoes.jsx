@@ -151,23 +151,43 @@ export function Informacoes({profileData, setProfileData}) {
 
       setIsUploadingImage(true);
 
-      // Simulação de envio para a API
-      setTimeout(() => {
-        // Atualiza o estado com a nova imagem
-        setProfileData(prev => ({
-          ...prev,
-          imagem: previewImage // Em um cenário real, seria a URL retornada pela API
-        }));
-        
+      // enviando imagem para API em formdata
+      const formData = new FormData();
+      formData.append('image', selectedImage);
+
+      try {
+        const response = await fetch(`${import.meta.env.VITE_API_URL}endpoint/user/uploadProfileImage.php`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${getAuthToken()}`
+          },
+          body: formData
+        });
+        const data = await response.json();
+        if (data.success) {
+          // Atualiza o estado com a nova imagem
+          setProfileData(prev => ({
+            ...prev,
+            imagem: data.image // URL retornada pela API
+          }));
+          setIsUploadingImage(false);
+          setIsImageModalOpen(false);
+          setSelectedImage(null);
+          setPreviewImage(null);
+          // Exibe mensagem de sucesso
+          setProfileSuccess(true);  
+          setTimeout(() => {
+            setProfileSuccess(false);
+          }, 4000);
+          console.log("Imagem enviada com sucesso:", data);
+        } else {
+          throw new Error(data.message || 'Erro ao enviar imagem.');
+        }
+      } catch (error) {
+        console.error("Erro ao enviar imagem:", error);
+        alert('Erro ao enviar imagem. Por favor, tente novamente.');
         setIsUploadingImage(false);
-        setIsImageModalOpen(false);
-        
-        // Exibe mensagem de sucesso
-        setProfileSuccess(true);
-        setTimeout(() => {
-          setProfileSuccess(false);
-        }, 4000);
-      }, 1500);
+      }
     };
 
 
@@ -181,7 +201,7 @@ export function Informacoes({profileData, setProfileData}) {
                 <div className="w-32 h-32 rounded-full bg-bjj-gold/10 flex items-center justify-center flex-shrink-0 relative group overflow-hidden">
                   {profileData.imagem ? (
                       <img 
-                      src={profileData.imagem} 
+                      src={`${import.meta.env.VITE_API_URL}admin/assets/imagens/arquivos/perfil/${profileData.imagem}`}
                       alt="Foto de perfil" 
                       className="w-full h-full object-cover"
                       />
@@ -223,7 +243,7 @@ export function Informacoes({profileData, setProfileData}) {
                             />
                             ) : profileData.imagem ? (
                             <img 
-                                src={profileData.imagem} 
+                                src={`${import.meta.env.VITE_API_URL}admin/assets/imagens/arquivos/perfil/${profileData.imagem}`} 
                                 alt="Foto atual" 
                                 className="w-full h-full object-cover"
                             />
