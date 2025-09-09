@@ -28,6 +28,9 @@ import {
 import { useUser } from "@/contexts/UserContext";
 import "./WelcomeModal.css";
 
+import { getAuthToken } from '@/services/cookies/cookies';
+
+
 // Componente CustomDialogContent customizado sem botão de fechar
 const WelcomeModal = ({ forceShow = false }) => {
   const { user } = useUser();
@@ -45,9 +48,27 @@ const WelcomeModal = ({ forceShow = false }) => {
   };
 
   // Função para fechar o modal e att api ************************************************
-  const handleClose = () => {
-    setIsOpen(false);
-    // fazer req para api salvando o welcome
+  const handleClose = async () => {
+    try {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}endpoint/user/atualizar-primeiro-acesso.php`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${getAuthToken()}`
+        },
+        body: JSON.stringify({
+          primeiroAcesso: 0
+        })
+      });
+      const data = await response.json();
+      if(data.success){
+        setIsOpen(false);
+      }else{
+        console.error("Erro na resposta da API:", data.message);
+      }
+    } catch (error) {
+      console.error("Erro ao atualizar visibilidade do perfil:", error);
+    }
   };
   
   // Funções para navegar entre os passos
