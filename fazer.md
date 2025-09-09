@@ -1,5 +1,24 @@
 ### PENDENTE:
 
+- pagamento api;
+- modal boas vindas;
+- objetivos, treinos, competicoes /app;
+- atividades recentes /app;
+- aba tec;
+- aba treinos;
+- aba obervações;
+- aba check list;
+- adicionar modal block nas rotas que desejo nao ter acesso gratis;
+- pag termos e politica;
+- atualizar todos os lugares que tem aviso ou explicações de funcionamento do app;
+- atualizar landing page;
+- sobre nós;
+- contato;
+- suporte;
+
+
+
+
 *** padronizar ***
 - colocar turns em todos os lugares com form;
 - fazer o id ser a letra + 4 numero sequnciais e quando chegar no limite ai random;

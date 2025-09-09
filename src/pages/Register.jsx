@@ -254,9 +254,10 @@ const Register = () => {
 
       // Após autenticação bem-sucedida
       if(res){
+        setAuthToken(res);
         navigate("/app");
       }else{
-        alert("Erro ao autenticar com Google. Tente novamente.");
+        throw new Error("Erro ao fazer login com Google. Tente novamente mais tarde.");
       }
     } catch (error) {
       setErrors(prev => ({ 
