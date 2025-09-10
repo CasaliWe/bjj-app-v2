@@ -118,7 +118,7 @@ const TecnicaCard = ({
             <Badge variant={tecnica.categoria === "guardeiro" ? "secondary" : "default"} className="text-xs px-2 py-0.5 h-5">
               {tecnica.categoria === "guardeiro" ? "Guardeiro" : "Passador"}
             </Badge>
-            <span className="text-xs text-muted-foreground truncate max-w-[150px]">
+            <span className="text-xs text-muted-foreground truncate max-w-[120px] md:max-w-[150px]">
               {tecnica.posicao}
             </span>
           </div>

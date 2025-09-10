@@ -1,7 +1,6 @@
-import { useState } from "react";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { Calendar, ChevronDown, Filter } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
-import { Button } from "@/components/ui/button";
 import {
   Select,
   SelectContent,
@@ -9,45 +8,40 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Filter, ChevronDown } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { DIAS_SEMANA } from "@/services/treinos/treinosService";
+import { useState } from "react";
 
 /**
- * Componente de filtro para as técnicas
- * 
- * @param {Object} props
- * @param {string} props.filtroCategoria - Categoria selecionada
- * @param {string} props.filtroPosicao - Posição selecionada
- * @param {Function} props.onCategoriaChange - Função chamada quando a categoria é alterada
- * @param {Function} props.onPosicaoChange - Função chamada quando a posição é alterada
- * @param {Function} props.onLimparFiltros - Função para limpar todos os filtros
- * @param {Array} props.posicoesCadastradas - Lista de posições cadastradas
- * @param {number} props.totalResultados - Total de resultados encontrados
+ * Componente de filtros para treinos
+ * @param {Object} props Propriedades do componente
+ * @param {string} props.filtroTipo Tipo de treino selecionado
+ * @param {string} props.filtroDiaSemana Dia da semana selecionado
+ * @param {Function} props.setFiltroTipo Função para alterar o tipo
+ * @param {Function} props.setFiltroDiaSemana Função para alterar o dia
+ * @param {Function} props.limparFiltros Função para limpar os filtros
+ * @param {number} props.totalResultados Total de resultados encontrados
+ * @returns {JSX.Element} Componente React
  */
-const TecnicaFiltro = ({
-  filtroCategoria,
-  filtroPosicao,
-  onCategoriaChange,
-  onPosicaoChange,
-  onLimparFiltros,
-  posicoesCadastradas,
+const FiltrosTreinos = ({
+  filtroTipo,
+  filtroDiaSemana,
+  setFiltroTipo,
+  setFiltroDiaSemana,
+  limparFiltros,
   totalResultados
 }) => {
-  // Estado para controlar a exibição dos filtros em dispositivos móveis
   const [filtrosExpandidos, setFiltrosExpandidos] = useState(false);
+  const mostrarBotaoLimpar = filtroTipo !== "todos" || filtroDiaSemana !== "todos";
   
-  // Verificar se os filtros estão ativos para exibir o botão de limpar
-  const filtrosAtivos = 
-    (filtroCategoria && filtroCategoria !== "todas") || 
-    (filtroPosicao && filtroPosicao !== "todas");
-
   return (
     <>
       <Card className="mb-4">
         <CardHeader className="pb-2 md:pb-3">
           <div className="flex justify-between items-center">
             <CardTitle className="text-lg flex items-center">
-              <Filter className="mr-2 h-5 w-5" />
-              Filtrar Técnicas
+              <Calendar className="mr-2 h-5 w-5" />
+              Filtros
             </CardTitle>
             
             <Button 
@@ -66,48 +60,48 @@ const TecnicaFiltro = ({
         {/* Em dispositivos móveis, o conteúdo dos filtros só aparece quando expandido */}
         <CardContent className={`flex flex-col md:flex-row gap-4 ${!filtrosExpandidos ? 'hidden md:flex' : ''}`}>
           <div className="flex-1">
-            <Label htmlFor="categoria">Categoria</Label>
+            <Label htmlFor="tipo">Tipo</Label>
             <Select 
-              value={filtroCategoria} 
+              value={filtroTipo} 
               onValueChange={(value) => {
-                onCategoriaChange(value);
+                setFiltroTipo(value);
                 // Em mobile, após selecionar, fecha os filtros
                 if (window.innerWidth < 768) {
                   setFiltrosExpandidos(false);
                 }
               }}
             >
-              <SelectTrigger id="categoria">
-                <SelectValue placeholder="Todas as categorias" />
+              <SelectTrigger id="tipo">
+                <SelectValue placeholder="Todos os tipos" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="todas">Todas</SelectItem>
-                <SelectItem value="guardeiro">Guardeiro</SelectItem>
-                <SelectItem value="passador">Passador</SelectItem>
+                <SelectItem value="todos">Todos</SelectItem>
+                <SelectItem value="gi">Com Kimono (Gi)</SelectItem>
+                <SelectItem value="nogi">Sem Kimono (No-Gi)</SelectItem>
               </SelectContent>
             </Select>
           </div>
 
           <div className="flex-1">
-            <Label htmlFor="posicao">Posição</Label>
+            <Label htmlFor="dia-semana">Dia da Semana</Label>
             <Select 
-              value={filtroPosicao} 
+              value={filtroDiaSemana} 
               onValueChange={(value) => {
-                onPosicaoChange(value);
+                setFiltroDiaSemana(value);
                 // Em mobile, após selecionar, fecha os filtros
                 if (window.innerWidth < 768) {
                   setFiltrosExpandidos(false);
                 }
               }}
             >
-              <SelectTrigger id="posicao">
-                <SelectValue placeholder="Todas as posições" />
+              <SelectTrigger id="dia-semana">
+                <SelectValue placeholder="Todos os dias" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="todas">Todas</SelectItem>
-                {posicoesCadastradas.map((posicao, idx) => (
-                  <SelectItem key={idx} value={posicao}>
-                    {posicao}
+                <SelectItem value="todos">Todos</SelectItem>
+                {DIAS_SEMANA.map((dia) => (
+                  <SelectItem key={dia.value} value={dia.value}>
+                    {dia.label}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -115,18 +109,18 @@ const TecnicaFiltro = ({
           </div>
         </CardContent>
       </Card>
-
-      {/* Contador de resultados e botão limpar filtros */}
+      
+      {/* Contador de resultados e botão limpar */}
       <div className="flex justify-between items-center mb-4">
-        <p className="text-sm text-muted-foreground">
-          {totalResultados} técnicas encontradas
+        <p className="text-xs text-muted-foreground">
+          {totalResultados} treinos encontrados
         </p>
-        {filtrosAtivos && (
+        {mostrarBotaoLimpar && (
           <Button
             variant="outline"
             size="sm"
             onClick={() => {
-              onLimparFiltros();
+              limparFiltros();
               setFiltrosExpandidos(false);
             }}
           >
@@ -138,4 +132,4 @@ const TecnicaFiltro = ({
   );
 };
 
-export default TecnicaFiltro;
+export default FiltrosTreinos;

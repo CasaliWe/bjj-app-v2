@@ -142,27 +142,27 @@ const Tecnicas = () => {
                 onClick={abrirModalComunidade}
                 variant="outline"
                 size="sm"
-                className="hidden md:flex"
+                className="px-2 md:px-3"
               >
-                <Users className="mr-2 h-4 w-4" />
-                Comunidade
+                <Users className="h-4 w-4 md:mr-2" />
+                <span className="hidden md:inline">Comunidade</span>
               </Button>
               <Button
                 onClick={() => setModalDestaquesAberto(true)}
                 variant="outline"
                 size="sm"
-                className="hidden md:flex"
+                className="px-2 md:px-3"
               >
-                <Heart className="mr-2 h-4 w-4" />
-                Destaques ({tecnicasDestacadas.length})
+                <Heart className="h-4 w-4 md:mr-2" />
+                <span className="hidden md:inline">Destaques</span>
               </Button>
               <Button
                 onClick={iniciarNovaTecnica}
                 size="sm"
-                className="hidden md:flex"
+                className="px-2 md:px-3"
               >
-                <Plus className="mr-2 h-4 w-4" />
-                Nova Técnica
+                <Plus className="h-4 w-4 md:mr-2" />
+                <span className="hidden md:inline">Nova Técnica</span>
               </Button>
             </div>
           </header>
@@ -173,38 +173,6 @@ const Tecnicas = () => {
             <div className="mb-6 space-y-4">
               <div className="flex items-center justify-between">
                 <h2 className="text-2xl font-bold hidden md:block">Biblioteca de Técnicas</h2>
-                <div className="flex flex-col gap-2 md:hidden w-full">
-                  <Button
-                    onClick={iniciarNovaTecnica}
-                    className="w-full"
-                    size="sm"
-                  >
-                    <Plus className="mr-2 h-4 w-4" />
-                    Nova Técnica
-                  </Button>
-                  
-                  <div className="grid grid-cols-2 gap-2">
-                    <Button
-                      onClick={() => setModalDestaquesAberto(true)}
-                      variant="outline"
-                      size="sm"
-                      className="w-full"
-                    >
-                      <Heart className="mr-2 h-4 w-4" />
-                      Destaques ({tecnicasDestacadas.length})
-                    </Button>
-                    
-                    <Button
-                      onClick={abrirModalComunidade}
-                      variant="outline"
-                      size="sm"
-                      className="w-full"
-                    >
-                      <Users className="mr-2 h-4 w-4" />
-                      Comunidade
-                    </Button>
-                  </div>
-                </div>
               </div>
 
               {/* Filtros */}
