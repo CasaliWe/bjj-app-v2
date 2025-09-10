@@ -1,0 +1,163 @@
+import { useState, useEffect, useCallback } from 'react';
+import { 
+  getObservacoes, 
+  addObservacao, 
+  updateObservacao, 
+  deleteObservacao,
+  getObservacaoPorId
+} from '../services/observacoes/observacoesService';
+
+/**
+ * Hook personalizado para gerenciar observações
+ * @returns {Object} Métodos e estados para gerenciar observações
+ */
+export const useObservacoes = () => {
+  // Estados
+  const [observacoes, setObservacoes] = useState([]);
+  const [observacaoAtual, setObservacaoAtual] = useState(null);
+  const [filtros, setFiltros] = useState({ tag: 'todas', termo: '' });
+  const [loading, setLoading] = useState(false);
+  const [paginacao, setPaginacao] = useState({ currentPage: 1, totalPages: 1 });
+  const [limitePorPagina] = useState(12);
+  const [modalAberto, setModalAberto] = useState(false);
+  const [modoEdicao, setModoEdicao] = useState(false);
+
+  // Buscar observações com base nos filtros e paginação
+  const buscarObservacoes = useCallback(() => {
+    setLoading(true);
+    
+    try {
+      const result = getObservacoes(
+        filtros, 
+        paginacao.currentPage, 
+        limitePorPagina
+      );
+      
+      setObservacoes(result.observacoes);
+      setPaginacao(result.paginacao);
+    } catch (error) {
+      console.error('Erro ao buscar observações:', error);
+    } finally {
+      setLoading(false);
+    }
+  }, [filtros, paginacao.currentPage, limitePorPagina]);
+
+  // Adicionar uma nova observação
+  const adicionarObservacao = useCallback((observacao) => {
+    try {
+      const novaObservacao = addObservacao(observacao);
+      
+      // Atualizar a lista de observações
+      buscarObservacoes();
+      
+      return novaObservacao;
+    } catch (error) {
+      console.error('Erro ao adicionar observação:', error);
+      throw error;
+    }
+  }, [buscarObservacoes]);
+
+  // Atualizar uma observação existente
+  const atualizarObservacao = useCallback((observacao) => {
+    try {
+      const observacaoAtualizada = updateObservacao(observacao);
+      
+      // Atualizar a lista de observações
+      buscarObservacoes();
+      
+      return observacaoAtualizada;
+    } catch (error) {
+      console.error('Erro ao atualizar observação:', error);
+      throw error;
+    }
+  }, [buscarObservacoes]);
+
+  // Excluir uma observação
+  const excluirObservacao = useCallback((id) => {
+    try {
+      const sucesso = deleteObservacao(id);
+      
+      if (sucesso) {
+        // Atualizar a lista de observações
+        buscarObservacoes();
+      }
+      
+      return sucesso;
+    } catch (error) {
+      console.error('Erro ao excluir observação:', error);
+      throw error;
+    }
+  }, [buscarObservacoes]);
+
+  // Buscar uma observação pelo ID
+  const buscarObservacaoPorId = useCallback((id) => {
+    try {
+      const observacao = getObservacaoPorId(id);
+      setObservacaoAtual(observacao);
+      return observacao;
+    } catch (error) {
+      console.error('Erro ao buscar observação:', error);
+      throw error;
+    }
+  }, []);
+
+  // Alterar a página atual (paginação)
+  const mudarPagina = useCallback((novaPagina) => {
+    setPaginacao(prev => ({ ...prev, currentPage: novaPagina }));
+  }, []);
+
+  // Alterar os filtros
+  const aplicarFiltros = useCallback((novosFiltros) => {
+    setFiltros(novosFiltros);
+    // Resetar para a primeira página ao aplicar filtros
+    setPaginacao(prev => ({ ...prev, currentPage: 1 }));
+  }, []);
+
+  // Abrir o modal para adicionar/editar observação
+  const abrirModal = useCallback((observacao = null) => {
+    if (observacao) {
+      setObservacaoAtual(observacao);
+      setModoEdicao(true);
+    } else {
+      setObservacaoAtual(null);
+      setModoEdicao(false);
+    }
+    setModalAberto(true);
+  }, []);
+
+  // Fechar o modal
+  const fecharModal = useCallback(() => {
+    setModalAberto(false);
+    setObservacaoAtual(null);
+    setModoEdicao(false);
+  }, []);
+
+  // Buscar observações quando os filtros ou a página mudar
+  useEffect(() => {
+    buscarObservacoes();
+  }, [buscarObservacoes]);
+
+  return {
+    // Estados
+    observacoes,
+    observacaoAtual,
+    loading,
+    paginacao,
+    filtros,
+    modalAberto,
+    modoEdicao,
+    
+    // Métodos
+    buscarObservacoes,
+    adicionarObservacao,
+    atualizarObservacao,
+    excluirObservacao,
+    buscarObservacaoPorId,
+    mudarPagina,
+    aplicarFiltros,
+    abrirModal,
+    fecharModal
+  };
+};
+
+export default useObservacoes;
