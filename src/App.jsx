@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { PWAInstallPrompt } from "@/components/PWAInstallPrompt";
 import TitleUpdater from "@/components/TitleUpdater";
 import { isAuthenticated } from "./services/cookies/cookies";
+import Exp from "./components/exp/Exp";
 
 // CONTEXTS
 import { UserProvider } from "./contexts/UserContext";
@@ -75,19 +76,20 @@ const App = () => (
   <QueryClientProvider client={queryClient}>
     <BrowserRouter>
       <UserProvider>
-        <TooltipProvider>
-          <PWAInstallPrompt />
-          <Toaster />
-          <Sonner />      
-          <TitleUpdater />
-          <Routes>
-            {/* Rotas privadas - Requerem autenticação */}
-            <Route path="/app" element={<PrivateRoute><Index /></PrivateRoute>} />
-            <Route path="/perfil" element={<PrivateRoute><UserProfile /></PrivateRoute>} />
-            <Route path="/tecnicas" element={<PrivateRoute><Tecnicas /></PrivateRoute>} />
-            <Route path="/treinos" element={<PrivateRoute><Treinos /></PrivateRoute>} />
-            <Route path="/competicoes" element={<PrivateRoute><Competicoes /></PrivateRoute>} />
-            <Route path="/observacoes" element={<PrivateRoute><Observacoes /></PrivateRoute>} />
+        <Exp>
+          <TooltipProvider>
+            <PWAInstallPrompt />
+            <Toaster />
+            <Sonner />      
+            <TitleUpdater />
+            <Routes>
+              {/* Rotas privadas - Requerem autenticação */}
+              <Route path="/app" element={<PrivateRoute><Index /></PrivateRoute>} />
+              <Route path="/perfil" element={<PrivateRoute><UserProfile /></PrivateRoute>} />
+              <Route path="/tecnicas" element={<PrivateRoute><Tecnicas /></PrivateRoute>} />
+              <Route path="/treinos" element={<PrivateRoute><Treinos /></PrivateRoute>} />
+              <Route path="/competicoes" element={<PrivateRoute><Competicoes /></PrivateRoute>} />
+              <Route path="/observacoes" element={<PrivateRoute><Observacoes /></PrivateRoute>} />
             
             {/* Rotas públicas com redirecionamento para usuários autenticados */}
             <Route path="/login" element={<AuthRedirectRoute><Login /></AuthRedirectRoute>} />
@@ -113,7 +115,8 @@ const App = () => (
             <Route path="/objetivos" element={<Objetivos />} />
             <Route path="/ia-sensei" element={<IASensei />} /> */}
           </Routes>
-        </TooltipProvider>
+          </TooltipProvider>
+        </Exp>
       </UserProvider>
     </BrowserRouter>
   </QueryClientProvider>

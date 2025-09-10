@@ -150,17 +150,14 @@ export const useTecnicas = () => {
         prev.map(t => t.id === id ? { ...t, destacado: novoDestaque } : t)
       );
       
-      // Se estiver destacando (não removendo o destaque), mostrar modal de experiência
-      if (novoDestaque) {
-        mostrarExp(15, `Você ganhou 15 exp por destacar a técnica "${tecnica.nome}"!`);
-      }
+      // Removido o ganho de exp ao destacar técnica
       
       return { id, destacado: novoDestaque };
     } catch (error) {
       console.error("Erro ao atualizar destaque:", error);
       throw error;
     }
-  }, [tecnicas, mostrarExp]);
+  }, [tecnicas]);
 
   // Alternar visibilidade pública da técnica
   const togglePublica = useCallback(async (id) => {
@@ -176,17 +173,14 @@ export const useTecnicas = () => {
         prev.map(t => t.id === id ? { ...t, publica: novaVisibilidade } : t)
       );
       
-      // Ganhar experiência por tornar pública
-      if (novaVisibilidade) {
-        mostrarExp(25, `Você ganhou 25 exp por tornar a técnica "${tecnica.nome}" pública!`);
-      }
+      // Removido o ganho de exp ao tornar pública
       
       return { id, publica: novaVisibilidade };
     } catch (error) {
       console.error("Erro ao atualizar visibilidade pública:", error);
       throw error;
     }
-  }, [tecnicas, mostrarExp]);
+  }, [tecnicas]);
 
   // Filtrar técnicas
   const filtrarTecnicas = useCallback((categoria = "todas", posicao = "todas") => {

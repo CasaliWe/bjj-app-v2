@@ -11,6 +11,7 @@ import {
   uploadImagensTreino
 } from '@/services/treinos/treinosService';
 import { useGetUser } from './use-getUser';
+import { useExp } from '@/components/exp/Exp';
 
 /**
  * Hook personalizado para gerenciar treinos
@@ -23,6 +24,9 @@ export const useTreinos = () => {
   const [treinosComunidade, setTreinosComunidade] = useState([]);
   const [carregando, setCarregando] = useState(false);
   const [erro, setErro] = useState(null);
+  
+  // Hook para mostrar experiência
+  const { mostrarExp } = useExp();
   
   // Estado de paginação para a comunidade
   const [paginacao, setPaginacao] = useState({
@@ -151,6 +155,9 @@ export const useTreinos = () => {
         // Adicionar novo treino
         treinoSalvo = await criarTreino(treinoFinal, user);
         setTreinos(prevTreinos => [...prevTreinos, treinoSalvo]);
+        
+        // Ganhar experiência por adicionar novo treino
+        mostrarExp(100, "Você ganhou 100 exp por registrar um novo treino!");
       }
 
       // Reset do formulário e fechamento do modal

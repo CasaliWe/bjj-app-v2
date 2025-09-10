@@ -7,6 +7,7 @@ import {
   deleteCompeticao,
   alterarVisibilidadeCompeticao
 } from '../services/competicoes/competicoesService';
+import { useExp } from '@/components/exp/Exp';
 
 /**
  * Hook personalizado para gerenciar competições
@@ -24,6 +25,9 @@ export const useCompeticoes = () => {
   const [paginacaoComunidade, setPaginacaoComunidade] = useState({ currentPage: 1, totalPages: 1 });
   const [aba, setAba] = useState('minhas'); // 'minhas' ou 'comunidade'
   const [limitePorPagina] = useState(10);
+  
+  // Hook para mostrar experiência
+  const { mostrarExp } = useExp();
 
   // Buscar competições do usuário
   const buscarCompeticoes = useCallback(() => {
@@ -72,6 +76,9 @@ export const useCompeticoes = () => {
     try {
       const novaCompeticao = addCompeticao(competicao);
       
+      // Ganhar experiência por adicionar nova competição
+      mostrarExp(200, "Você ganhou 200 exp por registrar uma nova competição!");
+      
       // Atualizar a lista de competições
       buscarCompeticoes();
       
@@ -85,7 +92,7 @@ export const useCompeticoes = () => {
       console.error('Erro ao adicionar competição:', error);
       throw error;
     }
-  }, [aba, buscarCompeticoes, buscarCompeticoesComunidade]);
+  }, [aba, buscarCompeticoes, buscarCompeticoesComunidade, mostrarExp]);
 
   // Atualizar uma competição existente
   const atualizarCompeticao = useCallback((competicao) => {

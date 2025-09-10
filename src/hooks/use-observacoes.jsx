@@ -6,6 +6,7 @@ import {
   deleteObservacao,
   getObservacaoPorId
 } from '../services/observacoes/observacoesService';
+import { useExp } from '@/components/exp/Exp';
 
 /**
  * Hook personalizado para gerenciar observações
@@ -21,6 +22,9 @@ export const useObservacoes = () => {
   const [limitePorPagina] = useState(12);
   const [modalAberto, setModalAberto] = useState(false);
   const [modoEdicao, setModoEdicao] = useState(false);
+  
+  // Hook para mostrar experiência
+  const { mostrarExp } = useExp();
 
   // Buscar observações com base nos filtros e paginação
   const buscarObservacoes = useCallback(() => {
@@ -47,6 +51,9 @@ export const useObservacoes = () => {
     try {
       const novaObservacao = addObservacao(observacao);
       
+      // Ganhar experiência por adicionar nova observação
+      mostrarExp(50, "Você ganhou 50 exp por registrar uma nova observação!");
+      
       // Atualizar a lista de observações
       buscarObservacoes();
       
@@ -55,7 +62,7 @@ export const useObservacoes = () => {
       console.error('Erro ao adicionar observação:', error);
       throw error;
     }
-  }, [buscarObservacoes]);
+  }, [buscarObservacoes, mostrarExp]);
 
   // Atualizar uma observação existente
   const atualizarObservacao = useCallback((observacao) => {
