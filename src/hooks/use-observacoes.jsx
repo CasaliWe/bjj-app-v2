@@ -5,7 +5,7 @@ import {
   updateObservacao, 
   deleteObservacao,
   getObservacaoPorId
-} from '../services/observacoes/observacoesService';
+} from '../services/observacoes/observacoesService.jsx';
 import { useExp } from '@/components/exp/Exp';
 
 /**

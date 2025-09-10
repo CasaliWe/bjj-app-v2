@@ -9,7 +9,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Badge } from '@/components/ui/badge';
-import { CATEGORIAS_TAGS } from '@/services/observacoes/observacoesService';
+import { CATEGORIAS_TAGS } from '@/services/observacoes/observacoesService.jsx';
 import { useIsMobile } from '@/hooks/use-mobile';
 
 /**

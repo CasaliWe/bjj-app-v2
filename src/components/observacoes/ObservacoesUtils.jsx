@@ -3,7 +3,7 @@ import { Tag } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
-import { CATEGORIAS_TAGS } from '@/services/observacoes/observacoesService';
+import { CATEGORIAS_TAGS } from '@/services/observacoes/observacoesService.jsx';
 
 /**
  * Componente de tag personalizada com cores diferentes
