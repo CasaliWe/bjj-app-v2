@@ -1,5 +1,7 @@
 ### PENDENTE:
 
+- componente, hook, pagina, services;
+
 
 *** fazendo no momento ***
 - objetivos, treinos, competicoes /app;
