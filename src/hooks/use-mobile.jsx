@@ -18,3 +18,9 @@ export function useIsMobile() {
 
   return !!isMobile
 }
+
+// Exportar também como useMobile para compatibilidade
+export const useMobile = () => {
+  const isMobile = useIsMobile();
+  return { isMobile };
+};
