@@ -20,10 +20,12 @@ import { setPageTitle } from '@/services/title';
 import ObservacoesFilters from '@/components/observacoes/ObservacoesFilters';
 import ObservacoesList from '@/components/observacoes/ObservacoesList';
 import ObservacaoForm from '@/components/observacoes/ObservacaoForm';
+import ObservacoesPagination from '@/components/observacoes/ObservacoesPagination';
 
 // Hook personalizado
 import { useObservacoes } from '@/hooks/use-observacoes';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { useGetUser } from "@/hooks/use-getUser";
 
 /**
  * Página de Observações
@@ -31,10 +33,16 @@ import { useIsMobile } from '@/hooks/use-mobile';
  */
 const Observacoes = () => {
   const isMobile = useIsMobile();
+
+  // Hook para buscar dados do usuário
+  const { fetchUserData } = useGetUser();
   
   // Definir o título da página
   useEffect(() => {
     setPageTitle('Observações');
+
+    // Buscar dados do usuário
+    fetchUserData();
   }, []);
   
   // Estado do hook de observações
@@ -43,12 +51,14 @@ const Observacoes = () => {
     observacaoAtual,
     loading,
     filtros,
+    paginacao,
     modalAberto,
     modoEdicao,
     adicionarObservacao,
     atualizarObservacao,
     excluirObservacao,
     aplicarFiltros,
+    mudarPagina,
     abrirModal,
     fecharModal
   } = useObservacoes();
@@ -126,6 +136,12 @@ const Observacoes = () => {
               loading={loading}
               onEdit={abrirModal}
               onDelete={abrirConfirmacaoExcluir}
+            />
+            
+            {/* Paginação */}
+            <ObservacoesPagination
+              paginacao={paginacao}
+              onPageChange={mudarPagina}
             />
           </main>
         </div>

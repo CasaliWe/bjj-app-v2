@@ -20,7 +20,7 @@ export const CATEGORIAS_TAGS = [
 ];
 
 /**
- * === ENDPOINT: /api/observacoes/listar.php ===
+ * === ENDPOINT: endpoint/observacoes/listar.php ===
  * 
  * Requisição recebida pelo backend:
  * {
@@ -64,7 +64,7 @@ export const CATEGORIAS_TAGS = [
  */
 export const getObservacoes = async (filtros = {}, pagina = 1, limite = 12) => {
   try {
-    const response = await fetch(`${URL}/api/observacoes/listar.php`, {
+    const response = await fetch(`${URL}endpoint/observacoes/listar.php`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -112,7 +112,7 @@ export const getObservacoes = async (filtros = {}, pagina = 1, limite = 12) => {
 };
 
 /**
- * === ENDPOINT: /api/observacoes/adicionar.php ===
+ * === ENDPOINT: endpoint/observacoes/adicionar.php ===
  * 
  * Requisição recebida pelo backend:
  * {
@@ -142,7 +142,7 @@ export const getObservacoes = async (filtros = {}, pagina = 1, limite = 12) => {
  */
 export const addObservacao = async (observacao) => {
   try {
-    const response = await fetch(`${URL}/api/observacoes/adicionar.php`, {
+    const response = await fetch(`${URL}endpoint/observacoes/adicionar.php`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -166,7 +166,7 @@ export const addObservacao = async (observacao) => {
 };
 
 /**
- * === ENDPOINT: /api/observacoes/atualizar.php ===
+ * === ENDPOINT: endpoint/observacoes/atualizar.php ===
  * 
  * Requisição recebida pelo backend:
  * {
@@ -200,7 +200,7 @@ export const addObservacao = async (observacao) => {
  */
 export const updateObservacao = async (observacao) => {
   try {
-    const response = await fetch(`${URL}/api/observacoes/atualizar.php`, {
+    const response = await fetch(`${URL}endpoint/observacoes/atualizar.php`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
@@ -224,7 +224,7 @@ export const updateObservacao = async (observacao) => {
 };
 
 /**
- * === ENDPOINT: /api/observacoes/excluir.php ===
+ * === ENDPOINT: endpoint/observacoes/excluir.php ===
  * 
  * Requisição recebida pelo backend:
  * {
@@ -254,7 +254,7 @@ export const updateObservacao = async (observacao) => {
  */
 export const deleteObservacao = async (id) => {
   try {
-    const response = await fetch(`${URL}/api/observacoes/excluir.php`, {
+    const response = await fetch(`${URL}endpoint/observacoes/excluir.php`, {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',
@@ -278,7 +278,7 @@ export const deleteObservacao = async (id) => {
 };
 
 /**
- * === ENDPOINT: /api/observacoes/obter.php ===
+ * === ENDPOINT: endpoint/observacoes/obter.php ===
  * 
  * Requisição recebida pelo backend:
  * {
@@ -315,7 +315,7 @@ export const deleteObservacao = async (id) => {
  */
 export const getObservacaoPorId = async (id) => {
   try {
-    const response = await fetch(`${URL}/api/observacoes/obter.php`, {
+    const response = await fetch(`${URL}endpoint/observacoes/obter.php`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

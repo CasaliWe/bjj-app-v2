@@ -27,11 +27,11 @@ export const useObservacoes = () => {
   const { mostrarExp } = useExp();
 
   // Buscar observações com base nos filtros e paginação
-  const buscarObservacoes = useCallback(() => {
+  const buscarObservacoes = useCallback(async () => {
     setLoading(true);
     
     try {
-      const result = getObservacoes(
+      const result = await getObservacoes(
         filtros, 
         paginacao.currentPage, 
         limitePorPagina
@@ -47,15 +47,15 @@ export const useObservacoes = () => {
   }, [filtros, paginacao.currentPage, limitePorPagina]);
 
   // Adicionar uma nova observação
-  const adicionarObservacao = useCallback((observacao) => {
+  const adicionarObservacao = useCallback(async (observacao) => {
     try {
-      const novaObservacao = addObservacao(observacao);
+      const novaObservacao = await addObservacao(observacao);
       
       // Ganhar experiência por adicionar nova observação
       mostrarExp(50, "Você ganhou 50 exp por registrar uma nova observação!");
       
       // Atualizar a lista de observações
-      buscarObservacoes();
+      await buscarObservacoes();
       
       return novaObservacao;
     } catch (error) {
@@ -65,12 +65,12 @@ export const useObservacoes = () => {
   }, [buscarObservacoes, mostrarExp]);
 
   // Atualizar uma observação existente
-  const atualizarObservacao = useCallback((observacao) => {
+  const atualizarObservacao = useCallback(async (observacao) => {
     try {
-      const observacaoAtualizada = updateObservacao(observacao);
+      const observacaoAtualizada = await updateObservacao(observacao);
       
       // Atualizar a lista de observações
-      buscarObservacoes();
+      await buscarObservacoes();
       
       return observacaoAtualizada;
     } catch (error) {
@@ -80,13 +80,13 @@ export const useObservacoes = () => {
   }, [buscarObservacoes]);
 
   // Excluir uma observação
-  const excluirObservacao = useCallback((id) => {
+  const excluirObservacao = useCallback(async (id) => {
     try {
-      const sucesso = deleteObservacao(id);
+      const sucesso = await deleteObservacao(id);
       
       if (sucesso) {
         // Atualizar a lista de observações
-        buscarObservacoes();
+        await buscarObservacoes();
       }
       
       return sucesso;
@@ -97,9 +97,9 @@ export const useObservacoes = () => {
   }, [buscarObservacoes]);
 
   // Buscar uma observação pelo ID
-  const buscarObservacaoPorId = useCallback((id) => {
+  const buscarObservacaoPorId = useCallback(async (id) => {
     try {
-      const observacao = getObservacaoPorId(id);
+      const observacao = await getObservacaoPorId(id);
       setObservacaoAtual(observacao);
       return observacao;
     } catch (error) {
@@ -141,7 +141,13 @@ export const useObservacoes = () => {
 
   // Buscar observações quando os filtros ou a página mudar
   useEffect(() => {
-    buscarObservacoes();
+    // Como não podemos usar async diretamente no useEffect,
+    // criamos uma função interna assíncrona
+    const fetchData = async () => {
+      await buscarObservacoes();
+    };
+    
+    fetchData();
   }, [buscarObservacoes]);
 
   return {
