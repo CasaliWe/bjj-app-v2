@@ -13,6 +13,7 @@ import {
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Users, Search, Book } from "lucide-react";
 import TecnicaCard from "./TecnicaCard";
+import VideoPlayer from "./VideoPlayer";
 
 /**
  * Componente modal para exibir técnicas da comunidade

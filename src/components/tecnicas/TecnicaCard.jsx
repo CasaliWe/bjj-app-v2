@@ -30,6 +30,7 @@ import {
   Heart,
   Globe
 } from "lucide-react";
+import VideoPlayer from "./VideoPlayer";
 
 /**
  * Componente de Card de Técnica - exibe os detalhes de uma técnica individual
@@ -195,6 +196,19 @@ const TecnicaCard = ({
             </AccordionTrigger>
             <AccordionContent>
               <div className="px-4 pb-4 space-y-4 max-h-60 overflow-y-auto">
+                {/* Vídeo curto (se disponível) */}
+                {tecnica.videoUrl && (
+                  <div>
+                    <h4 className="font-medium text-sm mb-2 border-b pb-1">Vídeo:</h4>
+                    <VideoPlayer 
+                      src={tecnica.videoUrl} 
+                      posterSrc={tecnica.videoPoster}
+                      className="mb-3 w-full"
+                      loop={true}
+                    />
+                  </div>
+                )}
+                
                 <div>
                   <h4 className="font-medium text-sm mb-2 border-b pb-1">Passo a passo:</h4>
                   <ol className="pl-5 list-decimal">

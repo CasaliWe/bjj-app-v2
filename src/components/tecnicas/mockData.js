@@ -12,6 +12,8 @@
  * @property {string[]} observacoes - Array com observações sobre a técnica
  * @property {number} nota - Avaliação de 1 a 5
  * @property {string|null} video - URL do vídeo demonstrativo (opcional)
+ * @property {string|null} videoUrl - URL do vídeo curto (opcional)
+ * @property {string|null} videoPoster - URL da imagem de capa do vídeo curto (opcional)
  * @property {boolean} destacado - Se é uma técnica destacada/favorita
  * @property {boolean} publica - Se a técnica é pública (visível para outros usuários)
  * @property {Object|null} autor - Informações do autor (para técnicas da comunidade)
@@ -37,6 +39,8 @@ export const MOCK_TECNICAS = [
     ],
     nota: 5,
     video: "https://www.youtube.com/watch?v=example1",
+    videoUrl: "https://example.com/videos/armlock-curto.mp4",
+    videoPoster: "https://example.com/images/armlock-poster.jpg",
     destacado: true,
     publica: false,
     autor: null
@@ -149,15 +153,18 @@ export const MOCK_TECNICAS_COMUNIDADE = [
       "Mantenha o oponente desequilibrado durante todo o movimento",
       "O timing é essencial para o sucesso da técnica"
     ],
-    nota: 5,
-    video: "https://www.youtube.com/watch?v=example101",
+    nota: 4,
+    video: "https://www.youtube.com/watch?v=community1",
+    videoUrl: "https://example.com/videos/raspagem-gancho.mp4",
+    videoPoster: "https://example.com/images/raspagem-poster.jpg",
     destacado: false,
     publica: true,
     autor: {
-      id: 42,
+      id: 201,
       nome: "Carlos Silva",
-      imagem: "/user.jpeg",
-      bjjId: "carlosbjj123"
+      faixa: "Faixa Preta",
+      bjjId: "CS001",
+      imagem: "/user.jpeg"
     }
   },
   {

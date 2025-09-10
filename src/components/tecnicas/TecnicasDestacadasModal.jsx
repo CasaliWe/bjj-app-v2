@@ -19,6 +19,7 @@ import {
 } from "@/components/ui/accordion";
 import { Badge } from "@/components/ui/badge";
 import { Star, Youtube, Instagram, ExternalLink } from "lucide-react";
+import VideoPlayer from "./VideoPlayer";
 
 /**
  * Componente de modal para exibir técnicas destacadas
@@ -129,6 +130,17 @@ const TecnicasDestacadasModal = ({
                         </AccordionTrigger>
                         <AccordionContent>
                           <div className="px-4 sm:px-6 pb-2 space-y-3 max-h-[40vh] sm:max-h-60 overflow-y-auto">
+                            {/* Vídeo curto (se disponível) */}
+                            {tecnica.videoUrl && (
+                              <div className="mb-3">
+                                <h4 className="font-medium text-sm mb-1">Vídeo:</h4>
+                                <VideoPlayer 
+                                  src={tecnica.videoUrl} 
+                                  posterSrc={tecnica.videoPoster} 
+                                />
+                              </div>
+                            )}
+                          
                             <div>
                               <h4 className="font-medium text-sm mb-1">Passo a passo:</h4>
                               <ol className="pl-5 list-decimal">

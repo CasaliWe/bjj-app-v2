@@ -197,6 +197,127 @@ const TecnicaForm = ({
         </div>
       </div>
       
+      {/* Vídeo curto */}
+      <div className="grid gap-2">
+        <Label htmlFor="video-curto">
+          Vídeo Curto (Opcional, máx. 7 segundos)
+        </Label>
+        <div className="space-y-2">
+          <input
+            type="file"
+            id="video-curto"
+            accept="video/mp4,video/quicktime,video/webm"
+            className="hidden"
+            onChange={(e) => {
+              const file = e.target.files?.[0];
+              if (file) {
+                // Verificar duração do vídeo
+                const video = document.createElement('video');
+                video.preload = 'metadata';
+                
+                // Criar URL temporária para visualização
+                const videoURL = URL.createObjectURL(file);
+                handleChange("videoPreview", videoURL);
+                
+                video.onloadedmetadata = () => {
+                  const duracao = Math.round(video.duration * 10) / 10;
+                  
+                  if (duracao > 7) {
+                    // Mostrar aviso de vídeo muito longo
+                    handleChange("videoError", `O vídeo tem ${duracao}s, mas deve ter no máximo 7 segundos`);
+                  } else {
+                    // Vídeo válido
+                    handleChange("videoFile", file);
+                    handleChange("videoError", null);
+                    handleChange("videoDuration", duracao);
+                    
+                    // Gerar thumbnail para poster
+                    try {
+                      video.currentTime = 0.1; // Avança um pouco para pegar um frame melhor
+                      
+                      video.onseeked = () => {
+                        const canvas = document.createElement('canvas');
+                        canvas.width = video.videoWidth;
+                        canvas.height = video.videoHeight;
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+                        const posterUrl = canvas.toDataURL('image/jpeg');
+                        handleChange("videoPoster", posterUrl);
+                      };
+                    } catch (err) {
+                      console.error("Erro ao gerar thumbnail:", err);
+                    }
+                  }
+                };
+                
+                video.onerror = () => {
+                  handleChange("videoError", "Formato de vídeo não suportado");
+                };
+                
+                video.src = videoURL;
+              }
+            }}
+          />
+          <div 
+            onClick={() => document.getElementById('video-curto').click()}
+            className="border-2 border-dashed rounded-md p-4 text-center cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-900 transition-colors"
+          >
+            {tecnica.videoPreview ? (
+              <div className="space-y-2">
+                <div className="max-w-full mx-auto">
+                  <video 
+                    src={tecnica.videoPreview} 
+                    poster={tecnica.videoPoster}
+                    className="w-full rounded" 
+                    style={{ maxHeight: "300px" }}
+                    controls
+                  ></video>
+                </div>
+                {tecnica.videoDuration && (
+                  <p className="text-sm text-blue-500">
+                    Duração: {tecnica.videoDuration.toFixed(1)}s 
+                    {tecnica.videoDuration <= 7 ? 
+                      <span className="text-green-500"> ✓</span> : 
+                      <span className="text-red-500"> ✗</span>}
+                  </p>
+                )}
+                <p className="text-sm text-muted-foreground">Clique para alterar o vídeo</p>
+              </div>
+            ) : (
+              <div className="py-4">
+                <p className="text-sm font-medium">Clique para fazer upload do vídeo</p>
+                <p className="text-xs text-muted-foreground mt-1">
+                  MP4, WebM ou QuickTime - máximo 7 segundos
+                </p>
+              </div>
+            )}
+          </div>
+          
+          {tecnica.videoError && (
+            <p className="text-sm text-red-500">{tecnica.videoError}</p>
+          )}
+          
+          {tecnica.videoPreview && (
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              className="w-full"
+              onClick={() => {
+                URL.revokeObjectURL(tecnica.videoPreview);
+                handleChange("videoPreview", null);
+                handleChange("videoFile", null);
+                handleChange("videoError", null);
+                handleChange("videoPoster", null);
+                handleChange("videoDuration", null);
+              }}
+            >
+              Remover vídeo
+            </Button>
+          )}
+        </div>
+      </div>
+      
       {/* Link do Vídeo */}
       <div className="grid gap-2">
         <Label htmlFor="video-url">Link do Vídeo (Opcional)</Label>
