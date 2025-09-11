@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { ImagePlus, Trash2 } from "lucide-react";
 import {
   Dialog,
@@ -20,7 +20,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
-import { DIAS_SEMANA, HORARIOS_TREINO } from "@/services/treinos/treinosService";
+import { DIAS_SEMANA, HORARIOS_TREINO } from "@/services/treinos/treinosService.jsx";
 
 /**
  * Componente de formulário para adicionar/editar treino
@@ -36,6 +36,7 @@ import { DIAS_SEMANA, HORARIOS_TREINO } from "@/services/treinos/treinosService"
  * @param {Function} props.onSalvar Função chamada ao salvar
  * @param {boolean} props.editando Flag indicando se está editando ou criando
  * @param {Function} props.onUploadImagens Função para fazer upload de imagens
+ * @param {Function} props.onRemoverImagem Função para remover uma imagem do treino
  * @returns {JSX.Element} Componente React
  */
 const FormularioTreino = ({
@@ -49,13 +50,32 @@ const FormularioTreino = ({
   proximoNumeroAula,
   onSalvar,
   editando,
-  onUploadImagens
+  onUploadImagens,
+  onRemoverImagem
 }) => {
+  // Estado para armazenar imagens temporárias (para upload)
+  const [imagensTemporarias, setImagensTemporarias] = useState([]);
+
   // Usar useEffect para sincronizar imagens com o estado do treino
   useEffect(() => {
     // Quando o modal for aberto e estivermos editando, sincroniza as imagens
     if (aberto && editando && treino?.imagens) {
-      setImageUrls(treino.imagens);
+      // Certifique-se de que as imagens estejam no formato correto (objetos com propriedade url)
+      const imagensFormatadas = treino.imagens.map(img => {
+        // Se já for um objeto com propriedade url, retorne como está
+        if (img && typeof img === 'object' && img.url) {
+          return img;
+        }
+        // Se for uma string, converta para o formato correto
+        if (typeof img === 'string') {
+          return { url: img, id: null };
+        }
+        return img;
+      });
+      setImageUrls(imagensFormatadas);
+      
+      // Limpar imagens temporárias quando o modal é aberto para edição
+      setImagensTemporarias([]);
     }
   }, [aberto, editando, treino, setImageUrls]);
   
@@ -70,30 +90,37 @@ const FormularioTreino = ({
     }
   }, [imageUrls, setNovoTreino]);
   
-  // Função para adicionar imagem via URL
-  const adicionarImagemViaUrl = () => {
-    if (imageUrls.length >= 3) {
-      alert("Máximo de 3 imagens permitido.");
-      return;
-    }
-    
-    const url = prompt("Insira a URL da imagem:");
-    if (url && url.trim() !== "") {
-      setImageUrls([...imageUrls, url.trim()]);
-    }
-  };
-  
   // Função para remover imagem
-  const removerImagem = (index) => {
-    // Usando setState com callback para garantir o valor mais recente
-    setImageUrls(prevUrls => {
-      const novasImagens = [...prevUrls];
+  const removerImagem = async (index, imagemId) => {
+    // Se está editando um treino existente e a imagem tem ID
+    if (editando && treino?.id && imagemId) {
+      try {
+        // Remover a imagem via API
+        await onRemoverImagem(treino.id, imagemId);
+        
+        // Atualizar o estado local após remover no servidor
+        const novasImagens = [...imageUrls];
+        novasImagens.splice(index, 1);
+        setImageUrls(novasImagens);
+      } catch (error) {
+        console.error("Erro ao remover imagem:", error);
+        alert("Não foi possível remover a imagem. Tente novamente.");
+      }
+    } else {
+      // Se não é um treino salvo ou a imagem não tem ID, apenas remove do estado local
+      const novasImagens = [...imageUrls];
       novasImagens.splice(index, 1);
+      setImageUrls(novasImagens);
       
-      // O useEffect se encarregará de atualizar novoTreino.imagens
-      
-      return novasImagens;
-    });
+      // Se estivermos trabalhando com imagens temporárias também
+      if (imagensTemporarias.length > 0) {
+        const novasImagensTemp = [...imagensTemporarias];
+        if (index < novasImagensTemp.length) {
+          novasImagensTemp.splice(index, 1);
+          setImagensTemporarias(novasImagensTemp);
+        }
+      }
+    }
   };
   
   // Função para fazer upload de arquivos
@@ -107,22 +134,65 @@ const FormularioTreino = ({
       return;
     }
     
-    // Criar previews temporárias para exibição imediata
-    const fileArray = Array.from(files);
-    // Usar as URLs diretamente como imagens, sem fazer upload para a API
-    const newImageUrls = fileArray.map(file => URL.createObjectURL(file));
+    // Armazenar os arquivos para upload posterior em ambos os casos (novo treino ou edição)
+    const filesArray = Array.from(files);
+    setImagensTemporarias(prev => [...prev, ...filesArray]);
     
-    // Atualizar o estado com as novas URLs - usando uma única função para garantir consistência
+    // Criar previews locais para exibição formatados como objetos com propriedade url
+    const newImageUrls = filesArray.map(file => ({
+      url: URL.createObjectURL(file),
+      id: null // ID nulo para imagens temporárias
+    }));
+    
+    // Atualizar imageUrls para exibir previews
     setImageUrls(prevUrls => {
       const updatedUrls = [...prevUrls, ...newImageUrls];
-      
-      // O useEffect se encarregará de sincronizar isso com novoTreino.imagens
-      
       return updatedUrls;
     });
     
     // Limpar input file
     event.target.value = '';
+  };
+  
+  // Função para salvar o treino
+  const handleSalvar = async () => {
+    // Ao invés de modificar o objeto novoTreino, vamos criar um FormData diretamente
+    // e enviar para a função de salvar
+    const formData = new FormData();
+    
+    // Adicionar campos básicos
+    formData.append('numeroAula', editando ? treino.numeroAula : proximoNumeroAula);
+    formData.append('tipo', novoTreino.tipo);
+    formData.append('diaSemana', novoTreino.diaSemana);
+    formData.append('horario', novoTreino.horario);
+    formData.append('data', novoTreino.data);
+    
+    // Adicionar observações se houver
+    if (novoTreino.observacoes) {
+      formData.append('observacoes', novoTreino.observacoes);
+    }
+    
+    // Definir visibilidade
+    formData.append('isPublico', novoTreino.isPublico ? 'true' : 'false');
+    
+    // Adicionar ID se for edição
+    if (editando && treino?.id) {
+      formData.append('id', treino.id);
+    }
+    
+    // Adicionar imagens temporárias, tanto para criação quanto para edição
+    if (imagensTemporarias.length > 0) {
+      // Adicionar cada arquivo diretamente com o nome do campo imagens[]
+      imagensTemporarias.forEach((file) => {
+        formData.append('imagens[]', file);
+      });
+    }
+    
+    // Chamar a função de salvar passando o FormData
+    await onSalvar(formData);
+    
+    // Limpar imagens temporárias
+    setImagensTemporarias([]);
   };
   
   return (
@@ -267,14 +337,14 @@ const FormularioTreino = ({
                 {imageUrls.map((url, index) => (
                   <div key={index} className="relative group aspect-video bg-muted rounded-md overflow-hidden">
                     <img 
-                      src={url} 
+                      src={url.url} 
                       alt={`Foto ${index + 1}`} 
                       className="w-full h-full object-cover"
                     />
                     <div className="absolute inset-0 flex items-center justify-center bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity">
                       <button
                         type="button"
-                        onClick={() => removerImagem(index)}
+                        onClick={() => removerImagem(index, editando && treino?.imagens && treino.imagens[index]?.id)}
                         className="bg-black/60 text-white rounded-full p-2"
                         aria-label="Remover imagem"
                       >
@@ -324,7 +394,7 @@ const FormularioTreino = ({
           <Button className="w-full sm:w-auto" variant="outline" onClick={() => setAberto(false)}>
             Cancelar
           </Button>
-          <Button className="w-full sm:w-auto" onClick={onSalvar}>
+          <Button className="w-full sm:w-auto" onClick={handleSalvar}>
             {editando ? "Salvar alterações" : "Adicionar treino"}
           </Button>
         </DialogFooter>

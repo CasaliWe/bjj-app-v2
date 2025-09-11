@@ -8,6 +8,17 @@ import FiltrosTreinos from "@/components/treinos/FiltrosTreinos";
 import FormularioTreino from "@/components/treinos/FormularioTreino";
 import ListaTreinos from "@/components/treinos/ListaTreinos";
 import ModalComunidade from "@/components/treinos/ModalComunidade";
+import React from "react";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle
+} from "@/components/ui/alert-dialog";
 
 /**
  * Página de treinos
@@ -44,6 +55,7 @@ const Treinos = () => {
     removerTreino,
     alterarVisibilidade,
     uploadImagens,
+    removerImagem,
     resetFormulario,
     abrirModalNovoTreino,
     abrirModalComunidade,
@@ -53,6 +65,30 @@ const Treinos = () => {
     setFiltroDiaSemana,
     carregarTreinos
   } = useTreinos();
+
+  // Estados para o diálogo de confirmação de exclusão
+  const [idParaExcluir, setIdParaExcluir] = React.useState(null);
+  const [confirmacaoAberta, setConfirmacaoAberta] = React.useState(false);
+  
+  // Abrir confirmação de exclusão
+  const abrirConfirmacaoExcluir = (id) => {
+    setIdParaExcluir(id);
+    setConfirmacaoAberta(true);
+  };
+  
+  // Fechar confirmação de exclusão
+  const fecharConfirmacaoExcluir = () => {
+    setConfirmacaoAberta(false);
+    setIdParaExcluir(null);
+  };
+  
+  // Confirmar exclusão
+  const confirmarExclusao = () => {
+    if (idParaExcluir) {
+      removerTreino(idParaExcluir);
+      fecharConfirmacaoExcluir();
+    }
+  };
 
   return (
     <SidebarProvider>
@@ -123,7 +159,7 @@ const Treinos = () => {
                 <ListaTreinos
                   treinos={treinosFiltrados}
                   onEditar={editarTreino}
-                  onExcluir={removerTreino}
+                  onExcluir={abrirConfirmacaoExcluir}
                   onAlterarVisibilidade={alterarVisibilidade}
                   onNovo={abrirModalNovoTreino}
                   paginacao={paginacaoTreinos}
@@ -148,6 +184,7 @@ const Treinos = () => {
         onSalvar={salvarTreino}
         editando={!!editandoTreino}
         onUploadImagens={uploadImagens}
+        onRemoverImagem={removerImagem}
       />
 
       {/* Modal da comunidade */}
@@ -159,6 +196,24 @@ const Treinos = () => {
         carregando={carregando}
         onMudarPagina={mudarPaginaTreinosComunidade}
       />
+
+      {/* Diálogo de confirmação de exclusão */}
+      <AlertDialog open={confirmacaoAberta} onOpenChange={setConfirmacaoAberta}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Confirmar exclusão</AlertDialogTitle>
+            <AlertDialogDescription>
+              Tem certeza que deseja excluir este treino? Esta ação não pode ser desfeita.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={fecharConfirmacaoExcluir}>Cancelar</AlertDialogCancel>
+            <AlertDialogAction onClick={confirmarExclusao} className="bg-destructive text-destructive-foreground">
+              Excluir
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </SidebarProvider>
   );
 };

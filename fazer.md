@@ -1,5 +1,14 @@
 ### PENDENTE:
 
+
+expt contabilizar;
+token reset api;
+verificar pagamento webhook;
+exp;
+pagina user;
+
+
+
 - componente, hook, pagina, services;
 
 

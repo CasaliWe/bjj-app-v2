@@ -31,7 +31,7 @@ const ImageCarousel = ({ images }) => {
     return (
       <div className="relative w-full rounded-lg overflow-hidden aspect-video bg-muted">
         <img 
-          src={images[0]} 
+          src={images[0].url} 
           alt="Foto do treino" 
           className="w-full h-full object-cover"
         />
@@ -50,7 +50,7 @@ const ImageCarousel = ({ images }) => {
           }`}
         >
           <img 
-            src={image} 
+            src={image.url} 
             alt={`Foto do treino ${index + 1}`} 
             className="w-full h-full object-cover"
           />

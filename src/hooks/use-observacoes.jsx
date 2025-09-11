@@ -111,6 +111,8 @@ export const useObservacoes = () => {
   // Alterar a página atual (paginação)
   const mudarPagina = useCallback((novaPagina) => {
     setPaginacao(prev => ({ ...prev, currentPage: novaPagina }));
+    // Não precisamos chamar buscarObservacoes aqui pois o useEffect
+    // detectará a mudança em paginacao.currentPage e fará a busca
   }, []);
 
   // Alterar os filtros

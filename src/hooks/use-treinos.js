@@ -5,11 +5,11 @@ import {
   criarTreino, 
   atualizarTreino, 
   excluirTreino, 
-  filtrarTreinos,
   getTreinosComunidade,
   alterarVisibilidadeTreino,
-  uploadImagensTreino
-} from '@/services/treinos/treinosService';
+  uploadImagensTreino,
+  removerImagemTreino
+} from '@/services/treinos/treinosService.jsx';
 import { useGetUser } from './use-getUser';
 import { useExp } from '@/components/exp/Exp';
 
@@ -127,33 +127,22 @@ export const useTreinos = () => {
   };
 
   // Salvar treino (novo ou editado)
-  const salvarTreino = async () => {
+  const salvarTreino = async (formData) => {
     setCarregando(true);
     setErro(null);
     
     try {
-      // Usar sempre o estado mais recente de imageUrls para as imagens
-      // Isso garante consistência entre o que é mostrado e o que é salvo
-      
-      // Preparar o treino com os dados atuais
-      const treinoFinal = {
-        ...novoTreino,
-        imagens: imageUrls, // Usar sempre o imageUrls mais recente
-        numeroAula: editandoTreino ? editandoTreino.numeroAula : proximoNumeroAula,
-        id: editandoTreino ? editandoTreino.id : undefined // A API atribuirá um ID para novos treinos
-      };
-
       let treinoSalvo;
       
       if (editandoTreino) {
         // Atualizar treino existente
-        treinoSalvo = await atualizarTreino(treinoFinal, user);
+        treinoSalvo = await atualizarTreino(formData);
         setTreinos(prevTreinos => 
           prevTreinos.map(t => t.id === treinoSalvo.id ? treinoSalvo : t)
         );
       } else {
         // Adicionar novo treino
-        treinoSalvo = await criarTreino(treinoFinal, user);
+        treinoSalvo = await criarTreino(formData);
         setTreinos(prevTreinos => [...prevTreinos, treinoSalvo]);
         
         // Ganhar experiência por adicionar novo treino
@@ -239,8 +228,8 @@ export const useTreinos = () => {
     setErro(null);
     
     try {
-      // Passar os dados do usuário atual para adicionar ao treino quando torná-lo público
-      const treinoAtualizado = await alterarVisibilidadeTreino(id, isPublico, user);
+      // Chamar o serviço para alterar a visibilidade
+      const treinoAtualizado = await alterarVisibilidadeTreino(id, isPublico);
       
       // Recarregar a lista de treinos para garantir que está atualizada
       carregarTreinos(paginacaoTreinos.currentPage);
@@ -255,20 +244,41 @@ export const useTreinos = () => {
     }
   };
 
-  // Upload de imagens
-  const uploadImagens = async (files) => {
-    if (files.length === 0) return [];
+  // Upload de imagens para um treino existente
+  const uploadImagens = async (treinoId, files) => {
+    if (!treinoId || !files || files.length === 0) return [];
     
     setCarregando(true);
     setErro(null);
     
     try {
-      const urls = await uploadImagensTreino(files);
+      const urls = await uploadImagensTreino(treinoId, files);
       return urls;
     } catch (error) {
       console.error('Erro ao fazer upload de imagens:', error);
       setErro('Não foi possível fazer o upload das imagens. Tente novamente mais tarde.');
       return [];
+    } finally {
+      setCarregando(false);
+    }
+  };
+
+  // Remover imagem específica de um treino
+  const removerImagem = async (treinoId, imagemId) => {
+    setCarregando(true);
+    setErro(null);
+    
+    try {
+      await removerImagemTreino(treinoId, imagemId);
+      
+      // Recarregar a lista de treinos para garantir que está atualizada
+      carregarTreinos(paginacaoTreinos.currentPage);
+      
+      return true;
+    } catch (error) {
+      console.error('Erro ao remover imagem do treino:', error);
+      setErro('Não foi possível remover a imagem. Tente novamente mais tarde.');
+      return false;
     } finally {
       setCarregando(false);
     }
@@ -285,8 +295,8 @@ export const useTreinos = () => {
     setImageUrls([...imageUrls, url.trim()]);
   };
 
-  // Remover imagem
-  const removerImagem = (index) => {
+  // Remover imagem do estado local
+  const removerImagemLocal = (index) => {
     const novasImagens = [...imageUrls];
     novasImagens.splice(index, 1);
     setImageUrls(novasImagens);
@@ -366,8 +376,9 @@ export const useTreinos = () => {
     removerTreino,
     alterarVisibilidade,
     uploadImagens,
-    adicionarImagem,
     removerImagem,
+    adicionarImagem,
+    removerImagemLocal,
     resetFormulario,
     abrirModalNovoTreino,
     abrirModalComunidade,

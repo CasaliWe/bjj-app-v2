@@ -2,6 +2,7 @@ import { useState, useEffect, useContext, createContext } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useUser } from '../../contexts/UserContext';
 import { Button } from '../ui/button';
+import { getAuthToken } from '@/services/cookies/cookies';
 
 // Criando um contexto global para o modal de experiência
 const ExpContext = createContext();
@@ -75,7 +76,7 @@ const Exp = ({ children }) => {
     enviarExp();
     */
     
-    console.log('Enviando para API:', { userId: user?.id, expGanho });
+    console.log('Enviando para API:', { token: getAuthToken(), expGanho });
   };
 
   const handleFechar = () => {

@@ -9,7 +9,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
-import { DIAS_SEMANA } from "@/services/treinos/treinosService";
+import { DIAS_SEMANA } from "@/services/treinos/treinosService.jsx";
 import { useState } from "react";
 
 /**

@@ -14,6 +14,7 @@ import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { useNavigate } from "react-router-dom";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -26,7 +27,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { DIAS_SEMANA } from "@/services/treinos/treinosService";
+import { DIAS_SEMANA } from "@/services/treinos/treinosService.jsx";
 import ImageCarousel from "./ImageCarousel";
 
 /**
@@ -40,6 +41,8 @@ import ImageCarousel from "./ImageCarousel";
  * @returns {JSX.Element} Componente React
  */
 const TreinoCard = ({ treino, onEditar, onExcluir, onAlterarVisibilidade, isComunidade = false }) => {
+  const navigate = useNavigate();
+  
   // Função para obter o label do dia da semana
   const getDiaSemanaLabel = (value) => {
     if (value === "quinta") return "Quinta-feira";
@@ -85,9 +88,13 @@ const TreinoCard = ({ treino, onEditar, onExcluir, onAlterarVisibilidade, isComu
         <div className="flex justify-between items-start">
           <div className="flex-1">
             {isComunidade && treino.usuario && (
-              <div className="flex items-center gap-3 mb-3">
+              <div 
+                className="flex items-center gap-3 mb-3 cursor-pointer hover:opacity-50 transition-opacity"
+                onClick={() => navigate(`/usuario?bjj_id=${treino.usuario.bjj_id}`)}
+                title="Ver perfil do usuário"
+              >
                 <Avatar className="h-8 w-8 md:h-10 md:w-10">
-                  <AvatarImage src={treino.usuario.foto} alt={treino.usuario.nome} />
+                  <AvatarImage src={treino.usuario.imagem} alt={treino.usuario.nome} />
                   <AvatarFallback>{getIniciais(treino.usuario.nome)}</AvatarFallback>
                 </Avatar>
                 <div>
