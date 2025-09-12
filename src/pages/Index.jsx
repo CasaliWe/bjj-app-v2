@@ -6,6 +6,8 @@ import { Calendar, Book, Award, TrendingUp, Target, User, LogOut } from "lucide-
 import {sair} from "@/services/auth/logout";
 import { useState, useEffect } from "react";
 
+import { getAuthToken } from '@/services/cookies/cookies';
+
 // contexts
 import { useUser } from "@/contexts/UserContext";
 
@@ -77,40 +79,25 @@ const Index = () => {
 
   // Carregar dados iniciais *********************************
   useEffect(() => {
-    
-    // Dados de treinos
-    setTreinosDados({
-      gi: {
-        total: 128,
-        esteMes: 8,
-        ultimaVez: "12 de Agosto"
-      },
-      noGi: {
-        total: 59,
-        esteMes: 4,
-        ultimaVez: "09 de Agosto"
-      },
-      competicoesGi: {
-        eventos: 5,
-        lutas: 1,
-        vitorias: 2,
-        derrotas: 2,
-        finalizacoes: 1,
-        primeiroLugar: 2,
-        segundoLugar: 1,
-        terceiroLugar: 5
-      },
-      competicoesNoGi: {
-        eventos: 5,
-        lutas: 1,
-        vitorias: 2,
-        derrotas: 2,
-        finalizacoes: 1,
-        primeiroLugar: 2,
-        segundoLugar: 1,
-        terceiroLugar: 5
+
+    // Função para buscar dados do usuário na API
+    const buscarDadosTreinoCompeticao = async () => {
+      try {
+          const response = await fetch(`${import.meta.env.VITE_API_URL}endpoint/user/buscar-dados-treino-competicao.php`, {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${getAuthToken()}`
+            }
+          });
+          const data = await response.json();
+          setTreinosDados(data.data);
+      } catch (error) {
+        console.error('Erro ao buscar dados do usuário:', error);
+        return null;
       }
-    });
+    };
+    buscarDadosTreinoCompeticao();
     
     // Dados de atividades recentes
     setRecentActivities([
