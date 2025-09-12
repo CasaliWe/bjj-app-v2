@@ -13,6 +13,7 @@ export const useTecnicas = () => {
   const [posicoesCadastradas, setPosicoesCadastradas] = useState([]);
   const [tecnicasComunidade, setTecnicasComunidade] = useState([]);
   const [carregando, setCarregando] = useState(true);
+  const [carregandoComunidade, setCarregandoComunidade] = useState(false);
   const [erro, setErro] = useState(null);
   
   // Hook para mostrar experiência
@@ -51,6 +52,7 @@ export const useTecnicas = () => {
 
   // Carregar técnicas da comunidade
   const carregarTecnicasComunidade = useCallback(async (termo = "") => {
+    setCarregandoComunidade(true);
     try {
       const data = await tecnicasService.getTecnicasComunidade(termo);
       setTecnicasComunidade(data);
@@ -58,6 +60,8 @@ export const useTecnicas = () => {
     } catch (error) {
       console.error("Erro ao carregar técnicas da comunidade:", error);
       return [];
+    } finally {
+      setCarregandoComunidade(false);
     }
   }, []);
 
@@ -162,9 +166,6 @@ export const useTecnicas = () => {
       // Atualizar na lista local
       setTecnicas(prev => prev.map(t => t.id === tecnicaSalva.id ? tecnicaSalva : t));
       
-      // Ganhar experiência por editar
-      mostrarExp(20, "Você ganhou 20 exp por editar uma técnica!");
-      
       return tecnicaSalva;
     } catch (error) {
       console.error("Erro ao editar técnica:", error);
@@ -249,6 +250,7 @@ export const useTecnicas = () => {
     posicoesCadastradas,
     tecnicasComunidade,
     carregando,
+    carregandoComunidade,
     erro,
     carregarTecnicasComunidade,
     adicionarTecnica,

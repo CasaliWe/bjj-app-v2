@@ -14,6 +14,7 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Users, Search, Book } from "lucide-react";
 import TecnicaCard from "./TecnicaCard";
 import VideoPlayer from "./VideoPlayer";
+import LoadingSpinner from "@/components/ui/LoadingSpinner";
 
 /**
  * Componente modal para exibir técnicas da comunidade
@@ -23,12 +24,14 @@ import VideoPlayer from "./VideoPlayer";
  * @param {Function} props.onClose - Função para fechar o modal
  * @param {Array} props.tecnicasComunidade - Lista de técnicas da comunidade
  * @param {Function} props.onSearch - Função para pesquisar técnicas
+ * @param {boolean} props.carregando - Indica se está carregando dados
  */
 const TecnicasComunidadeModal = ({ 
   isOpen, 
   onClose, 
   tecnicasComunidade,
-  onSearch 
+  onSearch,
+  carregando = false
 }) => {
   const [termoPesquisa, setTermoPesquisa] = useState("");
   
@@ -86,7 +89,9 @@ const TecnicasComunidadeModal = ({
         
         {/* Resultados */}
         <ScrollArea className="max-h-[60vh]">
-          {tecnicasFiltradas.length > 0 ? (
+          {carregando ? (
+            <LoadingSpinner message="Carregando técnicas..." className="py-8" />
+          ) : tecnicasFiltradas.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 py-2">
               {tecnicasFiltradas.map(tecnica => (
                 <TecnicaCard 

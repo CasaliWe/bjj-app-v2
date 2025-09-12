@@ -48,7 +48,7 @@ const TecnicasDestacadasModal = ({
           </DialogDescription>
         </DialogHeader>
         
-        <ScrollArea className="max-h-[60vh] py-1">
+        <ScrollArea className="max-h-[70vh] py-1">
           {tecnicasDestacadas.length > 0 ? (
             <div className="space-y-4">
               {tecnicasDestacadas.map((tecnica) => (
@@ -129,33 +129,35 @@ const TecnicasDestacadasModal = ({
                           Ver detalhes
                         </AccordionTrigger>
                         <AccordionContent>
-                          <div className="px-4 sm:px-6 pb-2 space-y-3 max-h-[40vh] sm:max-h-60 overflow-y-auto">
+                          <div className="px-4 pb-4 space-y-4">
                             {/* Vídeo curto (se disponível) */}
-                            {tecnica.videoUrl && (
-                              <div className="mb-3">
-                                <h4 className="font-medium text-sm mb-1">Vídeo:</h4>
+                            {tecnica.video_url && (
+                              <div>
+                                <h4 className="font-medium text-sm mb-2 border-b pb-1">Vídeo:</h4>
                                 <VideoPlayer 
-                                  src={tecnica.videoUrl} 
-                                  posterSrc={tecnica.videoPoster} 
+                                  src={tecnica.video_url} 
+                                  posterSrc={tecnica.video_poster} 
+                                  className="mb-3 w-full"
+                                  loop={true}
                                 />
                               </div>
                             )}
                           
                             <div>
-                              <h4 className="font-medium text-sm mb-1">Passo a passo:</h4>
+                              <h4 className="font-medium text-sm mb-2 border-b pb-1">Passo a passo:</h4>
                               <ol className="pl-5 list-decimal">
                                 {tecnica.passos.map((passo, index) => (
-                                  <li key={index} className="text-sm mb-1">{passo}</li>
+                                  <li key={index} className="text-sm mb-2">{passo}</li>
                                 ))}
                               </ol>
                             </div>
                             
                             {tecnica.observacoes && tecnica.observacoes.length > 0 && (
-                              <div className="mt-3">
-                                <h4 className="font-medium text-sm mb-1">Observações:</h4>
+                              <div>
+                                <h4 className="font-medium text-sm mb-2 border-b pb-1">Observações:</h4>
                                 <ul className="pl-5 list-disc">
                                   {tecnica.observacoes.map((obs, index) => (
-                                    <li key={index} className="text-sm mb-1">{obs}</li>
+                                    <li key={index} className="text-sm mb-2">{obs}</li>
                                   ))}
                                 </ul>
                               </div>

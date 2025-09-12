@@ -5,6 +5,8 @@ import { MobileNav } from "@/components/MobileNav";
 import { Button } from "@/components/ui/button";
 import { Book, Plus, Heart, Users } from "lucide-react";
 import Exp from "@/components/exp/Exp";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
+import LoadingSpinner from "@/components/ui/LoadingSpinner";
 
 // Hooks personalizados
 import { useGetUser } from "@/hooks/use-getUser";
@@ -16,6 +18,7 @@ import TecnicaFiltro from "@/components/tecnicas/TecnicaFiltro";
 import TecnicaFormModal from "@/components/tecnicas/TecnicaFormModal";
 import TecnicasDestacadasModal from "@/components/tecnicas/TecnicasDestacadasModal";
 import TecnicasComunidadeModal from "@/components/tecnicas/TecnicasComunidadeModal";
+import TecnicasList from "@/components/tecnicas/TecnicasList";
 
 // Upgrade
 import UpgradeModal from "@/components/upgrade/UpgradeModal";
@@ -29,6 +32,8 @@ const Tecnicas = () => {
   const [modalAdicionarAberto, setModalAdicionarAberto] = useState(false);
   const [modalDestaquesAberto, setModalDestaquesAberto] = useState(false);
   const [modalComunidadeAberto, setModalComunidadeAberto] = useState(false);
+  const [modalConfirmacaoExcluirAberto, setModalConfirmacaoExcluirAberto] = useState(false);
+  const [tecnicaParaExcluir, setTecnicaParaExcluir] = useState(null);
   
   // Estado para técnica sendo editada
   const [tecnicaEmEdicao, setTecnicaEmEdicao] = useState(null);
@@ -42,6 +47,7 @@ const Tecnicas = () => {
     posicoesCadastradas, 
     tecnicasComunidade,
     carregando, 
+    carregandoComunidade,
     erro, 
     adicionarTecnica, 
     editarTecnica, 
@@ -138,6 +144,21 @@ const Tecnicas = () => {
     setFiltroPosicao("todas");
   };
 
+  // Abrir confirmação de exclusão
+  const abrirConfirmacaoExcluir = (id) => {
+    setTecnicaParaExcluir(id);
+    setModalConfirmacaoExcluirAberto(true);
+  };
+  
+  // Confirmar exclusão
+  const confirmarExclusao = async () => {
+    if (tecnicaParaExcluir) {
+      await excluirTecnica(tecnicaParaExcluir);
+      setModalConfirmacaoExcluirAberto(false);
+      setTecnicaParaExcluir(null);
+    }
+  };
+
   useEffect(() => {
     // Buscar dados do usuário ao montar o componente
     fetchUserData();
@@ -203,45 +224,24 @@ const Tecnicas = () => {
               />
 
               {/* Lista de Técnicas */}
-              {carregando ? (
-                <div className="flex justify-center items-center py-12">
-                  <p>Carregando técnicas...</p>
-                </div>
-              ) : erro ? (
+              {erro ? (
                 <div className="flex flex-col items-center justify-center py-12 text-center">
                   <p className="text-destructive">{erro}</p>
                   <Button className="mt-4" onClick={() => window.location.reload()}>
                     Tentar novamente
                   </Button>
                 </div>
-              ) : tecnicasFiltradas.length > 0 ? (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {tecnicasFiltradas.map((tecnica) => (
-                    <TecnicaCard 
-                      key={tecnica.id}
-                      tecnica={tecnica}
-                      onEdit={handleEditarTecnica}
-                      onDelete={excluirTecnica}
-                      onToggleDestaque={toggleDestaque}
-                      onShare={togglePublica}
-                    />
-                  ))}
-                </div>
               ) : (
-                <div className="flex flex-col items-center justify-center py-12 text-center">
-                  <Book className="h-12 w-12 mb-4 text-muted-foreground" />
-                  <h3 className="text-lg font-medium">Nenhuma técnica encontrada</h3>
-                  <p className="text-muted-foreground">
-                    {filtroCategoria !== "todas" || filtroPosicao !== "todas"
-                      ? "Tente mudar os filtros ou"
-                      : "Comece"}{" "}
-                    adicionando uma nova técnica.
-                  </p>
-                  <Button className="mt-4" onClick={iniciarNovaTecnica}>
-                    <Plus className="mr-2 h-4 w-4" />
-                    Nova Técnica
-                  </Button>
-                </div>
+                <TecnicasList
+                  tecnicas={tecnicasFiltradas}
+                  itensPorPagina={9}
+                  loading={carregando}
+                  onEdit={handleEditarTecnica}
+                  onDelete={abrirConfirmacaoExcluir}
+                  onToggleDestaque={toggleDestaque}
+                  onShare={togglePublica}
+                  onAddNew={iniciarNovaTecnica}
+                />
               )}
             </div>
           </main>
@@ -292,10 +292,31 @@ const Tecnicas = () => {
         onClose={() => setModalComunidadeAberto(false)}
         tecnicasComunidade={tecnicasComunidade}
         onSearch={pesquisarTecnicasComunidade}
+        carregando={carregandoComunidade}
       />
 
       {/* Modal de upgrade para o plano Plus */}
       <UpgradeModal />
+
+      {/* Modal de confirmação de exclusão */}
+      <AlertDialog open={modalConfirmacaoExcluirAberto} onOpenChange={setModalConfirmacaoExcluirAberto}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Confirmar exclusão</AlertDialogTitle>
+            <AlertDialogDescription>
+              Tem certeza que deseja excluir esta técnica? Esta ação não pode ser desfeita.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={() => setModalConfirmacaoExcluirAberto(false)}>
+              Cancelar
+            </AlertDialogCancel>
+            <AlertDialogAction onClick={confirmarExclusao} className="bg-destructive text-destructive-foreground">
+              Excluir
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </SidebarProvider>
   );
 };
