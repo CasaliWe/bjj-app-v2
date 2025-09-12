@@ -5,8 +5,10 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { PWAInstallPrompt } from "@/components/PWAInstallPrompt";
 import TitleUpdater from "@/components/TitleUpdater";
-import { isAuthenticated } from "./services/cookies/cookies";
+import { getAuthToken, removeAuthToken } from "./services/cookies/cookies";
 import Exp from "./components/exp/Exp";
+import { useState, useEffect } from "react";
+import LoadingSpinner from "./components/ui/LoadingSpinner";
 
 // CONTEXTS
 import { UserProvider } from "./contexts/UserContext";
@@ -46,9 +48,52 @@ const queryClient = new QueryClient();
 
 // Componente para rotas privadas ****************
 const PrivateRoute = ({ children }) => {
-  // Usa a função isAuthenticated do serviço de cookies
-  const isAuth = isAuthenticated();
-  
+  const [isValidating, setIsValidating] = useState(true);
+  const [isAuth, setIsAuth] = useState(false);
+  const token = getAuthToken();
+  const URL = import.meta.env.VITE_API_URL + 'endpoint/auth/verificar-token-valido.php';
+
+  useEffect(() => {
+    const validateToken = async () => {
+      // Se não tem token, não está autenticado
+      if (!token) {
+        setIsAuth(false);
+        setIsValidating(false);
+        return;
+      }
+
+      try {
+        const response = await fetch(URL, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          }
+        });
+        
+        const data = await response.json();
+        if(data.success) {
+          setIsAuth(data.success);
+        }else{
+          setIsAuth(data.success);
+          removeAuthToken(); // Remove o token inválido
+        }
+      } catch (error) {
+        console.error('Erro ao validar token:', error);
+        setIsAuth(false);
+      } finally {
+        setIsValidating(false);
+      }
+    };
+
+    validateToken();
+  }, [token, URL]);
+
+  // Exibir um indicador de carregamento enquanto verifica o token
+  if (isValidating) {
+    return <LoadingSpinner message="Verificando autenticação..." fullScreen={true} />;
+  }
+
   // Se não estiver autenticado, redireciona para login
   if (!isAuth) {
     return <Navigate to="/login" replace />;
@@ -60,8 +105,51 @@ const PrivateRoute = ({ children }) => {
 
 // Componente para rotas públicas que usuários logados não devem acessar ****************
 const AuthRedirectRoute = ({ children }) => {
-  // Usa a função isAuthenticated do serviço de cookies
-  const isAuth = isAuthenticated();
+  const [isValidating, setIsValidating] = useState(true);
+  const [isAuth, setIsAuth] = useState(false);
+  const token = getAuthToken();
+  const URL = import.meta.env.VITE_API_URL + 'endpoint/auth/verificar-token-valido.php';
+
+  useEffect(() => {
+    const validateToken = async () => {
+      // Se não tem token, não está autenticado
+      if (!token) {
+        setIsAuth(false);
+        setIsValidating(false);
+        return;
+      }
+
+      try {
+        const response = await fetch(URL, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          }
+        });
+        
+        const data = await response.json();
+        if(data.success) {
+          setIsAuth(data.success);
+        }else{
+          setIsAuth(data.success);
+          removeAuthToken(); // Remove o token inválido
+        }
+      } catch (error) {
+        console.error('Erro ao validar token:', error);
+        setIsAuth(false);
+      } finally {
+        setIsValidating(false);
+      }
+    };
+
+    validateToken();
+  }, [token, URL]);
+
+  // Exibir um indicador de carregamento enquanto verifica o token
+  if (isValidating) {
+    return <LoadingSpinner message="Verificando autenticação..." fullScreen={true} />;
+  }
   
   // Se estiver autenticado, redireciona para a página principal da aplicação
   if (isAuth) {

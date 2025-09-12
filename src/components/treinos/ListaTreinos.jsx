@@ -1,6 +1,7 @@
-import { Calendar, Plus, Activity } from "lucide-react";
+import { Calendar, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import TreinoCard from "./TreinoCard";
+import LoadingSpinner from "@/components/ui/LoadingSpinner";
 
 /**
  * Componente que exibe a lista de treinos
@@ -27,14 +28,7 @@ const ListaTreinos = ({
 }) => {
   // Renderização condicional para estado de carregamento
   if (loading) {
-    return (
-      <div className="w-full flex flex-col items-center justify-center py-12">
-        <div className="animate-spin">
-          <Activity className="h-8 w-8 text-primary" />
-        </div>
-        <p className="mt-4 text-muted-foreground">Carregando treinos...</p>
-      </div>
-    );
+    return <LoadingSpinner message="Carregando treinos..." />;
   }
   
   // Se não houver treinos, mostra mensagem e botão para adicionar

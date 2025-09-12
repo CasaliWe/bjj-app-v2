@@ -7,6 +7,15 @@ verificar pagamento webhook;
 exp;
 pagina user;
 
+organizar codigo;
+organizxar doc;
+fazer admin com logs;
+
+verificar erros no console.log;
+
+melhorar layout dos emails;
+
+
 
 
 - componente, hook, pagina, services;

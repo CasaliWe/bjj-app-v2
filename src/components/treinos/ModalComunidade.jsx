@@ -9,6 +9,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import TreinoCard from "./TreinoCard";
+import LoadingSpinner from "@/components/ui/LoadingSpinner";
 
 /**
  * Componente para o modal de treinos da comunidade
@@ -44,10 +45,7 @@ const ModalComunidade = ({
         </DialogHeader>
         
         {carregando ? (
-          <div className="py-8 text-center">
-            <div className="inline-block animate-spin rounded-full h-8 w-8 border-4 border-primary border-t-transparent"></div>
-            <p className="mt-2 text-muted-foreground">Carregando treinos...</p>
-          </div>
+          <LoadingSpinner message="Carregando treinos..." className="py-8" />
         ) : treinos.length === 0 ? (
           <div className="py-8 text-center">
             <Share2 className="h-12 w-12 mx-auto text-muted-foreground mb-4" />

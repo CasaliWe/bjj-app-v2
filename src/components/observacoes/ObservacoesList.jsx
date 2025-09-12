@@ -7,8 +7,9 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { FileText, MoreVertical, PencilLine, Tag, Trash2, Activity } from 'lucide-react';
+import { FileText, MoreVertical, PencilLine, Tag, Trash2 } from 'lucide-react';
 import { TagBadge, TextoExpandivel, formatarDataCurta } from './ObservacoesUtils';
+import LoadingSpinner from '@/components/ui/LoadingSpinner';
 
 /**
  * Componente para listar observações
@@ -20,14 +21,7 @@ import { TagBadge, TextoExpandivel, formatarDataCurta } from './ObservacoesUtils
  */
 const ObservacoesList = ({ observacoes, loading, onEdit, onDelete }) => {
   if (loading) {
-    return (
-      <div className="w-full flex flex-col items-center justify-center py-12">
-        <div className="animate-spin">
-          <Activity className="h-8 w-8 text-primary" />
-        </div>
-        <p className="mt-4 text-muted-foreground">Carregando observações...</p>
-      </div>
-    );
+    return <LoadingSpinner message="Carregando observações..." />;
   }
 
   if (!observacoes.length) {

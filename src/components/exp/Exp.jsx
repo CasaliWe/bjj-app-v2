@@ -46,37 +46,27 @@ const Exp = ({ children }) => {
   };
 
   // Função que será implementada para enviar os dados para a API *****************
-  const enviarExpParaAPI = () => {
-    // TODO: Implementar chamada para API
-    // Essa função deverá enviar o ID do usuário e a quantidade de exp ganha
-    // Exemplo:
-    /*
-    const userId = user?.id;
-    
-    const enviarExp = async () => {
-      try {
-        const response = await fetch('URL_DA_API/experiencia', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            userId,
-            expGanho,
-          }),
-        });
-        
-        const data = await response.json();
-        console.log('Experiência registrada com sucesso:', data);
-      } catch (error) {
-        console.error('Erro ao registrar experiência:', error);
+  const enviarExpParaAPI = async () => {
+    try {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}endpoint/user/atualizar-exp.php`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${getAuthToken()}`
+        },
+        body: JSON.stringify({
+          exp: expGanho
+        })
+      });
+      const data = await response.json();
+      if(data.success){
+        setIsOpen(false);
+      }else{
+        console.error("Erro na resposta da API:", data.message);
       }
-    };
-    
-    enviarExp();
-    */
-    
-    console.log('Enviando para API:', { token: getAuthToken(), expGanho });
+    } catch (error) {
+      console.error("Erro ao atualizar experiência do perfil:", error);
+    }
   };
 
   const handleFechar = () => {

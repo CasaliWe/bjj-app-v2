@@ -2,6 +2,7 @@ import React from 'react';
 import { Activity } from 'lucide-react';
 import CompeticaoCard from './CompeticaoCard';
 import { Button } from '../ui/button';
+import LoadingSpinner from '@/components/ui/LoadingSpinner';
 
 /**
  * Componente para exibir uma lista de competições
@@ -29,14 +30,7 @@ const CompeticoesList = ({
 }) => {
   // Renderização condicional para estado de carregamento
   if (loading) {
-    return (
-      <div className="w-full flex flex-col items-center justify-center py-12">
-        <div className="animate-spin">
-          <Activity className="h-8 w-8 text-primary" />
-        </div>
-        <p className="mt-4 text-muted-foreground">Carregando competições...</p>
-      </div>
-    );
+    return <LoadingSpinner message="Carregando competições..." />;
   }
 
   // Renderização condicional para lista vazia
