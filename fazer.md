@@ -1,48 +1,23 @@
 ### PENDENTE:
 
-
-expt contabilizar;
-token reset api;
-verificar pagamento webhook;
-exp;
 pagina user;
-
 organizar codigo;
 organizxar doc;
 fazer admin com logs;
-
-verificar erros no console.log;
-
+verificar erros no consol.log;
 melhorar layout dos emails;
-
 modal imagens;
-
-
-
-
-- componente, hook, pagina, services;
-
-
-*** fazendo no momento ***
-- objetivos, treinos, competicoes /app;
-- atividades recentes /app;
-- fazer o preço vir do banco;
-- banner info inicial;
-- fazer busca por user, e mostrar perfil caso seja publico;
-- aviso de 100 treino ou 10 tecnicas com exp;
-- aba tec;
-- aba treinos;
-- aba obervações;
-- aba plano de jogo;
-- aba check list com conclusão já adicionando tecnica;
-- adicionar modal block nas rotas que desejo nao ter acesso gratis;
-- pag termos e politica;
-- atualizar todos os lugares que tem aviso ou explicações de funcionamento do app;
-- atualizar landing page;
-- sobre nós;
-- contato;
-- suporte;
-- organizar código e doc para essa primeira v;
+remover atividades recentes;
+fazer objetivos;
+fazer o preço vir do banco;
+bloquear botao add quando for gratis;
+pag termos e politica;
+atualizar todos os lugares que tem aviso ou explicações de funcionamento do app;
+aba check list;
+atualizar landing page;
+sobre nós;
+contato;
+suporte;
 
 
 *** padronizar ***
@@ -52,6 +27,7 @@ modal imagens;
 
 
 *** funcionalidades futuras ***
+- aba plano de jogo;
 - voz bruce buffer;
 - metricas semanais e mensais via agente wpp;
 - fazer smooth comp;
