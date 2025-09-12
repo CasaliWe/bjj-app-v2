@@ -70,6 +70,9 @@ const Tecnicas = () => {
       observacoes: [""],
       nota: 3,
       video: "",
+      videoFile: null,
+      videoWidth: null,
+      videoHeight: null,
       destacado: false,
       publica: false
     });
@@ -101,7 +104,7 @@ const Tecnicas = () => {
       setTecnicaEmEdicao(null);
     } catch (error) {
       console.error("Erro ao salvar técnica:", error);
-      // TODO: Mostrar notificação de erro
+      throw error;
     }
   };
 
@@ -248,6 +251,9 @@ const Tecnicas = () => {
           observacoes: [""],
           nota: 3,
           video: "",
+          videoFile: null,
+          videoWidth: null,
+          videoHeight: null,
           destacado: false,
           publica: false
         }}

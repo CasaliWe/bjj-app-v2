@@ -65,9 +65,12 @@ const VideoPlayer = ({
   };
 
   return (
-    <div className={`relative rounded-md overflow-hidden ${className}`}>
-      {/* Vídeo com preload="none" para não carregar automaticamente */}
-      <video 
+    <div
+      className={`relative rounded-md overflow-hidden ${className}`}
+      style={{ width: "100%", maxWidth: "100%" }}
+    >
+      {/* Vídeo ocupa 100% da largura, altura automática, sem fundo preto */}
+      <video
         ref={videoRef}
         src={src}
         poster={posterSrc || undefined}
@@ -75,19 +78,18 @@ const VideoPlayer = ({
         muted
         playsInline
         loop={loop}
-        className="w-full rounded-md"
-        style={{ width: "100%", height: "auto" }}
+        className="rounded-md w-full"
+        style={{ width: "100%", height: "auto", aspectRatio: "16/9", objectFit: "contain", background: "transparent" }}
         onEnded={handleEnded}
       />
-      
       {/* Overlay com botão de play/pause */}
-      <div 
+      <div
         className={`absolute inset-0 flex items-center justify-center bg-black/10 transition-opacity ${isPlaying ? 'opacity-0 hover:opacity-100' : 'opacity-100'}`}
         onClick={togglePlay}
       >
-        <Button 
-          variant="outline" 
-          size="icon" 
+        <Button
+          variant="outline"
+          size="icon"
           className="bg-white/90 hover:bg-white border-none"
           onClick={(e) => {
             e.stopPropagation();

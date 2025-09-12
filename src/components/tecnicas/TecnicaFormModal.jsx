@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Dialog,
   DialogContent,
@@ -27,8 +27,15 @@ const TecnicaFormModal = ({
   onSave,
   posicoesCadastradas
 }) => {
-  const [formData, setFormData] = useState(tecnica);
-  
+  const [formData, setFormData] = useState({
+    ...tecnica,
+    passos: tecnica.passos?.length > 0 ? tecnica.passos : [""],
+    observacoes: tecnica.observacoes?.length > 0 ? tecnica.observacoes : [""]
+  });
+  const [loading, setLoading] = useState(false);
+  const [erro, setErro] = useState("");
+  const [sucesso, setSucesso] = useState(false);
+
   // Função para adicionar novo passo ou observação
   const adicionarItem = (tipo) => {
     if (tipo === "passo") {
@@ -36,7 +43,7 @@ const TecnicaFormModal = ({
         ...formData,
         passos: [...formData.passos, ""]
       });
-    } else {
+    } else if (tipo === "observacao") {
       setFormData({
         ...formData,
         observacoes: [...formData.observacoes, ""]
@@ -50,7 +57,7 @@ const TecnicaFormModal = ({
       const novosPassos = [...formData.passos];
       novosPassos[indice] = valor;
       setFormData({ ...formData, passos: novosPassos });
-    } else {
+    } else if (tipo === "observacao") {
       const novasObservacoes = [...formData.observacoes];
       novasObservacoes[indice] = valor;
       setFormData({ ...formData, observacoes: novasObservacoes });
@@ -62,21 +69,98 @@ const TecnicaFormModal = ({
     if (tipo === "passo") {
       const novosPassos = formData.passos.filter((_, i) => i !== indice);
       setFormData({ ...formData, passos: novosPassos });
-    } else {
+    } else if (tipo === "observacao") {
       const novasObservacoes = formData.observacoes.filter((_, i) => i !== indice);
       setFormData({ ...formData, observacoes: novasObservacoes });
     }
   };
 
-  // Manipular o salvamento do formulário
-  const handleSave = () => {
-    onSave(formData);
+  // Validar dados antes de salvar
+  const validarFormulario = () => {
+    if (!formData.nome?.trim()) {
+      setErro("O nome da técnica é obrigatório.");
+      return false;
+    }
+    
+    if (!formData.categoria) {
+      setErro("A categoria é obrigatória.");
+      return false;
+    }
+    
+    if (!formData.posicao && !formData.novaPosicao) {
+      setErro("A posição é obrigatória.");
+      return false;
+    }
+    
+    // Validar se existe pelo menos um passo não vazio
+    const temPassoValido = formData.passos.some(passo => passo.trim() !== "");
+    if (!temPassoValido) {
+      setErro("Adicione pelo menos um passo para a técnica.");
+      return false;
+    }
+    
+    return true;
   };
 
-  // Atualizar formData quando tecnica mudar (quando abrir o modal com nova técnica)
-  useState(() => {
-    setFormData(tecnica);
-  }, [tecnica]);
+  // Manipular o salvamento do formulário com feedback visual
+  const handleSave = async () => {
+    if (!validarFormulario()) {
+      return;
+    }
+    
+    setLoading(true);
+    setErro("");
+    setSucesso(false);
+    
+    try {
+      // Verificar o arquivo de vídeo antes de enviar
+      let dadosParaSalvar = {...formData};
+      
+      if (formData.videoFile && !(formData.videoFile instanceof File)) {
+        // Tente recuperar o arquivo da variável global de backup
+        if (window._ultimoArquivoVideo instanceof File) {
+          dadosParaSalvar.videoFile = window._ultimoArquivoVideo;
+        } else {
+          setErro("Erro no arquivo de vídeo. Por favor, selecione o arquivo novamente.");
+          setLoading(false);
+          return;
+        }
+      }
+      
+      await onSave(dadosParaSalvar);
+      setSucesso(true);
+      
+      // Fechar modal após sucesso
+      setTimeout(() => {
+        setSucesso(false);
+        onClose();
+      }, 1200);
+    } catch (err) {
+      console.error("Erro ao salvar técnica:", err);
+      setErro(err.message || "Erro ao salvar técnica. Tente novamente.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Inicializa o formData apenas ao abrir o modal
+  useEffect(() => {
+    if (isOpen) {
+      const initialData = {
+        ...tecnica,
+        passos: Array.isArray(tecnica.passos) && tecnica.passos.length > 0 
+          ? [...tecnica.passos] 
+          : [""],
+        observacoes: Array.isArray(tecnica.observacoes) && tecnica.observacoes.length > 0 
+          ? [...tecnica.observacoes] 
+          : [""]
+      };
+      
+      setFormData(initialData);
+      setErro("");
+      setSucesso(false);
+    }
+  }, [isOpen, tecnica]);
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -92,19 +176,37 @@ const TecnicaFormModal = ({
         
         <TecnicaForm 
           tecnica={formData} 
-          onChange={setFormData}
-          posicoesCadastradas={posicoesCadastradas}
+          onChange={(novosDados) => {
+            // Usar uma função de atualização para garantir que estamos usando o estado mais recente
+            if (typeof novosDados === 'function') {
+              setFormData(novosDados);
+            } else {
+              setFormData(novosDados);
+            }
+          }}
+          posicoesCadastradas={posicoesCadastradas || []}
           onAddItem={adicionarItem}
           onUpdateItem={atualizarItem}
           onRemoveItem={removerItem}
         />
+
+        {/* Feedback visual */}
+        {loading && (
+          <div className="text-center text-blue-600 my-2">Salvando técnica...</div>
+        )}
+        {erro && (
+          <div className="text-center text-red-600 my-2">{erro}</div>
+        )}
+        {sucesso && (
+          <div className="text-center text-green-600 my-2">Técnica salva com sucesso!</div>
+        )}
         
         <DialogFooter className="flex flex-col-reverse sm:flex-row gap-3 mt-4">
-          <Button className="w-full sm:w-auto" variant="outline" onClick={onClose}>
+          <Button className="w-full sm:w-auto" variant="outline" onClick={onClose} disabled={loading}>
             Cancelar
           </Button>
-          <Button className="w-full sm:w-auto" onClick={handleSave}>
-            {tecnica.id ? "Salvar alterações" : "Adicionar técnica"}
+          <Button className="w-full sm:w-auto" onClick={handleSave} disabled={loading}>
+            {loading ? "Salvando..." : (tecnica.id ? "Salvar alterações" : "Adicionar técnica")}
           </Button>
         </DialogFooter>
       </DialogContent>

@@ -195,14 +195,14 @@ const TecnicaCard = ({
               Ver detalhes
             </AccordionTrigger>
             <AccordionContent>
-              <div className="px-4 pb-4 space-y-4 max-h-60 overflow-y-auto">
+              <div className="px-4 pb-4 space-y-4">
                 {/* Vídeo curto (se disponível) */}
-                {tecnica.videoUrl && (
+                {tecnica.video_url && (
                   <div>
                     <h4 className="font-medium text-sm mb-2 border-b pb-1">Vídeo:</h4>
                     <VideoPlayer 
-                      src={tecnica.videoUrl} 
-                      posterSrc={tecnica.videoPoster}
+                      src={tecnica.video_url} 
+                      posterSrc={tecnica.video_poster}
                       className="mb-3 w-full"
                       loop={true}
                     />

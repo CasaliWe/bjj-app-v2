@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { useExp } from "@/components/exp/Exp";
-import * as tecnicasService from "@/services/tecnicas/tecnicasService";
+import * as tecnicasService from "@/services/tecnicas/tecnicasService.jsx";
 
 /**
  * Hook personalizado para gerenciar o estado das técnicas
@@ -23,13 +23,20 @@ export const useTecnicas = () => {
     const carregarDados = async () => {
       setCarregando(true);
       try {
-        const [tecnicasData, posicoesData] = await Promise.all([
-          tecnicasService.getTecnicas(),
-          tecnicasService.getPosicoes()
-        ]);
+        // Carregar posições primeiro para garantir que elas estejam disponíveis
+        const posicoesData = await tecnicasService.getPosicoes();
         
-        setTecnicas(tecnicasData);
-        setPosicoesCadastradas(posicoesData);
+        // Garantir que posições é sempre um array válido
+        const posicoesArray = Array.isArray(posicoesData) ? posicoesData : [];
+        setPosicoesCadastradas(posicoesArray);
+        
+        // Depois carregar as técnicas
+        const tecnicasData = await tecnicasService.getTecnicas();
+        
+        // Garantir que técnicas é sempre um array
+        const tecnicasArray = tecnicasData?.tecnicas || [];
+        setTecnicas(Array.isArray(tecnicasArray) ? tecnicasArray : []);
+        
         setErro(null);
       } catch (error) {
         console.error("Erro ao carregar dados:", error);
@@ -67,16 +74,29 @@ export const useTecnicas = () => {
       const passosLimpos = novaTecnica.passos.filter(passo => passo.trim() !== "");
       const observacoesLimpas = novaTecnica.observacoes.filter(obs => obs.trim() !== "");
 
-      const tecnicaFinal = {
-        ...novaTecnica,
-        passos: passosLimpos,
-        observacoes: observacoesLimpas
-      };
+      // IMPORTANTE: Crie um objeto com spread operator, não use JSON.stringify/parse
+      const tecnicaFinal = {...novaTecnica};
+      tecnicaFinal.passos = passosLimpos;
+      tecnicaFinal.observacoes = observacoesLimpas;
 
+      // Remover campos temporários/extras que não são necessários para a API
       delete tecnicaFinal.novaPosicao;
-
+      delete tecnicaFinal.videoPreview;
+      delete tecnicaFinal.videoError;
+      delete tecnicaFinal.videoPoster;
+      
+      // Verificar se o vídeo é válido
+      if (tecnicaFinal.videoFile && !(tecnicaFinal.videoFile instanceof File)) {
+        if (window._ultimoArquivoVideo instanceof File) {
+          tecnicaFinal.videoFile = window._ultimoArquivoVideo;
+        } else {
+          throw new Error("Arquivo de vídeo inválido. Por favor, selecione o arquivo novamente.");
+        }
+      }
+      
       const tecnicaSalva = await tecnicasService.saveTecnica(tecnicaFinal);
       
+      // Adicionar à lista local
       setTecnicas(prev => [...prev, tecnicaSalva]);
       
       // Ganhar experiência por adicionar nova técnica
@@ -108,10 +128,24 @@ export const useTecnicas = () => {
         observacoes: observacoesLimpas
       };
 
+      // Remover campos temporários/extras que não são necessários para a API
       delete tecnicaFinal.novaPosicao;
-
+      delete tecnicaFinal.videoPreview;
+      delete tecnicaFinal.videoError;
+      delete tecnicaFinal.videoPoster;
+      
+      // Verificar se o vídeo é válido
+      if (tecnicaFinal.videoFile && !(tecnicaFinal.videoFile instanceof File)) {
+        if (window._ultimoArquivoVideo instanceof File) {
+          tecnicaFinal.videoFile = window._ultimoArquivoVideo;
+        } else {
+          throw new Error("Arquivo de vídeo inválido. Por favor, selecione o arquivo novamente.");
+        }
+      }
+      
       const tecnicaSalva = await tecnicasService.saveTecnica(tecnicaFinal);
       
+      // Atualizar na lista local
       setTecnicas(prev => prev.map(t => t.id === tecnicaSalva.id ? tecnicaSalva : t));
       
       // Ganhar experiência por editar

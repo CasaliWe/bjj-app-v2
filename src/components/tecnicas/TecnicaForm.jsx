@@ -33,7 +33,14 @@ const TecnicaForm = ({
 
   // Função auxiliar para atualizar o estado do formulário
   const handleChange = (campo, valor) => {
-    onChange({ ...tecnica, [campo]: valor });
+    // Caso especial para videoFile para garantir que a referência seja mantida
+    if (campo === "videoFile" && valor instanceof File) {
+      // Armazenar uma referência global para recuperação de emergência
+      window._ultimoArquivoVideo = valor;
+    }
+    
+    // Usar uma função para atualizar o estado para garantir que estamos trabalhando com o estado mais recente
+    onChange((estadoAtual) => ({ ...estadoAtual, [campo]: valor }));
   };
 
   return (
@@ -68,11 +75,17 @@ const TecnicaForm = ({
               <SelectValue placeholder="Selecione a posição" />
             </SelectTrigger>
             <SelectContent>
-              {posicoesCadastradas.map((posicao, idx) => (
-                <SelectItem key={idx} value={posicao}>
-                  {posicao}
+              {Array.isArray(posicoesCadastradas) && posicoesCadastradas.length > 0 ? (
+                posicoesCadastradas.map((posicao, idx) => (
+                  <SelectItem key={idx} value={posicao}>
+                    {posicao}
+                  </SelectItem>
+                ))
+              ) : (
+                <SelectItem value="default" disabled>
+                  Nenhuma posição disponível
                 </SelectItem>
-              ))}
+              )}
             </SelectContent>
           </Select>
           <div className="flex items-center gap-2">
@@ -83,6 +96,11 @@ const TecnicaForm = ({
               onChange={(e) => handleChange("novaPosicao", e.target.value)}
             />
           </div>
+        </div>
+        <div className="text-xs text-blue-600">
+          {Array.isArray(posicoesCadastradas) ? 
+            `${posicoesCadastradas.length} posições disponíveis` : 
+            "Carregando posições..."}
         </div>
       </div>
       
@@ -200,116 +218,176 @@ const TecnicaForm = ({
       {/* Vídeo curto */}
       <div className="grid gap-2">
         <Label htmlFor="video-curto">
-          Vídeo Curto (Opcional, máx. 7 segundos)
+          Vídeo Curto (Opcional, máx. 20MB - MP4)
         </Label>
         <div className="space-y-2">
-          <input
-            type="file"
-            id="video-curto"
-            accept="video/mp4,video/quicktime,video/webm"
-            className="hidden"
-            onChange={(e) => {
-              const file = e.target.files?.[0];
-              if (file) {
-                // Verificar duração do vídeo
-                const video = document.createElement('video');
-                video.preload = 'metadata';
-                
-                // Criar URL temporária para visualização
-                const videoURL = URL.createObjectURL(file);
-                handleChange("videoPreview", videoURL);
-                
-                video.onloadedmetadata = () => {
-                  const duracao = Math.round(video.duration * 10) / 10;
+          <div className="p-2 bg-blue-50 dark:bg-blue-900/30 rounded border border-blue-200 dark:border-blue-800 text-sm mb-2">
+            <p className="font-medium text-blue-800 dark:text-blue-300">Instruções para o upload de vídeo:</p>
+            <ol className="list-decimal ml-4 text-blue-700 dark:text-blue-300 mt-1">
+              <li>O arquivo deve estar no formato MP4</li>
+              <li>Tamanho máximo: 20MB</li>
+              <li>Duração recomendada: até 7 segundos</li>
+              <li>O upload só ocorre quando você salva a técnica</li>
+            </ol>
+          </div>
+          
+          <div className="relative">
+            <input
+              type="file"
+              id="video-curto"
+              name="videoFile"
+              accept="video/mp4"
+              className="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-white dark:text-gray-400 focus:outline-none dark:bg-gray-800 dark:border-gray-600 dark:placeholder-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-l-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 dark:file:bg-blue-900 dark:file:text-blue-200"
+              onChange={(e) => {
+                try {
+                  const fileInput = e.target;
+                  const file = fileInput.files && fileInput.files[0];
                   
-                  if (duracao > 7) {
-                    // Mostrar aviso de vídeo muito longo
-                    handleChange("videoError", `O vídeo tem ${duracao}s, mas deve ter no máximo 7 segundos`);
-                  } else {
-                    // Vídeo válido
-                    handleChange("videoFile", file);
+                  if (!file) {
+                    handleChange("videoFile", null);
+                    handleChange("videoNome", null);
+                    handleChange("videoWidth", null);
+                    handleChange("videoHeight", null);
+                    handleChange("videoDuration", null);
                     handleChange("videoError", null);
+                    return;
+                  }
+                  
+                  // Salvar o arquivo diretamente no estado sem manipulação
+                  handleChange("videoFile", file);
+                  handleChange("videoNome", file.name);
+                  
+                  // Criar backup global para garantir que o arquivo não seja perdido
+                  window._ultimoArquivoVideo = file;
+                  
+                  // Verificar tamanho do arquivo (20MB = 20 * 1024 * 1024 bytes)
+                  if (file.size > 20 * 1024 * 1024) {
+                    handleChange("videoError", "O arquivo é muito grande. O tamanho máximo é 20MB.");
+                    return;
+                  }
+                  
+                  // Verificar tipo do arquivo
+                  if (!file.type.startsWith('video/mp4')) {
+                    handleChange("videoError", "Apenas arquivos MP4 são suportados.");
+                    return;
+                  }
+                  
+                  // Criar elemento de vídeo para obter metadados
+                  const video = document.createElement('video');
+                  video.preload = 'metadata';
+                  
+                  // Criar URL temporária para metadados
+                  const videoURL = URL.createObjectURL(file);
+                  video.src = videoURL;
+                  
+                  video.onloadedmetadata = () => {
+                    const duracao = Math.round(video.duration * 10) / 10;
+                    const width = video.videoWidth;
+                    const height = video.videoHeight;
+                    
+                    // Atualizar metadados no estado
+                    handleChange("videoWidth", width);
+                    handleChange("videoHeight", height);
                     handleChange("videoDuration", duracao);
                     
-                    // Gerar thumbnail para poster
-                    try {
-                      video.currentTime = 0.1; // Avança um pouco para pegar um frame melhor
-                      
-                      video.onseeked = () => {
-                        const canvas = document.createElement('canvas');
-                        canvas.width = video.videoWidth;
-                        canvas.height = video.videoHeight;
-                        const ctx = canvas.getContext('2d');
-                        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-                        const posterUrl = canvas.toDataURL('image/jpeg');
-                        handleChange("videoPoster", posterUrl);
-                      };
-                    } catch (err) {
-                      console.error("Erro ao gerar thumbnail:", err);
+                    // Verificar duração (aviso, mas não impede o upload)
+                    if (duracao > 7) {
+                      handleChange("videoError", `Atenção: O vídeo tem ${duracao.toFixed(1)}s. Vídeos mais curtos são recomendados.`);
+                    } else {
+                      handleChange("videoError", null);
                     }
-                  }
-                };
-                
-                video.onerror = () => {
-                  handleChange("videoError", "Formato de vídeo não suportado");
-                };
-                
-                video.src = videoURL;
-              }
-            }}
-          />
-          <div 
-            onClick={() => document.getElementById('video-curto').click()}
-            className="border-2 border-dashed rounded-md p-4 text-center cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-900 transition-colors"
-          >
-            {tecnica.videoPreview ? (
-              <div className="space-y-2">
-                <div className="max-w-full mx-auto">
-                  <video 
-                    src={tecnica.videoPreview} 
-                    poster={tecnica.videoPoster}
-                    className="w-full rounded" 
-                    style={{ maxHeight: "300px" }}
-                    controls
-                  ></video>
-                </div>
-                {tecnica.videoDuration && (
-                  <p className="text-sm text-blue-500">
-                    Duração: {tecnica.videoDuration.toFixed(1)}s 
-                    {tecnica.videoDuration <= 7 ? 
-                      <span className="text-green-500"> ✓</span> : 
-                      <span className="text-red-500"> ✗</span>}
-                  </p>
-                )}
-                <p className="text-sm text-muted-foreground">Clique para alterar o vídeo</p>
-              </div>
-            ) : (
-              <div className="py-4">
-                <p className="text-sm font-medium">Clique para fazer upload do vídeo</p>
-                <p className="text-xs text-muted-foreground mt-1">
-                  MP4, WebM ou QuickTime - máximo 7 segundos
-                </p>
-              </div>
-            )}
+                    
+                    URL.revokeObjectURL(videoURL); // Liberar URL para evitar memory leak
+                  };
+                  
+                  video.onerror = () => {
+                    URL.revokeObjectURL(videoURL);
+                    handleChange("videoError", "Erro ao carregar o vídeo. Verifique se o formato é suportado.");
+                  };
+                } catch (error) {
+                  console.error("Erro ao processar arquivo de vídeo:", error);
+                  handleChange("videoError", "Erro ao processar o vídeo: " + error.message);
+                }
+              }}
+            />
           </div>
+          
+          {tecnica.videoNome && (
+            <div className="text-sm border border-blue-200 rounded p-2 bg-blue-50 dark:bg-blue-900/30 dark:border-blue-800">
+              <p className="text-blue-600">
+                <span className="font-medium">Arquivo selecionado:</span> <strong>{tecnica.videoNome}</strong>
+              </p>
+              <p className="text-blue-600 mt-1">
+                <span className="font-medium">Tamanho:</span> {tecnica.videoFile ? 
+                  `${Math.round(tecnica.videoFile.size / 1024)} KB` : "Desconhecido"}
+              </p>
+              {tecnica.videoDuration && (
+                <p className="text-blue-600 mt-1">
+                  <span className="font-medium">Duração:</span> {tecnica.videoDuration.toFixed(1)}s 
+                  {tecnica.videoDuration <= 7 ? 
+                    <span className="text-green-500 ml-1">✓</span> : 
+                    <span className="text-amber-500 ml-1">⚠️</span>}
+                </p>
+              )}
+              {tecnica.videoWidth && tecnica.videoHeight && (
+                <p className="text-blue-600 mt-1">
+                  <span className="font-medium">Dimensões:</span> {tecnica.videoWidth} x {tecnica.videoHeight} pixels
+                </p>
+              )}
+              
+              <p className="text-blue-700 mt-2 font-semibold">
+                {tecnica.videoFile instanceof File ? 
+                  "✅ Arquivo pronto para upload" : 
+                  "❌ Arquivo não está mais disponível, selecione novamente"}
+              </p>
+              
+              {/* Botão para testar reprodução do vídeo */}
+              <div className="mt-2">
+                <button 
+                  type="button"
+                  className="text-xs px-2 py-1 bg-blue-100 hover:bg-blue-200 text-blue-700 rounded"
+                  onClick={() => {
+                    try {
+                      if (!(tecnica.videoFile instanceof File)) {
+                        throw new Error("Arquivo não está mais disponível. Por favor, selecione-o novamente.");
+                      }
+                      const url = URL.createObjectURL(tecnica.videoFile);
+                      window.open(url, '_blank');
+                      // Limpar URL após abrir
+                      setTimeout(() => URL.revokeObjectURL(url), 1000);
+                    } catch (e) {
+                      console.error("Erro ao visualizar vídeo:", e);
+                      alert("Erro ao visualizar o vídeo: " + e.message);
+                    }
+                  }}
+                >
+                  Testar visualização do vídeo
+                </button>
+              </div>
+            </div>
+          )}
           
           {tecnica.videoError && (
             <p className="text-sm text-red-500">{tecnica.videoError}</p>
           )}
           
-          {tecnica.videoPreview && (
+          {tecnica.videoFile && (
             <Button
               type="button"
               variant="outline"
               size="sm"
               className="w-full"
               onClick={() => {
-                URL.revokeObjectURL(tecnica.videoPreview);
-                handleChange("videoPreview", null);
                 handleChange("videoFile", null);
                 handleChange("videoError", null);
-                handleChange("videoPoster", null);
+                handleChange("videoWidth", null);
+                handleChange("videoHeight", null);
                 handleChange("videoDuration", null);
+                handleChange("videoNome", null);
+                
+                // Limpar o input file
+                const fileInput = document.getElementById('video-curto');
+                if (fileInput) fileInput.value = '';
               }}
             >
               Remover vídeo
