@@ -1,4 +1,4 @@
-import { Calendar, Plus } from "lucide-react";
+import { Calendar, Plus, Activity } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import TreinoCard from "./TreinoCard";
 
@@ -6,6 +6,7 @@ import TreinoCard from "./TreinoCard";
  * Componente que exibe a lista de treinos
  * @param {Object} props Propriedades do componente
  * @param {Array} props.treinos Lista de treinos para exibir
+ * @param {boolean} props.loading Indica se está carregando
  * @param {Function} props.onEditar Função chamada ao editar um treino
  * @param {Function} props.onExcluir Função chamada ao excluir um treino
  * @param {Function} props.onAlterarVisibilidade Função chamada ao alterar visibilidade
@@ -16,6 +17,7 @@ import TreinoCard from "./TreinoCard";
  */
 const ListaTreinos = ({
   treinos,
+  loading,
   onEditar,
   onExcluir,
   onAlterarVisibilidade,
@@ -23,6 +25,18 @@ const ListaTreinos = ({
   paginacao,
   onMudarPagina
 }) => {
+  // Renderização condicional para estado de carregamento
+  if (loading) {
+    return (
+      <div className="w-full flex flex-col items-center justify-center py-12">
+        <div className="animate-spin">
+          <Activity className="h-8 w-8 text-primary" />
+        </div>
+        <p className="mt-4 text-muted-foreground">Carregando treinos...</p>
+      </div>
+    );
+  }
+  
   // Se não houver treinos, mostra mensagem e botão para adicionar
   if (treinos.length === 0) {
     return (

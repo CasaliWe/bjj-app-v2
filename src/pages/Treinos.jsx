@@ -150,14 +150,6 @@ const Treinos = () => {
                 totalResultados={treinosFiltrados.length}
               />
 
-              {/* Mensagem de carregamento */}
-              {carregando && (
-                <div className="py-8 text-center">
-                  <div className="inline-block animate-spin rounded-full h-8 w-8 border-4 border-primary border-t-transparent"></div>
-                  <p className="mt-2 text-muted-foreground">Carregando treinos...</p>
-                </div>
-              )}
-
               {/* Mensagem de erro */}
               {erro && (
                 <div className="bg-destructive/10 text-destructive p-4 rounded-md">
@@ -166,17 +158,16 @@ const Treinos = () => {
               )}
 
               {/* Lista de Treinos */}
-              {!carregando && !erro && (
-                <ListaTreinos
-                  treinos={treinosFiltrados}
-                  onEditar={editarTreino}
-                  onExcluir={abrirConfirmacaoExcluir}
-                  onAlterarVisibilidade={alterarVisibilidade}
-                  onNovo={abrirModalNovoTreino}
-                  paginacao={paginacaoTreinos}
-                  onMudarPagina={mudarPaginaTreinos}
-                />
-              )}
+              <ListaTreinos
+                treinos={treinosFiltrados}
+                loading={carregando}
+                onEditar={editarTreino}
+                onExcluir={abrirConfirmacaoExcluir}
+                onAlterarVisibilidade={alterarVisibilidade}
+                onNovo={abrirModalNovoTreino}
+                paginacao={paginacaoTreinos}
+                onMudarPagina={mudarPaginaTreinos}
+              />
             </div>
           </main>
         </div>
