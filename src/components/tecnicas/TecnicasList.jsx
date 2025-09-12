@@ -15,6 +15,7 @@ import LoadingSpinner from "@/components/ui/LoadingSpinner";
  * @param {Function} props.onToggleDestaque - Função para alternar destaque
  * @param {Function} props.onShare - Função para compartilhar/descompartilhar
  * @param {Function} props.onAddNew - Função para adicionar nova técnica
+ * @param {Function} props.resetPage - Função externa para redefinir a página atual
  */
 const TecnicasList = ({
   tecnicas,
@@ -24,7 +25,8 @@ const TecnicasList = ({
   onDelete,
   onToggleDestaque,
   onShare,
-  onAddNew
+  onAddNew,
+  resetPage
 }) => {
   const [paginaAtual, setPaginaAtual] = useState(1);
   const [tecnicasPaginadas, setTecnicasPaginadas] = useState([]);
@@ -32,10 +34,20 @@ const TecnicasList = ({
 
   // Atualizar paginação quando as técnicas mudarem
   useEffect(() => {
+    // Ordenar técnicas por ID de forma decrescente (assumindo que IDs maiores são mais recentes)
+    const tecnicasOrdenadas = [...tecnicas].sort((a, b) => b.id - a.id);
+    
     const inicio = (paginaAtual - 1) * itensPorPagina;
     const fim = inicio + itensPorPagina;
-    setTecnicasPaginadas(tecnicas.slice(inicio, fim));
+    setTecnicasPaginadas(tecnicasOrdenadas.slice(inicio, fim));
   }, [tecnicas, paginaAtual, itensPorPagina]);
+
+  // Expor função para redefinir a página para a primeira
+  useEffect(() => {
+    if (resetPage) {
+      resetPage(() => setPaginaAtual(1));
+    }
+  }, [resetPage]);
 
   // Função para mudar de página
   const mudarPagina = (novaPagina) => {

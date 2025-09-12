@@ -100,8 +100,8 @@ export const useTecnicas = () => {
       
       const tecnicaSalva = await tecnicasService.saveTecnica(tecnicaFinal);
       
-      // Adicionar à lista local
-      setTecnicas(prev => [...prev, tecnicaSalva]);
+      // Adicionar ao início da lista local para que apareça primeiro
+      setTecnicas(prev => [tecnicaSalva, ...prev]);
       
       // Ganhar experiência por adicionar nova técnica
       mostrarExp(150, "Você ganhou 150 exp por adicionar uma nova técnica!");

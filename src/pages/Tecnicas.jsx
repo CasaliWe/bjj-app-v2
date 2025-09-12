@@ -34,6 +34,7 @@ const Tecnicas = () => {
   const [modalComunidadeAberto, setModalComunidadeAberto] = useState(false);
   const [modalConfirmacaoExcluirAberto, setModalConfirmacaoExcluirAberto] = useState(false);
   const [tecnicaParaExcluir, setTecnicaParaExcluir] = useState(null);
+  const [resetarPagina, setResetarPagina] = useState(null);
   
   // Estado para técnica sendo editada
   const [tecnicaEmEdicao, setTecnicaEmEdicao] = useState(null);
@@ -116,6 +117,8 @@ const Tecnicas = () => {
       } else {
         // Adicionar nova técnica
         await adicionarTecnica(tecnicaFinal);
+        // Resetar para a primeira página quando adiciona uma nova técnica
+        if (resetarPagina) resetarPagina();
       }
       
       // Fechar modal e limpar técnica em edição
@@ -241,6 +244,7 @@ const Tecnicas = () => {
                   onToggleDestaque={toggleDestaque}
                   onShare={togglePublica}
                   onAddNew={iniciarNovaTecnica}
+                  resetPage={setResetarPagina}
                 />
               )}
             </div>
