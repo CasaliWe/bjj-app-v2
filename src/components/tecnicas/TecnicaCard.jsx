@@ -31,6 +31,7 @@ import {
   Globe
 } from "lucide-react";
 import VideoPlayer from "./VideoPlayer";
+import { useNavigate } from "react-router-dom";
 
 /**
  * Componente de Card de Técnica - exibe os detalhes de uma técnica individual
@@ -51,12 +52,18 @@ const TecnicaCard = ({
   showAutor = false,
   onShare
 }) => {
+  const navigate = useNavigate();
+  
   return (
     <Card key={tecnica.id} className="flex flex-col h-full overflow-hidden">
       <CardHeader className="pb-2 pt-3 px-4">
         {/* Autor no topo (se aplicável) */}
         {showAutor && tecnica.autor && (
-          <div className="flex items-center gap-2 mb-3">
+          <div 
+            className="flex items-center gap-2 mb-3 cursor-pointer hover:opacity-80 transition-opacity"
+            onClick={() => window.location.href = `/usuario?bjj_id=${tecnica.autor.bjj_id}`}
+            title="Ver perfil do usuário"
+          >
             <img 
               src={tecnica.autor.imagem} 
               alt={tecnica.autor.nome}

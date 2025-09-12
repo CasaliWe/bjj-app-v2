@@ -66,10 +66,10 @@ const VideoPlayer = ({
 
   return (
     <div
-      className={`relative rounded-md overflow-hidden ${className}`}
+      className={`relative rounded-md overflow-hidden w-full ${className}`}
       style={{ width: "100%", maxWidth: "100%" }}
     >
-      {/* Vídeo ocupa 100% da largura, altura automática, sem fundo preto */}
+      {/* Vídeo ocupa 100% da largura, altura automática, adaptada à proporção natural */}
       <video
         ref={videoRef}
         src={src}
@@ -78,14 +78,15 @@ const VideoPlayer = ({
         muted
         playsInline
         loop={loop}
-        className="rounded-md w-full"
-        style={{ width: "100%", height: "auto", aspectRatio: "16/9", objectFit: "contain", background: "transparent" }}
+        className="rounded-md w-full h-auto"
+        style={{ maxWidth: "100%", background: "transparent" }}
         onEnded={handleEnded}
       />
       {/* Overlay com botão de play/pause */}
       <div
         className={`absolute inset-0 flex items-center justify-center bg-black/10 transition-opacity ${isPlaying ? 'opacity-0 hover:opacity-100' : 'opacity-100'}`}
         onClick={togglePlay}
+        style={{ pointerEvents: "auto" }}
       >
         <Button
           variant="outline"
