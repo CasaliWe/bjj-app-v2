@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -30,6 +30,54 @@ const TecnicaForm = ({
   onUpdateItem,
   onRemoveItem
 }) => {
+  // Estado para controlar a reprodução do vídeo
+  const [isPlaying, setIsPlaying] = useState(false);
+  
+  // Estados para controle do vídeo
+  const [videoFile, setVideoFile] = useState(null);
+  const [videoPreview, setVideoPreview] = useState("");
+  const [showVideoOriginOptions, setShowVideoOriginOptions] = useState(false);
+  const [manterVideoExistente, setManterVideoExistente] = useState(true);
+  
+  // Ref para o elemento de vídeo
+  const videoRef = useRef(null);
+  
+  // Estado para armazenar as dimensões do vídeo
+  const [videoDimensions, setVideoDimensions] = useState({ width: 0, height: 0 });
+
+  // Detectar dimensões do vídeo ao carregar
+  useEffect(() => {
+    if (videoRef.current && tecnica.video_url) {
+      const handleVideoMetadata = () => {
+        setVideoDimensions({
+          width: videoRef.current.videoWidth,
+          height: videoRef.current.videoHeight
+        });
+      };
+      
+      videoRef.current.addEventListener('loadedmetadata', handleVideoMetadata);
+      
+      // Se o vídeo já estiver carregado
+      if (videoRef.current.readyState >= 2) {
+        handleVideoMetadata();
+      }
+      
+      return () => {
+        if (videoRef.current) {
+          videoRef.current.removeEventListener('loadedmetadata', handleVideoMetadata);
+        }
+      };
+    }
+  }, [tecnica.video_url]);
+
+  // Limpar URL de objetos quando o componente for desmontado
+  useEffect(() => {
+    return () => {
+      if (videoPreview) {
+        URL.revokeObjectURL(videoPreview);
+      }
+    };
+  }, [videoPreview]);
 
   // Função auxiliar para atualizar o estado do formulário
   const handleChange = (campo, valor) => {
@@ -221,6 +269,62 @@ const TecnicaForm = ({
           Vídeo Curto (Opcional, máx. 20MB - MP4)
         </Label>
         <div className="space-y-2">
+          {/* Mostrar vídeo existente se estiver editando e tiver um vídeo */}
+          {tecnica.id && tecnica.video_url && !tecnica.videoFile && (
+            <div className="p-3 bg-blue-50 dark:bg-blue-900/30 rounded border border-blue-200 dark:border-blue-800">
+              <h4 className="text-sm font-medium text-blue-800 dark:text-blue-300 mb-2">Vídeo atual:</h4>
+              <div className="flex justify-center">
+                <div 
+                  className="relative h-[160px] max-w-full overflow-hidden rounded-lg border border-blue-300 group cursor-pointer flex items-center justify-center bg-black"
+                  onClick={() => {
+                    if (videoRef.current) {
+                      if (videoRef.current.paused) {
+                        videoRef.current.play().then(() => {
+                          setIsPlaying(true);
+                        }).catch(error => {
+                          console.error("Erro ao reproduzir vídeo:", error);
+                        });
+                      } else {
+                        videoRef.current.pause();
+                        setIsPlaying(false);
+                      }
+                    }
+                  }}
+                >
+                  <video 
+                    ref={videoRef}
+                    src={tecnica.video_url} 
+                    poster={tecnica.video_poster}
+                    className="h-full max-w-none mx-auto object-contain"
+                    style={{
+                      objectFit: "contain",
+                      background: "#000",
+                      width: "auto",
+                      maxHeight: "100%"
+                    }}
+                    onEnded={() => setIsPlaying(false)}
+                    onPause={() => setIsPlaying(false)}
+                    onPlay={() => setIsPlaying(true)}
+                  ></video>
+                  {/* Botão de play sobreposto - mostrado apenas quando não está reproduzindo */}
+                  {!isPlaying && (
+                    <div className="absolute inset-0 flex items-center justify-center bg-black/30 group-hover:bg-black/40 transition-colors">
+                      <div className="w-12 h-12 rounded-full bg-blue-600/80 flex items-center justify-center text-white group-hover:bg-blue-600 group-hover:scale-110 transition-transform">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
+                          <path fillRule="evenodd" d="M4.5 5.653c0-1.426 1.529-2.33 2.779-1.643l11.54 6.348c1.295.712 1.295 2.573 0 3.285L7.28 19.991c-1.25.687-2.779-.217-2.779-1.643V5.653z" clipRule="evenodd" />
+                        </svg>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+              <p className="text-xs text-blue-700 mt-2 text-center">
+                Selecione um novo vídeo abaixo para substituir o atual,<br />
+                ou deixe vazio para manter o vídeo existente
+              </p>
+            </div>
+          )}
+          
           <div className="p-2 bg-blue-50 dark:bg-blue-900/30 rounded border border-blue-200 dark:border-blue-800 text-sm mb-2">
             <p className="font-medium text-blue-800 dark:text-blue-300">Instruções para o upload de vídeo:</p>
             <ol className="list-decimal ml-4 text-blue-700 dark:text-blue-300 mt-1">
@@ -244,6 +348,8 @@ const TecnicaForm = ({
                   const file = fileInput.files && fileInput.files[0];
                   
                   if (!file) {
+                    setVideoFile(null);
+                    setVideoPreview("");
                     handleChange("videoFile", null);
                     handleChange("videoNome", null);
                     handleChange("videoWidth", null);
@@ -253,12 +359,20 @@ const TecnicaForm = ({
                     return;
                   }
                   
-                  // Salvar o arquivo diretamente no estado sem manipulação
+                  // Guardar o arquivo no estado local e no estado do formulário
+                  setVideoFile(file);
                   handleChange("videoFile", file);
                   handleChange("videoNome", file.name);
                   
+                  // Criar preview do vídeo
+                  const previewURL = URL.createObjectURL(file);
+                  setVideoPreview(previewURL);
+                  
                   // Criar backup global para garantir que o arquivo não seja perdido
                   window._ultimoArquivoVideo = file;
+                  
+                  // Desabilitar a opção de manter o vídeo existente
+                  setManterVideoExistente(false);
                   
                   // Verificar tamanho do arquivo (20MB = 20 * 1024 * 1024 bytes)
                   if (file.size > 20 * 1024 * 1024) {

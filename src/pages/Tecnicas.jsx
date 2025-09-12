@@ -73,6 +73,10 @@ const Tecnicas = () => {
       videoFile: null,
       videoWidth: null,
       videoHeight: null,
+      videoDuration: null,
+      videoError: null,
+      video_url: null,
+      video_poster: null,
       destacado: false,
       publica: false
     });
@@ -81,9 +85,18 @@ const Tecnicas = () => {
 
   // Função para editar uma técnica
   const handleEditarTecnica = (tecnica) => {
+    // Criar uma cópia completa da técnica incluindo URLs do vídeo existente
     setTecnicaEmEdicao({
       ...tecnica,
-      novaPosicao: ""
+      novaPosicao: "",
+      videoFile: null,           // Inicialmente não temos um novo arquivo
+      videoWidth: null,
+      videoHeight: null,
+      videoDuration: null,
+      videoError: null,
+      // Estes campos são usados para mostrar o vídeo existente na interface
+      video_url: tecnica.video_url || null,
+      video_poster: tecnica.video_poster || null
     });
     setModalAdicionarAberto(true);
   };
@@ -254,6 +267,10 @@ const Tecnicas = () => {
           videoFile: null,
           videoWidth: null,
           videoHeight: null,
+          videoDuration: null,
+          videoError: null,
+          video_url: null,
+          video_poster: null,
           destacado: false,
           publica: false
         }}

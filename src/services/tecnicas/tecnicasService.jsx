@@ -171,6 +171,11 @@ export const saveTecnica = async (tecnica) => {
     // Adicionar ID se for atualização
     if (isUpdate) {
       formData.append('id', tecnica.id);
+      
+      // Se estamos atualizando e queremos manter o vídeo existente
+      if (tecnica.manterVideoExistente) {
+        formData.append('manter_video_existente', '1');
+      }
     }
     
     // Adicionar passos e observações como JSON

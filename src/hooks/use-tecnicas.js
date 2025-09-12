@@ -134,13 +134,27 @@ export const useTecnicas = () => {
       delete tecnicaFinal.videoError;
       delete tecnicaFinal.videoPoster;
       
-      // Verificar se o vídeo é válido
-      if (tecnicaFinal.videoFile && !(tecnicaFinal.videoFile instanceof File)) {
-        if (window._ultimoArquivoVideo instanceof File) {
-          tecnicaFinal.videoFile = window._ultimoArquivoVideo;
-        } else {
-          throw new Error("Arquivo de vídeo inválido. Por favor, selecione o arquivo novamente.");
+      // Flag para indicar que estamos mantendo o vídeo existente
+      tecnicaFinal.manterVideoExistente = true;
+      
+      // Verificar se há um novo vídeo para upload
+      if (tecnicaFinal.videoFile) {
+        // Se temos um novo arquivo, remover a flag de manter o vídeo existente
+        tecnicaFinal.manterVideoExistente = false;
+        
+        // Garantir que o arquivo é válido
+        if (!(tecnicaFinal.videoFile instanceof File)) {
+          if (window._ultimoArquivoVideo instanceof File) {
+            tecnicaFinal.videoFile = window._ultimoArquivoVideo;
+          } else {
+            // Se não temos um arquivo válido, remova o videoFile para não tentar enviar
+            tecnicaFinal.videoFile = null;
+          }
         }
+      } else {
+        // Remova o videoFile se não temos um novo arquivo para enviar
+        // Isso mantém o vídeo existente no servidor
+        tecnicaFinal.videoFile = null;
       }
       
       const tecnicaSalva = await tecnicasService.saveTecnica(tecnicaFinal);
