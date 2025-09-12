@@ -15,6 +15,8 @@ verificar erros no console.log;
 
 melhorar layout dos emails;
 
+modal imagens;
+
 
 
 
