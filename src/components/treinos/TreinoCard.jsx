@@ -138,7 +138,7 @@ const TreinoCard = ({ treino, onEditar, onExcluir, onAlterarVisibilidade, isComu
               <div className="flex items-center gap-1">
                 <CalendarIcon className="h-3.5 w-3.5" />
                 <span>
-                  {format(new Date(treino.data), "dd/MM/yyyy", { locale: ptBR })}
+                  {format(new Date(treino.data + 'T12:00:00'), "dd/MM/yyyy", { locale: ptBR })}
                 </span>
               </div>
             </div>

@@ -73,5 +73,5 @@ export const formatarData = (dataString) => {
  */
 export const formatarDataCurta = (dataString) => {
   const data = new Date(dataString);
-  return format(data, "dd 'de' MMM 'às' HH:mm", { locale: ptBR });
+  return format(data, "dd 'de' MMM", { locale: ptBR });
 };

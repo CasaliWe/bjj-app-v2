@@ -27,7 +27,7 @@ const CompeticaoCard = ({
   const formatarData = (dataString) => {
     if (!dataString) return 'Data não informada';
     
-    const data = new Date(dataString);
+    const data = new Date(dataString + 'T12:00:00');
     return data.toLocaleDateString('pt-BR', {
       day: '2-digit',
       month: '2-digit',
