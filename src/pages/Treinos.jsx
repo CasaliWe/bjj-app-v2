@@ -8,7 +8,7 @@ import FiltrosTreinos from "@/components/treinos/FiltrosTreinos";
 import FormularioTreino from "@/components/treinos/FormularioTreino";
 import ListaTreinos from "@/components/treinos/ListaTreinos";
 import ModalComunidade from "@/components/treinos/ModalComunidade";
-import React from "react";
+import React, { useEffect } from "react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -20,11 +20,17 @@ import {
   AlertDialogTitle
 } from "@/components/ui/alert-dialog";
 
+// hooks
+import { useGetUser } from "@/hooks/use-getUser";
+
 /**
  * Página de treinos
  * @returns {JSX.Element} Componente React
  */
 const Treinos = () => {
+  // Hook para buscar dados do usuário
+  const { fetchUserData } = useGetUser();
+
   // Usar o hook personalizado para gerenciar os treinos
   const {
     // Estados
@@ -89,6 +95,11 @@ const Treinos = () => {
       fecharConfirmacaoExcluir();
     }
   };
+
+  // Fetch user data on mount
+  useEffect(() => {
+    fetchUserData();
+  }, []);
 
   return (
     <SidebarProvider>
