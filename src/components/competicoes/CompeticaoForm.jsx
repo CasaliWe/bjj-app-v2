@@ -49,6 +49,9 @@ const CompeticaoForm = ({ isOpen, onClose, onSave, competicaoAtual = null }) => 
 
   // Estado para arquivos temporários (ainda não carregados)
   const [arquivosTemp, setArquivosTemp] = useState([]);
+  
+  // Estado para IDs de imagens existentes (para atualização)
+  const [imagensExistentes, setImagensExistentes] = useState([]);
 
   // Preencher o formulário quando estiver editando
   useEffect(() => {
@@ -64,6 +67,18 @@ const CompeticaoForm = ({ isOpen, onClose, onSave, competicaoAtual = null }) => 
         ...competicaoAtual,
         data: formatarDataParaInput(competicaoAtual.data)
       });
+      
+      // Guardar IDs das imagens existentes
+      if (competicaoAtual.imagens && competicaoAtual.imagens.length > 0) {
+        // Assumindo que cada imagem tem um ID e uma URL
+        const imagensIds = competicaoAtual.imagens.map(imagem => 
+          typeof imagem === 'object' ? imagem.id : null
+        ).filter(id => id !== null);
+        
+        setImagensExistentes(imagensIds);
+      } else {
+        setImagensExistentes([]);
+      }
     } else {
       // Reset do formulário para nova competição
       setFormData({
@@ -80,6 +95,8 @@ const CompeticaoForm = ({ isOpen, onClose, onSave, competicaoAtual = null }) => 
         imagens: [],
         isPublico: false
       });
+      
+      setImagensExistentes([]);
     }
     
     // Limpar arquivos temporários
@@ -120,7 +137,7 @@ const CompeticaoForm = ({ isOpen, onClose, onSave, competicaoAtual = null }) => 
     });
   };
 
-  // Adicionar imagem (simulado)
+  // Adicionar imagem
   const handleAddImagem = (e) => {
     const files = e.target.files;
     if (!files || files.length === 0) return;
@@ -148,6 +165,14 @@ const CompeticaoForm = ({ isOpen, onClose, onSave, competicaoAtual = null }) => 
   // Remover imagem existente
   const handleRemoverImagem = (index) => {
     const novasImagens = [...formData.imagens];
+    
+    // Remover também o ID da lista de imagens existentes
+    if (imagensExistentes.length > 0 && index < imagensExistentes.length) {
+      const novasImagensExistentes = [...imagensExistentes];
+      novasImagensExistentes.splice(index, 1);
+      setImagensExistentes(novasImagensExistentes);
+    }
+    
     novasImagens.splice(index, 1);
     setFormData({
       ...formData,
@@ -157,17 +182,14 @@ const CompeticaoForm = ({ isOpen, onClose, onSave, competicaoAtual = null }) => 
 
   // Salvar competição
   const handleSave = () => {
-    // Em uma aplicação real, aqui faria o upload das imagens para um servidor
-    // e depois salvaria os URLs retornados
-
-    // Simular adição das novas imagens às existentes
-    const imagensSimuladas = arquivosTemp.map(arquivo => arquivo.url);
+    // Preparar arquivos de imagem para envio
+    const arquivosImagem = arquivosTemp.map(arquivo => arquivo.file);
     
     // Preparar dados para salvar
     const dadosParaSalvar = {
       ...formData,
-      // Adicionar novas imagens às existentes
-      imagens: [...formData.imagens, ...imagensSimuladas]
+      arquivosImagem,
+      imagensExistentes
     };
     
     onSave(dadosParaSalvar);
@@ -344,7 +366,7 @@ const CompeticaoForm = ({ isOpen, onClose, onSave, competicaoAtual = null }) => 
                 {formData.imagens.map((imagem, index) => (
                   <div key={`existing-${index}`} className="relative group">
                     <img
-                      src={imagem}
+                      src={typeof imagem === 'object' ? imagem.url : imagem}
                       alt={`Competição ${index + 1}`}
                       className="h-24 w-full object-cover rounded-md"
                     />

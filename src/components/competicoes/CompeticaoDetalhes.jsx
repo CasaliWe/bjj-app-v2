@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { X, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Badge } from '../ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
@@ -21,6 +21,18 @@ import {
  */
 const CompeticaoDetalhes = ({ isOpen, onClose, competicao, isComunidade = false }) => {
   const [imagemAtual, setImagemAtual] = useState(0);
+
+  // Redefinir o índice da imagem atual quando a competição mudar ou quando o array de imagens mudar
+  useEffect(() => {
+    // Verifica se há imagens e se o índice atual é válido
+    if (competicao?.imagens) {
+      if (imagemAtual >= competicao.imagens.length) {
+        setImagemAtual(competicao.imagens.length > 0 ? competicao.imagens.length - 1 : 0);
+      }
+    } else {
+      setImagemAtual(0);
+    }
+  }, [competicao, competicao?.imagens, imagemAtual]);
 
   // Se não houver competição, não renderizar
   if (!competicao) return null;
@@ -78,11 +90,13 @@ const CompeticaoDetalhes = ({ isOpen, onClose, competicao, isComunidade = false 
           {/* Galeria de imagens */}
           {competicao.imagens && competicao.imagens.length > 0 ? (
             <div className="relative rounded-lg overflow-hidden">
-              <img
-                src={competicao.imagens[imagemAtual]}
-                alt={`Competição ${competicao.nomeEvento}`}
-                className="w-full h-64 object-cover"
-              />
+              {competicao.imagens[imagemAtual] && (
+                <img
+                  src={competicao.imagens[imagemAtual].url}
+                  alt={`Competição ${competicao.nomeEvento}`}
+                  className="w-full h-64 object-cover"
+                />
+              )}
               
               {competicao.imagens.length > 1 && (
                 <>
@@ -134,11 +148,11 @@ const CompeticaoDetalhes = ({ isOpen, onClose, competicao, isComunidade = false 
             </div>
             <div>
               <span className="text-sm text-muted-foreground">Modalidade</span>
-              <p>
+              <div>
                 <Badge variant={competicao.modalidade === 'gi' ? 'default' : 'secondary'}>
                   {competicao.modalidade === 'gi' ? 'Gi (Kimono)' : 'No-Gi (Sem Kimono)'}
                 </Badge>
-              </p>
+              </div>
             </div>
             <div>
               <span className="text-sm text-muted-foreground">Colocação</span>

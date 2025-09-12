@@ -18,16 +18,23 @@ import CompeticaoDetalhes from '../components/competicoes/CompeticaoDetalhes';
 import { useCompeticoes } from '../hooks/use-competicoes';
 import { useIsMobile } from '../hooks/use-mobile';
 
+// hooks
+import { useGetUser } from "@/hooks/use-getUser";
+
 /**
  * Página de Competições
  * Permite ao usuário gerenciar suas competições e ver competições da comunidade
  */
 const Competicoes = () => {
   const isMobile = useIsMobile();
+
+  // Hook para buscar dados do usuário
+  const { fetchUserData } = useGetUser();
   
   // Definir o título da página ao carregar o componente
   useEffect(() => {
     setPageTitle('Competições');
+    fetchUserData();
   }, []);
   
   // Estado do hook de competições
