@@ -149,5 +149,9 @@ export default {
 			}
 		}
 	},
-	plugins: [require("tailwindcss-animate")],
+	plugins: [
+		require("tailwindcss-animate"),
+		// Habilita o plugin line-clamp para truncar texto
+		require('@tailwindcss/line-clamp'),
+	],
 } satisfies Config;

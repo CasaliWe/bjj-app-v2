@@ -35,18 +35,18 @@ export const TagBadge = ({ categoria, tamanho = "normal" }) => {
  * @param {string} props.texto - Texto a ser exibido
  * @param {number} props.linhas - Número de linhas a mostrar antes de truncar
  */
-export const TextoExpandivel = ({ texto, linhas = 3 }) => {
+export const TextoExpandivel = ({ texto, linhas = 4 }) => {
   const [expandido, setExpandido] = React.useState(false);
-  const excedeLimite = texto.length > 150; // Verifica se o texto é longo o suficiente para precisar expandir
+  const excedeLimite = texto.length > 100; // Verifica se o texto é longo o suficiente para precisar expandir
   
   return (
     <div>
-      <p className={`text-sm ${!expandido && excedeLimite ? `line-clamp-${linhas}` : ''}`}>
+      <p className={`text-sm ${!expandido ? "line-clamp-4" : ""}`}>
         {texto}
       </p>
       {excedeLimite && (
         <button 
-          className="text-xs text-muted-foreground hover:text-primary mt-1 hover:underline"
+          className="text-xs text-muted-foreground hover:text-primary mt-1 hover:underline font-medium"
           onClick={() => setExpandido(!expandido)}
         >
           {expandido ? "Mostrar menos" : "Mostrar mais"}
