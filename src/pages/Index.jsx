@@ -13,12 +13,11 @@ import { useUser } from "@/contexts/UserContext";
 
 // UI components
 import { Button } from "@/components/ui/button";
+import LoadingSpinner from "@/components/ui/LoadingSpinner";
 
 // components
 import { MetricCard } from "@/components/inicio/MetricCard";
-import { QuickActions } from "@/components/inicio/QuickActions";
 import { MeusDados } from "@/components/inicio/MeusDados";
-import { AtividadesRecentes } from "@/components/inicio/AtividadesRecentes";
 import ObjetivosModal from "@/components/inicio/ObjetivosModal";
 
 // welcome component
@@ -40,7 +39,6 @@ const Index = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [metrics, setMetrics] = useState(null);
   const [treinosDados, setTreinosDados] = useState(null);
-  const [recentActivities, setRecentActivities] = useState([]);
 
   // Hook para buscar dados do usuário
   const { fetchUserData } = useGetUser();
@@ -98,34 +96,6 @@ const Index = () => {
       }
     };
     buscarDadosTreinoCompeticao();
-    
-    // Dados de atividades recentes
-    setRecentActivities([
-      {
-        type: "treino",
-        title: "Treino de Gi",
-        description: "Trabalhei guard pass e finalizações",
-        time: "14 de agosto",
-      },
-      {
-        type: "tecnica",
-        title: "Triângulo da Guarda Fechada",
-        description: "Adicionei variação com lapela",
-        time: "13 de agosto",
-      },
-      {
-        type: "competicao",
-        title: "Copa Regional de Jiu-Jitsu",
-        description: "2º lugar na categoria azul adulto",
-        time: "12 de agosto",
-      },
-      {
-        type: "competicao",
-        title: "Copa Regional de Jiu-Jitsu",
-        description: "2º lugar na categoria azul adulto",
-        time: "12 de agosto",
-      }
-    ]);
     
     // Dados de métricas
     setMetrics({
@@ -225,7 +195,7 @@ const Index = () => {
                   <MetricCard title="Observações Gerais" value={metrics.observacoesMes} icon={Target}  totalObs={metrics.observacoesTotal} />
                 </div>
               ) : (
-                <div className="text-center py-6">Carregando métricas...</div>
+                <LoadingSpinner message="Carregando métricas..." />
               )}          
             </section>
             {/* Métricas principais */}
@@ -235,32 +205,10 @@ const Index = () => {
               {user && treinosDados ? (
                 <MeusDados user={user} treinosDados={treinosDados} />
               ) : (
-                <div className="text-center py-6">Carregando dados...</div>
+                <LoadingSpinner message="Carregando dados do usuário..." />
               )}
             </section>
             {/* Meus Dados Gerais */}
-
-            {/* Ações rápidas e Recentes */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-
-              {/* Ações rápidas */}
-              <div className="lg:col-span-1">
-                <QuickActions />
-              </div>
-              {/* Ações rápidas */}
-
-              {/* Atividades recentes */}
-              <div className="lg:col-span-2">
-                {recentActivities.length > 0 ? (
-                  <AtividadesRecentes recentActivities={recentActivities} />
-                ) : (
-                  <div className="text-center py-6">Carregando atividades recentes...</div>
-                )}
-              </div>
-              {/* Atividades recentes */}
-
-            </div>
-            {/* Ações rápidas e Recentes */}
 
           </div>
           {/* Content */}
