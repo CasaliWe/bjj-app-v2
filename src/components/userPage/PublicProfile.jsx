@@ -70,17 +70,28 @@ const PublicProfile = ({ profile }) => {
     <div className="space-y-6">
       {/* Informações básicas do perfil */}
       <div className="flex flex-col md:flex-row items-center gap-6 p-4">
-        {/* Foto de perfil */}
-        <div className="w-28 h-28 md:w-36 md:h-36 rounded-full bg-bjj-gold/10 flex items-center justify-center flex-shrink-0 relative overflow-hidden border-2 border-yellow-500">
-          {profile?.imagem ? (
-            <img 
-              src={`${import.meta.env.VITE_API_URL}admin/assets/imagens/arquivos/perfil/${profile.imagem}`}
-              alt={`Foto de ${profile.nome}`} 
-              className="w-full h-full object-cover"
-            />
-          ) : (
-            <div className="w-full h-full flex items-center justify-center bg-bjj-gold/10 text-bjj-gold text-4xl font-bold">
-              {getInitials()}
+        {/* Container para foto de perfil e badge */}
+        <div className="flex flex-col items-center relative">
+          {/* Foto de perfil */}
+          <div className="w-28 h-28 md:w-36 md:h-36 rounded-full bg-bjj-gold/10 flex items-center justify-center flex-shrink-0 overflow-hidden border-2 border-yellow-500">
+            {profile?.imagem ? (
+              <img 
+                src={`${import.meta.env.VITE_API_URL}admin/assets/imagens/arquivos/perfil/${profile.imagem}`}
+                alt={`Foto de ${profile.nome}`} 
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              <div className="w-full h-full flex items-center justify-center bg-bjj-gold/10 text-bjj-gold text-4xl font-bold">
+                {getInitials()}
+              </div>
+            )}
+          </div>
+          
+          {/* Badge de experiência - Fora do container da imagem */}
+          {profile?.exp && (
+            <div className="absolute -bottom-4 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-yellow-500 to-yellow-600 text-white px-3 py-1 rounded-full text-xs font-medium shadow-md flex items-center gap-1 z-10">
+              <Trophy className="h-3 w-3" />
+              <span>{profile.exp} Pontos</span>
             </div>
           )}
         </div>

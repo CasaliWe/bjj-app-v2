@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { X, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Badge } from '../ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
@@ -21,6 +22,7 @@ import {
  */
 const CompeticaoDetalhes = ({ isOpen, onClose, competicao, isComunidade = false }) => {
   const [imagemAtual, setImagemAtual] = useState(0);
+  const navigate = useNavigate();
 
   // Redefinir o índice da imagem atual quando a competição mudar ou quando o array de imagens mudar
   useEffect(() => {
@@ -33,6 +35,14 @@ const CompeticaoDetalhes = ({ isOpen, onClose, competicao, isComunidade = false 
       setImagemAtual(0);
     }
   }, [competicao, competicao?.imagens, imagemAtual]);
+
+  // Função para navegar para a página do usuário
+  const irParaPaginaUsuario = (usuario) => {
+    if (usuario && usuario.bjj_id) {
+      onClose(); // Fechar o modal antes de navegar
+      navigate(`/usuario?bjj_id=${usuario.bjj_id}`);
+    }
+  };
 
   // Se não houver competição, não renderizar
   if (!competicao) return null;
@@ -73,9 +83,20 @@ const CompeticaoDetalhes = ({ isOpen, onClose, competicao, isComunidade = false 
         <div className="space-y-6">
           {/* Informações do usuário (apenas na visualização da comunidade) */}
           {isComunidade && competicao.usuario && (
-            <div className="flex items-center gap-3 pb-3 border-b">
+            <div 
+              className="flex items-center gap-3 pb-3 border-b cursor-pointer hover:bg-muted/50 p-2 rounded-md transition-colors"
+              onClick={() => irParaPaginaUsuario(competicao.usuario)}
+              title={`Ver perfil de ${competicao.usuario.nome}`}
+            >
               <Avatar>
-                <AvatarImage src={competicao.usuario.foto} alt={competicao.usuario.nome} />
+                <AvatarImage 
+                  src={competicao.usuario.foto} 
+                  alt={competicao.usuario.nome}
+                  onError={(e) => {
+                    console.error("Erro ao carregar imagem de usuário:", e);
+                    e.target.src = "/user.jpeg";
+                  }}
+                />
                 <AvatarFallback>{competicao.usuario.nome.charAt(0)}</AvatarFallback>
               </Avatar>
               <div className="flex flex-col">

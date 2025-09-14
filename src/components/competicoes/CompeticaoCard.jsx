@@ -1,5 +1,5 @@
 import React from 'react';
-
+import { useNavigate } from 'react-router-dom';
 // Removed duplicate import of React
 import { Pencil, Trash2, Eye, Share2, Lock } from 'lucide-react';
 import { Card, CardContent, CardFooter } from '../ui/card';
@@ -15,6 +15,8 @@ const CompeticaoCard = ({
   onDelete,
   onShare
 }) => {
+  const navigate = useNavigate();
+
   const formatarData = (dataString) => {
     if (!dataString) return 'Data não informada';
     const data = new Date(dataString + 'T12:00:00');
@@ -23,6 +25,13 @@ const CompeticaoCard = ({
       month: '2-digit',
       year: 'numeric'
     });
+  };
+
+  // Função para navegar para a página do usuário
+  const irParaPaginaUsuario = (usuario) => {
+    if (usuario && usuario.bjj_id) {
+      navigate(`/usuario?bjj_id=${usuario.bjj_id}`);
+    }
   };
 
   return (
@@ -72,7 +81,11 @@ const CompeticaoCard = ({
 
         {/* Sempre mostrar informações do usuário se disponíveis, não apenas em modo comunidade */}
         {competicao.usuario && (
-          <div className="flex items-center gap-2 mt-2 border-t pt-2">
+          <div 
+            className="flex items-center gap-2 mt-2 border-t pt-2 cursor-pointer hover:bg-muted/50 p-2 rounded-md transition-colors"
+            onClick={() => irParaPaginaUsuario(competicao.usuario)}
+            title={`Ver perfil de ${competicao.usuario.nome}`}
+          >
             <Avatar className="h-6 w-6">
               {competicao.usuario.foto ? (
                 <AvatarImage 
