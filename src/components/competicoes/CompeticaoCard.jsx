@@ -30,7 +30,7 @@ const CompeticaoCard = ({
       <CardContent className="p-4">
         <div className="flex flex-col gap-2 mb-3">
           <div className="flex justify-between items-start">
-            <h3 className="font-bold text-lg line-clamp-1">{competicao.nome}</h3>
+            <h3 className="font-bold text-lg line-clamp-1">{competicao.nomeEvento || competicao.nome}</h3>
             {!isComunidade && (
               <div className="flex items-center">
                 {competicao.isPublico ? (
@@ -42,7 +42,7 @@ const CompeticaoCard = ({
             )}
           </div>
           <div className="flex justify-between items-center">
-            <div className="text-sm text-muted-foreground">{competicao.local}</div>
+            <div className="text-sm text-muted-foreground">{competicao.cidade}</div>
             <div className="text-sm font-medium">{formatarData(competicao.data)}</div>
           </div>
         </div>
@@ -50,7 +50,7 @@ const CompeticaoCard = ({
         <div className="flex flex-col gap-2 mb-4">
           <div className="flex justify-between items-center">
             <span className="text-sm font-medium">Categoria:</span>
-            <span className="font-semibold">{competicao.categoria}</span>
+            <span className="font-semibold">{competicao.categoria || 'Não informada'}</span>
           </div>
           <div className="flex justify-between items-center">
             <span className="text-sm font-medium">Modalidade:</span>
@@ -60,7 +60,7 @@ const CompeticaoCard = ({
           </div>
           <div className="flex justify-between items-center">
             <span className="text-sm font-medium">Resultado:</span>
-            <span className="font-semibold">{competicao.resultado}</span>
+            <span className="font-semibold">{competicao.colocacao || competicao.resultado || 'Não informado'}</span>
           </div>
         </div>
 
@@ -70,16 +70,29 @@ const CompeticaoCard = ({
           </div>
         )}
 
-        {isComunidade && competicao.usuario && (
+        {/* Sempre mostrar informações do usuário se disponíveis, não apenas em modo comunidade */}
+        {competicao.usuario && (
           <div className="flex items-center gap-2 mt-2 border-t pt-2">
             <Avatar className="h-6 w-6">
-              <AvatarImage src={competicao.usuario.imagem} alt={competicao.usuario.nome} />
-              <AvatarFallback>{competicao.usuario.nome.charAt(0)}</AvatarFallback>
+              {competicao.usuario.foto ? (
+                <AvatarImage 
+                  src={competicao.usuario.foto} 
+                  alt={competicao.usuario.nome} 
+                  onError={(e) => {
+                    console.error("Erro ao carregar imagem de usuário:", e);
+                    e.target.src = "/user.jpeg";
+                  }}
+                />
+              ) : (
+                <AvatarFallback>{competicao.usuario.nome?.charAt(0) || 'U'}</AvatarFallback>
+              )}
             </Avatar>
             <span className="text-sm font-medium">{competicao.usuario.nome}</span>
-            <Badge variant="outline" className="ml-auto">
-              Faixa {competicao.usuario.faixa}
-            </Badge>
+            {competicao.usuario.faixa && (
+              <Badge variant="outline" className="ml-auto">
+                Faixa {competicao.usuario.faixa}
+              </Badge>
+            )}
           </div>
         )}
       </CardContent>

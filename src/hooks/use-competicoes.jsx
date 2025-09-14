@@ -44,6 +44,8 @@ export const useCompeticoes = () => {
         limitePorPagina
       );
       
+      console.log('Dados recebidos da API (minhas competições):', result.competicoes);
+      
       setCompeticoes(result.competicoes);
       setPaginacao(result.paginacao);
     } catch (error) {
@@ -68,6 +70,8 @@ export const useCompeticoes = () => {
         limitePorPagina
       );
       
+      console.log('Dados recebidos da API (competições da comunidade):', result.competicoes);
+      
       setCompeticoesComunidade(result.competicoes);
       setPaginacaoComunidade(result.paginacao);
     } catch (error) {
@@ -89,10 +93,13 @@ export const useCompeticoes = () => {
       
       // Adicionar campos de texto
       formData.append('nomeEvento', competicao.nomeEvento);
+      formData.append('nome', competicao.nomeEvento); // Compatibilidade com API
       formData.append('cidade', competicao.cidade || '');
       formData.append('data', competicao.data || format(new Date(), 'yyyy-MM-dd'));
       formData.append('modalidade', competicao.modalidade || 'gi');
       formData.append('colocacao', competicao.colocacao || '');
+      formData.append('resultado', competicao.colocacao || ''); // Compatibilidade com API
+      formData.append('categoria', competicao.categoria || '');
       formData.append('numeroLutas', competicao.numeroLutas || 0);
       formData.append('numeroVitorias', competicao.numeroVitorias || 0);
       formData.append('numeroDerrotas', competicao.numeroDerrotas || 0);
@@ -144,10 +151,13 @@ export const useCompeticoes = () => {
       
       // Adicionar campos de texto
       formData.append('nomeEvento', competicao.nomeEvento);
+      formData.append('nome', competicao.nomeEvento); // Compatibilidade com API
       formData.append('cidade', competicao.cidade || '');
       formData.append('data', competicao.data || format(new Date(), 'yyyy-MM-dd'));
       formData.append('modalidade', competicao.modalidade || 'gi');
       formData.append('colocacao', competicao.colocacao || '');
+      formData.append('resultado', competicao.colocacao || ''); // Compatibilidade com API
+      formData.append('categoria', competicao.categoria || '');
       formData.append('numeroLutas', competicao.numeroLutas || 0);
       formData.append('numeroVitorias', competicao.numeroVitorias || 0);
       formData.append('numeroDerrotas', competicao.numeroDerrotas || 0);

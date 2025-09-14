@@ -93,8 +93,12 @@ const CompeticaoDetalhes = ({ isOpen, onClose, competicao, isComunidade = false 
               {competicao.imagens[imagemAtual] && (
                 <img
                   src={competicao.imagens[imagemAtual].url}
-                  alt={`Competição ${competicao.nomeEvento}`}
+                  alt={`Competição ${competicao.nomeEvento || competicao.nome}`}
                   className="w-full h-64 object-cover"
+                  onError={(e) => {
+                    console.error("Erro ao carregar imagem:", e);
+                    e.target.src = `${import.meta.env.VITE_API_URL || ''}/imagens/placeholder.jpg`;
+                  }}
                 />
               )}
               

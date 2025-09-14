@@ -96,24 +96,26 @@ const Index = () => {
       }
     };
     buscarDadosTreinoCompeticao();
-    
-    // Dados de métricas
-    setMetrics({
-      tecnicas: "50",
-      tecnicasMeta: "55",
-      tecnicasFaltando: "5",
-      upDownTecnicas: "down",
-      treinos: "20",
-      treinosMeta: "15",
-      treinosFaltando: "0",
-      upDownTreinos: "up",
-      competicoes: "3",
-      competicoesMeta: "5",
-      competicoesFaltando: "2",
-      upDownCompeticoes: "down",
-      observacoesTotal: "12",
-      observacoesMes: "8"
-    });
+
+
+    // Função para buscar os objetivos do usuário na API
+    const buscarObjetivosUsuario = async () => {
+      try {
+          const response = await fetch(`${import.meta.env.VITE_API_URL}endpoint/user/buscar-objetivos-dashboard.php`, {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${getAuthToken()}`
+            }
+          });
+          const data = await response.json();
+          setMetrics(data.data);
+      } catch (error) {
+        console.error('Erro ao buscar objetivos do usuário:', error);
+        return null;
+      }
+    };
+    buscarObjetivosUsuario();
     
     // Buscar dados do usuário
     fetchUserData();

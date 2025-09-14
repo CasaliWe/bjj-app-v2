@@ -38,6 +38,7 @@ const CompeticaoForm = ({ isOpen, onClose, onSave, competicaoAtual = null }) => 
     data: '',
     modalidade: 'gi',
     colocacao: '1º lugar',
+    categoria: '',
     numeroLutas: 0,
     numeroVitorias: 0,
     numeroDerrotas: 0,
@@ -65,7 +66,10 @@ const CompeticaoForm = ({ isOpen, onClose, onSave, competicaoAtual = null }) => 
 
       setFormData({
         ...competicaoAtual,
-        data: formatarDataParaInput(competicaoAtual.data)
+        nomeEvento: competicaoAtual.nomeEvento || competicaoAtual.nome || '',
+        data: formatarDataParaInput(competicaoAtual.data),
+        categoria: competicaoAtual.categoria || '',
+        colocacao: competicaoAtual.colocacao || competicaoAtual.resultado || '1º lugar'
       });
       
       // Guardar IDs das imagens existentes
@@ -87,6 +91,7 @@ const CompeticaoForm = ({ isOpen, onClose, onSave, competicaoAtual = null }) => 
         data: '',
         modalidade: 'gi',
         colocacao: '1º lugar',
+        categoria: '',
         numeroLutas: 0,
         numeroVitorias: 0,
         numeroDerrotas: 0,
@@ -285,6 +290,17 @@ const CompeticaoForm = ({ isOpen, onClose, onSave, competicaoAtual = null }) => 
                 </SelectContent>
               </Select>
             </div>
+          </div>
+          
+          <div className="space-y-2">
+            <Label htmlFor="categoria">Categoria</Label>
+            <Input
+              id="categoria"
+              name="categoria"
+              value={formData.categoria}
+              onChange={handleChange}
+              placeholder="Ex: Adulto, Master 1, Peso-Pena, etc."
+            />
           </div>
 
           {/* Estatísticas */}
