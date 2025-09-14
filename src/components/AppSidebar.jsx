@@ -1,6 +1,6 @@
 import { 
   Home, Book, Calendar, Award, Target, FileText, Bot, 
-  Gamepad2, Video, Newspaper, LineChart, 
+  Gamepad2, Video, Newspaper, LineChart, Clock,
   ShoppingBag, Dumbbell, Layers, LogOut
 } from "lucide-react";
 import {
@@ -52,6 +52,12 @@ const menuItems = [  {
     url: "/observacoes",
     icon: FileText,
     description: "Notas e observações"
+  },
+  {
+    title: "Timers",
+    url: "/timers",
+    icon: Clock,
+    description: "Temporizadores para treino"
   }, 
   // {
   //   title: "Objetivos",
