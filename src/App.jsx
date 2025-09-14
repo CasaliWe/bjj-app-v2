@@ -27,6 +27,7 @@ import Support from "./pages/Support";
 import AboutUs from "./pages/AboutUs";
 import Contact from "./pages/Contact";
 import UserProfile from "./pages/UserProfile";
+import UserPage from "./pages/UserPage";
 import LandingPage from "./pages/LandingPage";
 import NotFound from "./pages/NotFound";
 import IASensei from "./pages/IASensei";
@@ -186,6 +187,7 @@ const App = () => (
             
             {/* Rotas públicas que podem ser acessadas por todos */}
             <Route path="/" element={<LandingPage />} />
+            <Route path="/usuario" element={<UserPage />} />
             <Route path="/termos-de-uso" element={<TermsOfUse />} />
             <Route path="/politica-de-privacidade" element={<PrivacyPolicy />} />
             <Route path="/suporte" element={<Support />} />
