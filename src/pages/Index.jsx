@@ -50,24 +50,24 @@ const Index = () => {
   const fecharModal = () => setIsModalOpen(false);
   
   // Função para atualizar progresso (objetivos) *********************************
-  const atualizarMetricas = (novasMetricas) => {
+  const atualizarMetricas = async (novasMetricas) => {
     setMetrics(novasMetricas);
 
-    console.log("Métricas atualizadas:", novasMetricas);
+    try {
+        const response = await fetch(`${import.meta.env.VITE_API_URL}endpoint/user/atualizar-objetivos.php`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${getAuthToken()}`
+          },
+          body: JSON.stringify(novasMetricas)
+        });
+    } catch (error) {
+      console.error('Erro ao buscar dados do usuário:', error);
+      return null;
+    }
     
-    // AQUI: Após atualizar o estado local, você pode enviar os novos valores para a API
-    // const atualizarMetricasAPI = async (metricasAtualizadas) => {
-    //   try {
-    //     await api.put('/metrics', {
-    //       tecnicasMeta: metricasAtualizadas.tecnicasMeta,
-    //       treinosMeta: metricasAtualizadas.treinosMeta,
-    //       competicoesMeta: metricasAtualizadas.competicoesMeta
-    //     });
-    //   } catch (error) {
-    //     console.error('Erro ao atualizar métricas na API:', error);
-    //   }
-    // };
-    // atualizarMetricasAPI(novasMetricas);
+  
   };
 
   // Função para logout
