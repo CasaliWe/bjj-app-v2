@@ -58,7 +58,7 @@ const PrivateProfile = ({ profile }) => {
       {/* Informações básicas do perfil */}
       <div className="flex flex-col md:flex-row items-center gap-6 p-4">
         {/* Foto de perfil */}
-        <div className="w-28 h-28 md:w-36 md:h-36 rounded-full bg-bjj-gold/10 flex items-center justify-center flex-shrink-0 relative overflow-hidden border-2 border-bjj-gold/20">
+        <div className="w-28 h-28 md:w-36 md:h-36 rounded-full bg-bjj-gold/10 flex items-center justify-center flex-shrink-0 relative overflow-hidden border-2 border-yellow-500">
           {profile?.imagem ? (
             <img 
               src={`${import.meta.env.VITE_API_URL}admin/assets/imagens/arquivos/perfil/${profile.imagem}`}
@@ -72,7 +72,7 @@ const PrivateProfile = ({ profile }) => {
           )}
         </div>
         
-        {/* Dados básicos */}
+        {/* Dados básicos - Limitados apenas para perfil privado */}
         <div className="flex flex-col items-center md:items-start space-y-2 flex-grow">
           <h2 className="text-2xl font-bold">{profile?.nome || 'Usuário'}</h2>
           
@@ -88,23 +88,17 @@ const PrivateProfile = ({ profile }) => {
             )}
           </div>
           
-          {profile?.bio && (
-            <p className="text-sm text-muted-foreground mt-2 text-center md:text-left">
-              {profile.bio}
-            </p>
-          )}
-          
-          <div className="flex items-center gap-2 mt-2">
+          <div className="flex flex-col md:flex-row md:flex-wrap gap-2 mt-2 w-full items-center md:items-start">
             {profile?.academia && (
-              <div className="flex items-center gap-1 text-sm text-muted-foreground">
-                <Building className="h-4 w-4" />
+              <div className="flex items-center gap-1 text-sm text-muted-foreground w-full md:w-auto">
+                <Building className="h-4 w-4 flex-shrink-0" />
                 <span>{profile.academia}</span>
               </div>
             )}
             
             {(profile?.cidade || profile?.estado) && (
-              <div className="flex items-center gap-1 text-sm text-muted-foreground">
-                <MapPin className="h-4 w-4" />
+              <div className="flex items-center gap-1 text-sm text-muted-foreground w-full md:w-auto">
+                <MapPin className="h-4 w-4 flex-shrink-0" />
                 <span>
                   {profile?.cidade}
                   {profile?.cidade && profile?.estado && ', '}

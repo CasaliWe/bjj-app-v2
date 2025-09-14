@@ -32,6 +32,9 @@ export const getUserProfile = async (bjjId) => {
     
     const data = await response.json();
     
+    // Log para debug
+    console.log("API Response - Profile Data:", data.data.profile);
+    
     return data.data.profile || {};
   } catch (error) {
     console.error("Erro ao buscar perfil do usuário:", error);
@@ -98,8 +101,8 @@ export const getUserPublicCompetitions = async (bjjId, pagina = 1, limite = 10) 
     
     const data = await response.json();
     
-    // Log da resposta completa para debug
-    console.log('Resposta completa da API de competições:', data);
+    // Log apenas para desenvolvimento
+    console.log('Resposta da API de competições:', data);
     
     return {
       competicoes: data.data.competicoes || [],
@@ -137,6 +140,9 @@ export const getUserPublicTechniques = async (bjjId, pagina = 1, limite = 10) =>
     }
     
     const data = await response.json();
+    
+    // Log para depuração
+    console.log('Resposta da API de técnicas:', data);
     
     return {
       tecnicas: data.data.tecnicas || [],

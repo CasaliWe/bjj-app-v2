@@ -6,13 +6,9 @@ import {
   Weight,
   Trophy,
   Heart,
-  Instagram,
-  Youtube,
   BookOpen,
   Globe,
-  Mail,
-  MessageSquare,
-  Phone
+  MessageSquare
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
@@ -75,7 +71,7 @@ const PublicProfile = ({ profile }) => {
       {/* Informações básicas do perfil */}
       <div className="flex flex-col md:flex-row items-center gap-6 p-4">
         {/* Foto de perfil */}
-        <div className="w-28 h-28 md:w-36 md:h-36 rounded-full bg-bjj-gold/10 flex items-center justify-center flex-shrink-0 relative overflow-hidden border-2 border-bjj-gold/20">
+        <div className="w-28 h-28 md:w-36 md:h-36 rounded-full bg-bjj-gold/10 flex items-center justify-center flex-shrink-0 relative overflow-hidden border-2 border-yellow-500">
           {profile?.imagem ? (
             <img 
               src={`${import.meta.env.VITE_API_URL}admin/assets/imagens/arquivos/perfil/${profile.imagem}`}
@@ -140,16 +136,16 @@ const PublicProfile = ({ profile }) => {
           </div>
           
           {/* Redes sociais */}
-          <div className="flex flex-wrap gap-2 mt-2">
+          <div className="flex flex-wrap gap-4 mt-2">
             {profile?.instagram && (
               <a 
                 href={formatSocialLink(profile.instagram)} 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="p-2 rounded-full hover:bg-muted transition-colors"
+                className="hover:opacity-80 transition-opacity"
                 title="Instagram"
               >
-                <Instagram className="h-4 w-4 text-pink-500" />
+                <img src="/instagram.png" alt="Instagram" style={{ width: '24px', height: '24px' }} className="sm:w-5 sm:h-5" />
               </a>
             )}
             
@@ -158,10 +154,10 @@ const PublicProfile = ({ profile }) => {
                 href={formatSocialLink(profile.youtube)} 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="p-2 rounded-full hover:bg-muted transition-colors"
+                className="hover:opacity-80 transition-opacity"
                 title="YouTube"
               >
-                <Youtube className="h-4 w-4 text-red-500" />
+                <img src="/youtube.png" alt="YouTube" style={{ width: '24px', height: '24px' }} className="sm:w-5 sm:h-5" />
               </a>
             )}
             
@@ -170,24 +166,10 @@ const PublicProfile = ({ profile }) => {
                 href={formatSocialLink(profile.tiktok)} 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="p-2 rounded-full hover:bg-muted transition-colors"
+                className="hover:opacity-80 transition-opacity"
                 title="TikTok"
               >
-                <svg 
-                  xmlns="http://www.w3.org/2000/svg" 
-                  viewBox="0 0 24 24" 
-                  fill="none" 
-                  stroke="currentColor" 
-                  strokeWidth="2" 
-                  strokeLinecap="round" 
-                  strokeLinejoin="round" 
-                  className="h-4 w-4 text-slate-300"
-                >
-                  <path d="M9 12a4 4 0 1 0 0 8 4 4 0 0 0 0-8z" />
-                  <path d="M15 8a4 4 0 1 0 0-8 4 4 0 0 0 0 8z" />
-                  <path d="M15 8v8a4 4 0 0 1-4 4" />
-                  <line x1="15" y1="8" x2="15" y2="4" />
-                </svg>
+                <img src="/tiktok.png" alt="TikTok" style={{ width: '24px', height: '24px' }} className="sm:w-5 sm:h-5" />
               </a>
             )}
             
@@ -196,10 +178,10 @@ const PublicProfile = ({ profile }) => {
                 href={`https://wa.me/${profile.whatsapp.replace(/\D/g, '')}`} 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="p-2 rounded-full hover:bg-muted transition-colors"
+                className="hover:opacity-80 transition-opacity"
                 title="WhatsApp"
               >
-                <Phone className="h-4 w-4 text-green-500" />
+                <img src="/whatsapp.png" alt="WhatsApp" style={{ width: '24px', height: '24px' }} className="sm:w-5 sm:h-5" />
               </a>
             )}
             
@@ -208,10 +190,10 @@ const PublicProfile = ({ profile }) => {
                 href={`mailto:${profile.email}`} 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="p-2 rounded-full hover:bg-muted transition-colors"
+                className="hover:opacity-80 transition-opacity"
                 title="Email"
               >
-                <Mail className="h-4 w-4 text-blue-500" />
+                <img src="/email.png" alt="Email" style={{ width: '24px', height: '24px' }} className="sm:w-5 sm:h-5" />
               </a>
             )}
           </div>

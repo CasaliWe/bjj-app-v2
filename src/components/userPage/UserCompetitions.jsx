@@ -48,23 +48,15 @@ const UserCompetitions = ({
     );
   }
   
-  // Depuração dos dados completos
-  console.log("Todas as competições (dados brutos):", competitions);
-  
   // Renderiza a lista de competições
   return (
     <div className="grid gap-4 sm:grid-cols-1 md:grid-cols-2">
-      {competitions.map((competicao) => {
-        // Log mais detalhado de cada competição com os dados originais da API
-        console.log(`Competição ${competicao.id} dados completos:`, competicao);
-        
-        return (
-          <UserPageCompeticaoCard 
-            key={competicao.id} 
-            competicao={competicao}
-          />
-        );
-      })}
+      {competitions.map((competicao) => (
+        <UserPageCompeticaoCard 
+          key={competicao.id} 
+          competicao={competicao}
+        />
+      ))}
       
       {/* Paginação */}
       {pagination && pagination.totalPages > 1 && (

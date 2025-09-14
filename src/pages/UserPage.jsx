@@ -148,10 +148,15 @@ const UserPage = () => {
                     <p className="text-center text-muted-foreground mb-4">
                       {profileError}
                     </p>
-                    <Button onClick={handleBack}>
-                      <ArrowLeft className="mr-2 h-4 w-4" />
-                      Voltar
-                    </Button>
+                    <div className="flex gap-2">
+                      <Button onClick={handleBack}>
+                        <ArrowLeft className="mr-2 h-4 w-4" />
+                        Voltar
+                      </Button>
+                      <Button onClick={() => navigate('/app')} variant="outline">
+                        Ir para página inicial
+                      </Button>
+                    </div>
                   </CardContent>
                 </Card>
               </div>
@@ -162,7 +167,19 @@ const UserPage = () => {
               <div className="flex-grow animate-fade-in">
                 <Card className="bg-card/80 backdrop-blur-sm border-border/50">
                   <CardContent className="p-4 md:p-6">
-                    {userProfile.perfilPublico === 'Fechado' ? (
+                    {/* Log para debug */}
+                    {console.log("Perfil dados:", userProfile)}
+                    
+                    {/* 
+                      Verifica se o perfil é fechado com uma lógica mais robusta que 
+                      considera diferentes possibilidades de tipos e valores
+                    */}
+                    {(
+                      userProfile.perfilPublico === 'Fechado' || 
+                      userProfile.perfil_publico === 'Fechado' ||
+                      userProfile.perfilPublico === false ||
+                      userProfile.perfil_publico === false
+                    ) ? (
                       <PrivateProfile profile={userProfile} />
                     ) : (
                       <>

@@ -23,6 +23,9 @@ const UserTechniques = ({
   error,
   onPageChange
 }) => {
+  // Log para depuração
+  console.log('Técnicas recebidas:', techniques);
+  
   // Renderização condicional para estado de carregamento
   if (isLoading) {
     return <LoadingSpinner message="Carregando técnicas..." />;
@@ -52,13 +55,15 @@ const UserTechniques = ({
   
   // Renderiza a lista de técnicas
   return (
-    <div className="space-y-4">
-      {techniques.map((tecnica) => (
-        <UserPageTecnicaCard 
-          key={tecnica.id} 
-          tecnica={tecnica} 
-        />
-      ))}
+    <div>
+      <div className="grid gap-4 sm:grid-cols-1 md:grid-cols-2">
+        {techniques.map((tecnica) => (
+          <UserPageTecnicaCard 
+            key={tecnica.id} 
+            tecnica={tecnica} 
+          />
+        ))}
+      </div>
       
       {/* Paginação */}
       {pagination && pagination.totalPages > 1 && (

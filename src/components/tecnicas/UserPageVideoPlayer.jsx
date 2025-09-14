@@ -73,13 +73,8 @@ const UserPageVideoPlayer = ({
       return url;
     }
     
-    // Caso contrário, prefixe com a URL base da API e o caminho correto
-    // Verifique se a URL contém 'tecnicas' para determinar o caminho correto
-    const folderPath = url.includes('tecnicas') 
-      ? '' 
-      : 'admin/assets/imagens/arquivos/tecnicas/';
-    
-    return `${import.meta.env.VITE_API_URL}${folderPath}${url}`;
+    // Caso contrário, prefixe com a URL base da API
+    return `${import.meta.env.VITE_API_URL}${url}`;
   };
 
   const fullVideoUrl = getFullVideoUrl(src);
@@ -93,7 +88,7 @@ const UserPageVideoPlayer = ({
   return (
     <div
       className={`relative rounded-md overflow-hidden w-full ${className}`}
-      style={{ width: "100%", maxWidth: "100%" }}
+      style={{ width: "100%" }}
     >
       {/* Vídeo ocupa 100% da largura, altura automática, adaptada à proporção natural */}
       <video
@@ -105,7 +100,7 @@ const UserPageVideoPlayer = ({
         playsInline
         loop={loop}
         className="rounded-md w-full h-auto"
-        style={{ maxWidth: "100%", background: "transparent" }}
+        style={{ width: "100%", height: "auto", display: "block" }}
         onEnded={handleEnded}
         onError={(e) => {
           console.error("Erro ao carregar vídeo:", fullVideoUrl);

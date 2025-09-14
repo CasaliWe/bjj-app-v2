@@ -11,6 +11,9 @@ import { Badge } from '../ui/badge';
 const UserPageCompeticaoCard = ({ 
   competicao
 }) => {
+  // Log para debug dos dados recebidos
+  console.log('Dados recebidos no componente UserPageCompeticaoCard:', competicao);
+  
   // Formatação da data
   const formatarData = (dataString) => {
     if (!dataString) return 'Data não informada';
@@ -37,49 +40,24 @@ const UserPageCompeticaoCard = ({
     return 'text-muted-foreground';
   };
 
-  // Função para obter a URL da imagem
-  const getImageUrl = (image) => {
-    if (!image) return null;
-    
-    // Se a imagem for um objeto com uma propriedade URL
-    if (typeof image === 'object' && image.url) {
-      // Verificar se a URL já está completa
-      if (image.url.startsWith('http://') || image.url.startsWith('https://')) {
-        return image.url;
-      }
-      return `${import.meta.env.VITE_API_URL}admin/assets/imagens/arquivos/competicoes/${image.url}`;
-    }
-    
-    // Se a imagem for uma string
-    if (typeof image === 'string') {
-      // Verificar se a URL já está completa
-      if (image.startsWith('http://') || image.startsWith('https://')) {
-        return image;
-      }
-      return `${import.meta.env.VITE_API_URL}admin/assets/imagens/arquivos/competicoes/${image}`;
-    }
-    
-    return null;
-  };
-
   return (
     <Card className="w-full overflow-hidden hover:shadow-md transition-shadow">
       <CardContent className="p-0">
         {/* Imagem da competição se disponível */}
-        {(competicao.imagem || (competicao.imagens && competicao.imagens.length > 0)) && (
+        {competicao.imagens && competicao.imagens.length > 0 && (
           <div className="w-full h-40 relative">
             <img 
-              src={getImageUrl(competicao.imagem || (competicao.imagens && competicao.imagens.length > 0 ? competicao.imagens[0] : null))} 
-              alt={competicao.nome || competicao.nomeEvento || "Competição"}
+              src={competicao.imagens[0]} 
+              alt={competicao.nome || "Competição"}
               className="w-full h-full object-cover"
               onError={(e) => {
-                console.error("Erro ao carregar imagem:", competicao.imagem || (competicao.imagens && competicao.imagens[0]));
+                console.error("Erro ao carregar imagem:", competicao.imagens[0]);
                 e.target.style.display = 'none';
               }}
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
             <div className="absolute bottom-3 left-3 right-3 text-white">
-              <h3 className="font-bold text-lg line-clamp-1 drop-shadow-md">{competicao.nome || competicao.nomeEvento || "Competição"}</h3>
+              <h3 className="font-bold text-lg line-clamp-1 drop-shadow-md">{competicao.nome || "Competição"}</h3>
               
               <div className="flex items-center gap-2 mt-1">
                 {competicao.local && (
@@ -99,7 +77,7 @@ const UserPageCompeticaoCard = ({
         )}
         
         {/* Conteúdo sem imagem */}
-        {!competicao.imagem && (!competicao.imagens || competicao.imagens.length === 0) && (
+        {(!competicao.imagens || competicao.imagens.length === 0) && (
           <div className="pt-4 px-4">
             <div className="flex items-start gap-3 mb-3">
               <div className={`flex-shrink-0 p-2 rounded-full bg-muted ${getMedalColor()}`}>
@@ -107,7 +85,7 @@ const UserPageCompeticaoCard = ({
               </div>
               
               <div className="flex-1">
-                <h3 className="font-bold text-lg line-clamp-1">{competicao.nome || competicao.nomeEvento || "Competição"}</h3>
+                <h3 className="font-bold text-lg line-clamp-1">{competicao.nome || "Competição"}</h3>
                 <div className="mt-1 flex items-center gap-2 flex-wrap">
                   <div className="flex items-center gap-1 text-xs text-muted-foreground">
                     <Calendar className="h-3.5 w-3.5" />
@@ -133,55 +111,36 @@ const UserPageCompeticaoCard = ({
             <div className="font-semibold">{competicao.resultado || "Participação"}</div>
           </div>
           
-          {/* Posição/categoria de peso */}
-          {competicao.categoria && (
-            <div className="flex items-center justify-between p-3 rounded-lg border mb-4">
-              <div className="text-sm text-muted-foreground">Categoria:</div>
-              <div className="font-medium">{competicao.categoria}</div>
-            </div>
-          )}
-          
           {/* Estatísticas e informações */}
           <div className="grid grid-cols-2 gap-3">
-            {/* Log completo para debug */}
-            {console.log('Renderizando estatísticas para:', competicao)}
-            
             <div className="rounded-lg border p-3 flex flex-col items-center justify-center">
               <div className="text-sm text-muted-foreground mb-1">Lutas</div>
               <div className="font-semibold text-lg">
-                {competicao.lutas !== undefined ? competicao.lutas : '0'}
+                {competicao.numero_lutas !== undefined ? competicao.numero_lutas : '0'}
               </div>
             </div>
             
             <div className="rounded-lg border p-3 flex flex-col items-center justify-center">
               <div className="text-sm text-muted-foreground mb-1">Vitórias</div>
               <div className="font-semibold text-lg">
-                {competicao.vitorias !== undefined ? competicao.vitorias : '0'}
+                {competicao.numero_vitorias !== undefined ? competicao.numero_vitorias : '0'}
               </div>
             </div>
             
             <div className="rounded-lg border p-3 flex flex-col items-center justify-center">
               <div className="text-sm text-muted-foreground mb-1">Finalizações</div>
               <div className="font-semibold text-lg">
-                {competicao.finalizacoes !== undefined ? competicao.finalizacoes : '0'}
+                {competicao.numero_finalizacoes !== undefined ? competicao.numero_finalizacoes : '0'}
               </div>
             </div>
             
             <div className="rounded-lg border p-3 flex flex-col items-center justify-center">
               <div className="text-sm text-muted-foreground mb-1">Derrotas</div>
               <div className="font-semibold text-lg">
-                {competicao.derrotas !== undefined ? competicao.derrotas : '0'}
+                {competicao.numero_derrotas !== undefined ? competicao.numero_derrotas : '0'}
               </div>
             </div>
           </div>
-          
-          {/* Local se disponível e ainda não mostrado */}
-          {competicao.local && (
-            <div className="mt-3 p-3 rounded-lg border">
-              <div className="text-sm text-muted-foreground mb-1">Local do evento:</div>
-              <div className="text-sm">{competicao.local}</div>
-            </div>
-          )}
           
           {/* Modalidade */}
           <div className="mt-4 flex justify-center">
@@ -189,14 +148,6 @@ const UserPageCompeticaoCard = ({
               {competicao.modalidade?.toLowerCase() === 'gi' ? 'Gi (Kimono)' : 'No-Gi (Sem Kimono)'}
             </Badge>
           </div>
-          
-          {/* Observações, se existirem */}
-          {competicao.observacoes && (
-            <div className="mt-3 p-3 rounded-lg border">
-              <div className="text-sm text-muted-foreground mb-1">Observações:</div>
-              <div className="text-sm">{competicao.observacoes}</div>
-            </div>
-          )}
         </div>
       </CardContent>
     </Card>

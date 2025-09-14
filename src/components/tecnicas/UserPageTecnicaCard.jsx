@@ -15,7 +15,9 @@ import {
   Youtube,
   Instagram,
   ExternalLink,
-  BarChart
+  BarChart,
+  Mail,
+  Phone
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import UserPageVideoPlayer from "./UserPageVideoPlayer";
@@ -25,24 +27,24 @@ import UserPageVideoPlayer from "./UserPageVideoPlayer";
  * 
  * @param {Object} props
  * @param {Object} props.tecnica - Dados da técnica
+ * @param {Object} props.userContacts - Dados de contato do usuário (opcional)
  */
-const UserPageTecnicaCard = ({ tecnica }) => {
-  // Função para verificar se a técnica tem vídeo
-  const hasVideo = () => {
-    return tecnica.video_url || tecnica.videoUrl;
+const UserPageTecnicaCard = ({ tecnica, userContacts }) => {
+  // Log para debug dos dados recebidos
+  console.log('Dados da técnica recebidos:', tecnica);
+  console.log('Dados de contato recebidos:', userContacts);
+
+  // Função para verificar se a técnica tem vídeo próprio (mp4)
+  const hasEmbeddedVideo = () => {
+    return Boolean(tecnica.video_url);
   };
 
-  // Função para obter a URL do poster
-  const getPosterUrl = () => {
-    return tecnica.video_poster || tecnica.videoPoster;
+  // Função para verificar se tem link para vídeo externo (YouTube/Instagram)
+  const hasExternalVideo = () => {
+    return Boolean(tecnica.video);
   };
 
-  // Função para obter a URL do vídeo
-  const getVideoUrl = () => {
-    return tecnica.video_url || tecnica.videoUrl;
-  };
-
-  // Função para renderizar ícone de link externo para o vídeo
+  // Função para renderizar ícone do vídeo externo
   const renderVideoIcon = () => {
     if (!tecnica.video) return null;
     
@@ -89,21 +91,9 @@ const UserPageTecnicaCard = ({ tecnica }) => {
           </div>
         </div>
         
-        {/* Miniatura de vídeo (se disponível) */}
-        {hasVideo() && (
-          <div className="mt-3 rounded-md overflow-hidden">
-            <UserPageVideoPlayer 
-              src={getVideoUrl()} 
-              posterSrc={getPosterUrl()}
-              className="w-full max-h-[180px]"
-              loop={true}
-            />
-          </div>
-        )}
-        
         {/* Link para vídeo externo (se disponível) */}
-        {tecnica.video && (
-          <div className="flex items-center mt-2 justify-end">
+        {hasExternalVideo() && (
+          <div className="flex items-center mt-3 justify-end">
             <Button
               variant="ghost"
               size="sm"
@@ -117,7 +107,7 @@ const UserPageTecnicaCard = ({ tecnica }) => {
                 className="flex items-center gap-1.5"
               >
                 {renderVideoIcon()}
-                <span>Ver vídeo completo</span>
+                <span>Ver vídeo externo</span>
               </a>
             </Button>
           </div>
@@ -128,10 +118,25 @@ const UserPageTecnicaCard = ({ tecnica }) => {
         <Accordion type="single" collapsible className="w-full">
           <AccordionItem value="detalhes" className="border-b-0">
             <AccordionTrigger className="px-4 py-2 text-sm hover:no-underline">
-              Ver passo a passo
+              Ver detalhes
             </AccordionTrigger>
             <AccordionContent>
               <div className="px-4 pb-4 space-y-4">
+                {/* Vídeo embutido (se disponível) - Dentro do accordion para ficar igual à página de técnicas */}
+                {hasEmbeddedVideo() && (
+                  <div>
+                    <h4 className="font-medium text-sm mb-2 border-b pb-1">Vídeo:</h4>
+                    <div className="w-full overflow-hidden rounded-md">
+                      <UserPageVideoPlayer 
+                        src={tecnica.video_url} 
+                        posterSrc={tecnica.video_poster}
+                        className="w-full"
+                        loop={true}
+                      />
+                    </div>
+                  </div>
+                )}
+                
                 {/* Passos da técnica */}
                 <div>
                   <h4 className="font-medium text-sm mb-2 border-b pb-1 flex items-center gap-1.5">
@@ -154,14 +159,6 @@ const UserPageTecnicaCard = ({ tecnica }) => {
                         <li key={index} className="text-sm mb-2">{obs}</li>
                       ))}
                     </ul>
-                  </div>
-                )}
-                
-                {/* Observações como string (compatibilidade) */}
-                {tecnica.observacoes && typeof tecnica.observacoes === 'string' && tecnica.observacoes.trim() !== '' && (
-                  <div>
-                    <h4 className="font-medium text-sm mb-2 border-b pb-1">Observações:</h4>
-                    <p className="text-sm whitespace-pre-line">{tecnica.observacoes}</p>
                   </div>
                 )}
               </div>
