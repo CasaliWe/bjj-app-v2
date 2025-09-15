@@ -1,7 +1,7 @@
 import { 
   Home, Book, Calendar, Award, Target, FileText, Bot, 
   Gamepad2, Video, Newspaper, LineChart, Clock,
-  ShoppingBag, Dumbbell, Layers, LogOut
+  ShoppingBag, Dumbbell, Layers, LogOut, Search, Users
 } from "lucide-react";
 import {
   Sidebar,
@@ -52,6 +52,12 @@ const menuItems = [  {
     url: "/observacoes",
     icon: FileText,
     description: "Notas e observações"
+  },
+  {
+    title: "Pesquisar Usuários",
+    url: "/pesquisar-usuarios",
+    icon: Users,
+    description: "Encontre outros praticantes"
   },
   // {
   //   title: "Objetivos",

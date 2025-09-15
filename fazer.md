@@ -1,5 +1,120 @@
 ### PENDENTE:
 
+
+/app:
+- verificar erros logs;
+- verificar console.log;
+- testar tamanhos de telas;
+
+/perfil:
+- verificar erros logs;
+- verificar console.log;
+- testar tamanhos de telas;
+- verificar respostas inputs;
+
+/usuario:
+- remover modal estranho e refazer um novo para as iamgens;
+- fazer modal para competicoes imagem;
+- fazer paginação 3 paginas;
+- ver erros logs;
+- ver console.log;
+- não terá modal upgrade;
+
+/pesquisar-usuarios:
+- verificar erros logs;
+- verficar console log;
+- verficiar respostas;
+- verificar telas;
+
+/tecnicas:
+- verificar tamanho de telas;
+- espaço footer;
+- verificar inputs modais criar e att;
+- verificar resposta criar e att inpus;
+- bloquear upload de video masi de 10 segundos;
+- paginação na aba comunidade da tecnica;
+- paginação na aba favoritos da tenica;
+- botao sair aba cominudade fica escondido;
+- verificar console.log;
+- verificar erros console;
+
+/treinos:
+- espaço footer;
+- verificar telas;
+- adicionar aviso upgrade;
+- mais horários no modal att e criar;
+- verificar console.log;
+- verificar erros console;
+- colocar loading quando clicar em salvar criar e att assim como no tecnicas;
+- modal iamgem grande;
+
+/competicoes:
+- espaço footer;
+- erros console.log;
+- console log;
+- tamanhos de tela;
+- colocar modal iamgem grande;
+- adicionar aviso upgrade;
+
+/observacoes:
+- erros console;
+- console .log;
+- espaço footer;
+- adicionar aviso upgrade;
+
+/login:
+- logs erros;
+- logs console;
+- respostas de erro;
+
+/register:
+- erros log;
+- consol log;
+- testar respostas erro;
+
+/recuperar senha:
+- erros console;
+- console log;
+- resposta erros;
+
+/termos de uso:
+- ajustar etxtos;
+
+/politica privacidade:
+- ajustar textos;
+
+/:
+ajustar todo contúdo;
+
+/contato:
+- ajustar contatos;
+- ajustar envio form com turstile;
+
+/sobre-nos:
+- ajustar textos;
+
+/suporte:
+- ajustar textos;
+- ajustar form e colcoar turnstile;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 pagina user;
 organizar codigo;
 organizxar doc;
