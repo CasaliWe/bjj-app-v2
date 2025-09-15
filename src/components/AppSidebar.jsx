@@ -53,12 +53,6 @@ const menuItems = [  {
     icon: FileText,
     description: "Notas e observações"
   },
-  {
-    title: "Timers",
-    url: "/timers",
-    icon: Clock,
-    description: "Temporizadores para treino"
-  }, 
   // {
   //   title: "Objetivos",
   //   url: "/objetivos",
