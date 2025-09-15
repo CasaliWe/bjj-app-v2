@@ -43,7 +43,6 @@ import Metricas from "./pages/Metricas";
 import DojoMarket from "./pages/DojoMarket";
 import Drills from "./pages/Drills";
 import Alongamentos from "./pages/Alongamentos";
-import Timers from "./pages/Timers";
 
 
 const queryClient = new QueryClient();
@@ -180,7 +179,6 @@ const App = () => (
               <Route path="/treinos" element={<PrivateRoute><Treinos /></PrivateRoute>} />
               <Route path="/competicoes" element={<PrivateRoute><Competicoes /></PrivateRoute>} />
               <Route path="/observacoes" element={<PrivateRoute><Observacoes /></PrivateRoute>} />
-              <Route path="/timers" element={<PrivateRoute><Timers /></PrivateRoute>} />
             
             {/* Rotas públicas com redirecionamento para usuários autenticados */}
             <Route path="/login" element={<AuthRedirectRoute><Login /></AuthRedirectRoute>} />
