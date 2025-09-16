@@ -181,6 +181,7 @@ const App = () => (
               <Route path="/competicoes" element={<PrivateRoute><Competicoes /></PrivateRoute>} />
               <Route path="/observacoes" element={<PrivateRoute><Observacoes /></PrivateRoute>} />
               <Route path="/pesquisar-usuarios" element={<PrivateRoute><PesquisarUsuarios /></PrivateRoute>} />
+              <Route path="/plano-de-jogo" element={<PrivateRoute><PlanoDeJogo /></PrivateRoute>} />
             
             {/* Rotas públicas com redirecionamento para usuários autenticados */}
             <Route path="/login" element={<AuthRedirectRoute><Login /></AuthRedirectRoute>} />
@@ -197,7 +198,7 @@ const App = () => (
             <Route path="/contato" element={<Contact />} />
             <Route path="*" element={<NotFound />} />
 
-            {/* <Route path="/plano-de-jogo" element={<PlanoDeJogo />} />
+            {/* 
             <Route path="/videos" element={<Videos />} />
             <Route path="/noticias" element={<Noticias />} />
             <Route path="/metricas" element={<Metricas />} />

@@ -59,18 +59,18 @@ const menuItems = [  {
     icon: Users,
     description: "Encontre outros praticantes"
   },
+  {
+    title: "Plano de Jogo",
+    url: "/plano-de-jogo",
+    icon: Gamepad2,
+    description: "Estratégia para a luta"
+  },
   // {
   //   title: "Objetivos",
   //   url: "/objetivos",
   //   icon: Target,
   //   description: "Metas e progresso"
   // }, 
-  // {
-  //   title: "Plano de Jogo",
-  //   url: "/plano-de-jogo",
-  //   icon: Gamepad2,
-  //   description: "Estratégia para a luta"
-  // },
   // {
   //   title: "Vídeos",
   //   url: "/videos",
