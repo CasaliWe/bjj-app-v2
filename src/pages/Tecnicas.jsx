@@ -47,6 +47,8 @@ const Tecnicas = () => {
     tecnicas, 
     posicoesCadastradas, 
     tecnicasComunidade,
+    paginacao,
+    paginacaoComunidade,
     carregando, 
     carregandoComunidade,
     erro, 
@@ -55,14 +57,12 @@ const Tecnicas = () => {
     excluirTecnica, 
     toggleDestaque,
     togglePublica,
-    filtrarTecnicas,
+    aplicarFiltros,
+    mudarPagina,
     getTecnicasDestacadas,
     carregarTecnicasComunidade
   } = useTecnicas();
 
-  // Técnicas filtradas com base nos filtros selecionados
-  const tecnicasFiltradas = filtrarTecnicas(filtroCategoria, filtroPosicao);
-  
   // Técnicas destacadas
   const tecnicasDestacadas = getTecnicasDestacadas();
 
@@ -132,19 +132,32 @@ const Tecnicas = () => {
 
   // Função para abrir modal de técnicas da comunidade
   const abrirModalComunidade = async () => {
-    await carregarTecnicasComunidade();
+    await carregarTecnicasComunidade("", 1);
     setModalComunidadeAberto(true);
   };
 
   // Pesquisar técnicas da comunidade
-  const pesquisarTecnicasComunidade = (termo) => {
-    carregarTecnicasComunidade(termo);
+  const pesquisarTecnicasComunidade = (termo, pagina = 1) => {
+    carregarTecnicasComunidade(termo, pagina);
+  };
+
+  // Aplicar filtros
+  const handleFiltroChange = (categoria, posicao) => {
+    setFiltroCategoria(categoria);
+    setFiltroPosicao(posicao);
+    aplicarFiltros(categoria, posicao);
   };
 
   // Limpar filtros
   const limparFiltros = () => {
     setFiltroCategoria("todas");
     setFiltroPosicao("todas");
+    aplicarFiltros("todas", "todas");
+  };
+
+  // Mudar página das técnicas
+  const handleMudarPagina = (novaPagina) => {
+    mudarPagina(novaPagina);
   };
 
   // Abrir confirmação de exclusão
@@ -219,11 +232,11 @@ const Tecnicas = () => {
               <TecnicaFiltro 
                 filtroCategoria={filtroCategoria}
                 filtroPosicao={filtroPosicao}
-                onCategoriaChange={setFiltroCategoria}
-                onPosicaoChange={setFiltroPosicao}
+                onCategoriaChange={(categoria) => handleFiltroChange(categoria, filtroPosicao)}
+                onPosicaoChange={(posicao) => handleFiltroChange(filtroCategoria, posicao)}
                 onLimparFiltros={limparFiltros}
                 posicoesCadastradas={posicoesCadastradas}
-                totalResultados={tecnicasFiltradas.length}
+                totalResultados={paginacao.totalItens}
               />
 
               {/* Lista de Técnicas */}
@@ -236,15 +249,15 @@ const Tecnicas = () => {
                 </div>
               ) : (
                 <TecnicasList
-                  tecnicas={tecnicasFiltradas}
-                  itensPorPagina={9}
+                  tecnicas={tecnicas}
                   loading={carregando}
+                  paginacao={paginacao}
+                  onPageChange={handleMudarPagina}
                   onEdit={handleEditarTecnica}
                   onDelete={abrirConfirmacaoExcluir}
                   onToggleDestaque={toggleDestaque}
                   onShare={togglePublica}
                   onAddNew={iniciarNovaTecnica}
-                  resetPage={setResetarPagina}
                 />
               )}
             </div>
@@ -295,6 +308,7 @@ const Tecnicas = () => {
         isOpen={modalComunidadeAberto}
         onClose={() => setModalComunidadeAberto(false)}
         tecnicasComunidade={tecnicasComunidade}
+        paginacao={paginacaoComunidade}
         onSearch={pesquisarTecnicasComunidade}
         carregando={carregandoComunidade}
       />

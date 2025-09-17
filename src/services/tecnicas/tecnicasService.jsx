@@ -57,12 +57,10 @@ export const getTecnicas = async (filtros = {}, pagina = 1, limite = 20) => {
     
     return {
       tecnicas: data.data.tecnicas || [],
-      paginacao: data.data.pagination || {
-        currentPage: pagina,
-        totalPages: 1,
-        totalItems: 0,
-        itemsPerPage: limite
-      }
+      paginaAtual: data.data.pagination?.currentPage || pagina,
+      totalPaginas: data.data.pagination?.totalPages || 1,
+      totalItens: data.data.pagination?.totalItems || 0,
+      itensPorPagina: data.data.pagination?.itemsPerPage || limite
     };
   } catch (error) {
     console.error("Erro ao buscar técnicas:", error);
@@ -101,7 +99,14 @@ export const getTecnicasComunidade = async (termo = "", pagina = 1, limite = 20)
     
     const data = await response.json();
     
-    return data.data.tecnicas || [];
+    // Retornar objeto completo com técnicas e paginação
+    return {
+      tecnicas: data.data.tecnicas || [],
+      paginaAtual: data.data.pagination?.currentPage || pagina,
+      totalPaginas: data.data.pagination?.totalPages || 1,
+      totalItens: data.data.pagination?.totalItems || 0,
+      itensPorPagina: data.data.pagination?.itemsPerPage || limite
+    };
   } catch (error) {
     console.error("Erro ao buscar técnicas da comunidade:", error);
     throw error;

@@ -12,6 +12,22 @@ export const useTecnicas = () => {
   const [tecnicas, setTecnicas] = useState([]);
   const [posicoesCadastradas, setPosicoesCadastradas] = useState([]);
   const [tecnicasComunidade, setTecnicasComunidade] = useState([]);
+  const [paginacao, setPaginacao] = useState({
+    paginaAtual: 1,
+    totalPaginas: 1,
+    totalItens: 0,
+    itensPorPagina: 20
+  });
+  const [paginacaoComunidade, setPaginacaoComunidade] = useState({
+    paginaAtual: 1,
+    totalPaginas: 1,
+    totalItens: 0,
+    itensPorPagina: 20
+  });
+  const [filtrosAtuais, setFiltrosAtuais] = useState({
+    categoria: "todas",
+    posicao: "todas"
+  });
   const [carregando, setCarregando] = useState(true);
   const [carregandoComunidade, setCarregandoComunidade] = useState(false);
   const [erro, setErro] = useState(null);
@@ -19,10 +35,44 @@ export const useTecnicas = () => {
   // Hook para mostrar experiência
   const { mostrarExp } = useExp();
 
+  // Carregar técnicas com paginação e filtros
+  const carregarTecnicas = useCallback(async (filtros = {}, pagina = 1) => {
+    setCarregando(true);
+    try {
+      const data = await tecnicasService.getTecnicas(filtros, pagina, 20);
+      
+      setTecnicas(data.tecnicas || []);
+      setPaginacao({
+        paginaAtual: data.paginaAtual || pagina,
+        totalPaginas: data.totalPaginas || 1,
+        totalItens: data.totalItens || 0,
+        itensPorPagina: data.itensPorPagina || 20
+      });
+      
+      // Atualizar filtros atuais
+      setFiltrosAtuais(filtros);
+      
+      setErro(null);
+      return data;
+    } catch (error) {
+      console.error("Erro ao carregar técnicas:", error);
+      setErro("Não foi possível carregar as técnicas. Tente novamente mais tarde.");
+      setTecnicas([]);
+      setPaginacao({
+        paginaAtual: 1,
+        totalPaginas: 1,
+        totalItens: 0,
+        itensPorPagina: 20
+      });
+      return [];
+    } finally {
+      setCarregando(false);
+    }
+  }, []);
+
   // Carregar técnicas e posições ao montar o componente
   useEffect(() => {
     const carregarDados = async () => {
-      setCarregando(true);
       try {
         // Carregar posições primeiro para garantir que elas estejam disponíveis
         const posicoesData = await tecnicasService.getPosicoes();
@@ -31,34 +81,44 @@ export const useTecnicas = () => {
         const posicoesArray = Array.isArray(posicoesData) ? posicoesData : [];
         setPosicoesCadastradas(posicoesArray);
         
-        // Depois carregar as técnicas
-        const tecnicasData = await tecnicasService.getTecnicas();
+        // Carregar técnicas com paginação
+        await carregarTecnicas();
         
-        // Garantir que técnicas é sempre um array
-        const tecnicasArray = tecnicasData?.tecnicas || [];
-        setTecnicas(Array.isArray(tecnicasArray) ? tecnicasArray : []);
-        
-        setErro(null);
       } catch (error) {
         console.error("Erro ao carregar dados:", error);
         setErro("Não foi possível carregar os dados. Tente novamente mais tarde.");
-      } finally {
         setCarregando(false);
       }
     };
     
     carregarDados();
-  }, []);
+  }, [carregarTecnicas]);
 
   // Carregar técnicas da comunidade
-  const carregarTecnicasComunidade = useCallback(async (termo = "") => {
+  const carregarTecnicasComunidade = useCallback(async (termo = "", pagina = 1) => {
     setCarregandoComunidade(true);
     try {
-      const data = await tecnicasService.getTecnicasComunidade(termo);
-      setTecnicasComunidade(data);
+      const data = await tecnicasService.getTecnicasComunidade(termo, pagina, 20);
+      
+      // A API agora retorna um objeto estruturado
+      setTecnicasComunidade(data.tecnicas || []);
+      setPaginacaoComunidade({
+        paginaAtual: data.paginaAtual || pagina,
+        totalPaginas: data.totalPaginas || 1,
+        totalItens: data.totalItens || 0,
+        itensPorPagina: data.itensPorPagina || 20
+      });
+      
       return data;
     } catch (error) {
       console.error("Erro ao carregar técnicas da comunidade:", error);
+      setTecnicasComunidade([]);
+      setPaginacaoComunidade({
+        paginaAtual: 1,
+        totalPaginas: 1,
+        totalItens: 0,
+        itensPorPagina: 20
+      });
       return [];
     } finally {
       setCarregandoComunidade(false);
@@ -100,8 +160,8 @@ export const useTecnicas = () => {
       
       const tecnicaSalva = await tecnicasService.saveTecnica(tecnicaFinal);
       
-      // Adicionar ao início da lista local para que apareça primeiro
-      setTecnicas(prev => [tecnicaSalva, ...prev]);
+      // Recarregar a primeira página com os filtros atuais para mostrar a nova técnica
+      await carregarTecnicas(filtrosAtuais, 1);
       
       // Ganhar experiência por adicionar nova técnica
       mostrarExp(150, "Você ganhou 150 exp por adicionar uma nova técnica!");
@@ -111,7 +171,7 @@ export const useTecnicas = () => {
       console.error("Erro ao adicionar técnica:", error);
       throw error;
     }
-  }, [posicoesCadastradas, mostrarExp]);
+  }, [posicoesCadastradas, mostrarExp, carregarTecnicas, filtrosAtuais]);
 
   // Editar técnica existente
   const editarTecnica = useCallback(async (tecnicaEditada) => {
@@ -163,27 +223,34 @@ export const useTecnicas = () => {
       
       const tecnicaSalva = await tecnicasService.saveTecnica(tecnicaFinal);
       
-      // Atualizar na lista local
-      setTecnicas(prev => prev.map(t => t.id === tecnicaSalva.id ? tecnicaSalva : t));
+      // Recarregar a página atual para mostrar as mudanças
+      await carregarTecnicas(filtrosAtuais, paginacao.paginaAtual);
       
       return tecnicaSalva;
     } catch (error) {
       console.error("Erro ao editar técnica:", error);
       throw error;
     }
-  }, [posicoesCadastradas, mostrarExp]);
+  }, [posicoesCadastradas, mostrarExp, carregarTecnicas, filtrosAtuais, paginacao.paginaAtual]);
 
   // Excluir técnica
   const excluirTecnica = useCallback(async (id) => {
     try {
       await tecnicasService.deleteTecnica(id);
-      setTecnicas(prev => prev.filter(t => t.id !== id));
+      
+      // Recarregar a página atual (ou anterior se a atual ficar vazia)
+      const paginaParaCarregar = tecnicas.length === 1 && paginacao.paginaAtual > 1 
+        ? paginacao.paginaAtual - 1 
+        : paginacao.paginaAtual;
+      
+      await carregarTecnicas(filtrosAtuais, paginaParaCarregar);
+      
       return true;
     } catch (error) {
       console.error("Erro ao excluir técnica:", error);
       throw error;
     }
-  }, []);
+  }, [carregarTecnicas, filtrosAtuais, paginacao.paginaAtual, tecnicas.length]);
 
   // Alternar destaque da técnica
   const toggleDestaque = useCallback(async (id) => {
@@ -195,18 +262,15 @@ export const useTecnicas = () => {
       
       await tecnicasService.updateDestaque(id, novoDestaque);
       
-      setTecnicas(prev => 
-        prev.map(t => t.id === id ? { ...t, destacado: novoDestaque } : t)
-      );
-      
-      // Removido o ganho de exp ao destacar técnica
+      // Recarregar a página atual para mostrar as mudanças
+      await carregarTecnicas(filtrosAtuais, paginacao.paginaAtual);
       
       return { id, destacado: novoDestaque };
     } catch (error) {
       console.error("Erro ao atualizar destaque:", error);
       throw error;
     }
-  }, [tecnicas]);
+  }, [tecnicas, carregarTecnicas, filtrosAtuais, paginacao.paginaAtual]);
 
   // Alternar visibilidade pública da técnica
   const togglePublica = useCallback(async (id) => {
@@ -218,27 +282,26 @@ export const useTecnicas = () => {
       
       await tecnicasService.updatePublica(id, novaVisibilidade);
       
-      setTecnicas(prev => 
-        prev.map(t => t.id === id ? { ...t, publica: novaVisibilidade } : t)
-      );
-      
-      // Removido o ganho de exp ao tornar pública
+      // Recarregar a página atual para mostrar as mudanças
+      await carregarTecnicas(filtrosAtuais, paginacao.paginaAtual);
       
       return { id, publica: novaVisibilidade };
     } catch (error) {
       console.error("Erro ao atualizar visibilidade pública:", error);
       throw error;
     }
-  }, [tecnicas]);
+  }, [tecnicas, carregarTecnicas, filtrosAtuais, paginacao.paginaAtual]);
 
-  // Filtrar técnicas
-  const filtrarTecnicas = useCallback((categoria = "todas", posicao = "todas") => {
-    return tecnicas.filter(tecnica => {
-      const matchCategoria = !categoria || categoria === "todas" || tecnica.categoria === categoria;
-      const matchPosicao = !posicao || posicao === "todas" || tecnica.posicao === posicao;
-      return matchCategoria && matchPosicao;
-    });
-  }, [tecnicas]);
+  // Aplicar filtros (recarrega com novos filtros na primeira página)
+  const aplicarFiltros = useCallback(async (categoria = "todas", posicao = "todas") => {
+    const novosFiltros = { categoria, posicao };
+    await carregarTecnicas(novosFiltros, 1);
+  }, [carregarTecnicas]);
+
+  // Mudar página mantendo os filtros atuais
+  const mudarPagina = useCallback(async (novaPagina) => {
+    await carregarTecnicas(filtrosAtuais, novaPagina);
+  }, [carregarTecnicas, filtrosAtuais]);
 
   // Obter técnicas destacadas
   const getTecnicasDestacadas = useCallback(() => {
@@ -249,16 +312,20 @@ export const useTecnicas = () => {
     tecnicas,
     posicoesCadastradas,
     tecnicasComunidade,
+    paginacao,
+    paginacaoComunidade,
     carregando,
     carregandoComunidade,
     erro,
+    carregarTecnicas,
     carregarTecnicasComunidade,
     adicionarTecnica,
     editarTecnica,
     excluirTecnica,
     toggleDestaque,
     togglePublica,
-    filtrarTecnicas,
+    aplicarFiltros,
+    mudarPagina,
     getTecnicasDestacadas
   };
 };
