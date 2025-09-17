@@ -14,6 +14,9 @@ import CompeticoesList from '../components/competicoes/CompeticoesList';
 import CompeticaoForm from '../components/competicoes/CompeticaoForm';
 import CompeticaoDetalhes from '../components/competicoes/CompeticaoDetalhes';
 
+// Upgrade
+import UpgradeModal from "@/components/upgrade/UpgradeModal";
+
 // Hook personalizado
 import { useCompeticoes } from '../hooks/use-competicoes';
 import { useIsMobile } from '../hooks/use-mobile';
@@ -236,6 +239,9 @@ const Competicoes = () => {
         competicao={competicaoParaVisualizar}
         isComunidade={aba === 'comunidade'}
       />
+
+      {/* Modal de upgrade para o plano Plus */}
+      <UpgradeModal />
 
       {/* Diálogo de confirmação de exclusão */}
       <AlertDialog open={confirmacaoExcluirAberta} onOpenChange={setConfirmacaoExcluirAberta}>

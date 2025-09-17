@@ -43,16 +43,55 @@ const UserProfile = () => {
   // Verificar se o usuário tem plano Plus
   const isPlus = user?.plano === 'Plus';
   
-  // Estado local para edição - inicializado com um objeto vazio caso user seja null
-  const [profileData, setProfileData] = useState({});
+  // Estado local para edição - inicializado com valores padrão para evitar erro de controlled/uncontrolled input
+  const [profileData, setProfileData] = useState({
+    nome: '',
+    email: '',
+    whatsapp: '',
+    whatsapp_verificado: false,
+    idade: '',
+    peso: '',
+    instagram: '',
+    tiktok: '',
+    youtube: '',
+    bio: '',
+    faixa: '',
+    estilo: '',
+    competidor: '',
+    finalizacao: '',
+    academia: '',
+    cidade: '',
+    estado: '',
+    pais: ''
+  });
   
   // Estado para controlar a tab ativa
   const [activeTab, setActiveTab] = useState('profile');
   
   // Atualiza o profileData quando o usuário é carregado do contexto
   useEffect(() => {
-    if (user) {
-      setProfileData({ ...user });
+    if (user && Object.keys(user).length > 0) {
+      setProfileData({
+        nome: user.nome || '',
+        email: user.email || '',
+        whatsapp: user.whatsapp || '',
+        imagem: user.imagem || '',
+        whatsapp_verificado: user.whatsapp_verificado || false,
+        idade: user.idade || '',
+        peso: user.peso || '',
+        instagram: user.instagram || '',
+        tiktok: user.tiktok || '',
+        youtube: user.youtube || '',
+        bio: user.bio || '',
+        faixa: user.faixa || '',
+        estilo: user.estilo || '',
+        competidor: user.competidor || '',
+        finalizacao: user.finalizacao || '',
+        academia: user.academia || '',
+        cidade: user.cidade || '',
+        estado: user.estado || '',
+        pais: user.pais || ''
+      });
     }
   }, [user]);
   

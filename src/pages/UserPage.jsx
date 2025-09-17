@@ -24,6 +24,12 @@ import UserTabs from "@/components/userPage/UserTabs";
 // Hook personalizado
 import { useUserPage } from "@/hooks/use-userPage";
 
+// hooks
+import { useGetUser } from "@/hooks/use-getUser";
+
+// Upgrade
+import UpgradeModal from "@/components/upgrade/UpgradeModal";
+
 /**
  * Página que exibe o perfil de um usuário
  * @returns {JSX.Element} Componente React
@@ -71,12 +77,13 @@ const UserPage = () => {
     loadTabData
   } = useUserPage(bjjId);
 
-  // A lógica agora é simples:
-  // Se temos dados do perfil e não temos erro, exibimos o perfil público
-  // O perfil privado será tratado como um erro 403 pelo backend
+  // Hook para buscar dados do usuário
+  const { fetchUserData } = useGetUser();
 
   // Atualizar o título da página quando o perfil for carregado
   useEffect(() => {
+    fetchUserData();
+
     if (isLoadingProfile) {
       setPageTitle("Carregando perfil...");
     } else if (profileError) {
@@ -167,8 +174,6 @@ const UserPage = () => {
               <div className="flex-grow animate-fade-in">
                 <Card className="bg-card/80 backdrop-blur-sm border-border/50">
                   <CardContent className="p-4 md:p-6">
-                    {/* Log para debug */}
-                    {console.log("Perfil dados:", userProfile)}
                     
                     {/* 
                       Verifica se o perfil é fechado com uma lógica mais robusta que 
@@ -220,6 +225,9 @@ const UserPage = () => {
           {/* Copyright footer */}
         </div>
       </div>
+
+      {/* Modal de upgrade para o plano Plus */}
+      <UpgradeModal />
     </SidebarProvider>
   );
 };

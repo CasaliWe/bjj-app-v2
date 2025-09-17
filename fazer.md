@@ -1,3 +1,58 @@
+### Organização:
+- Todas as páginas após logado deve ter o hook que busca os dados do user, assim aparece o plus ao lado da logo;
+- Todas as páginas após logado tem o modal upgrade (quando o plano está grátis);
+- Modal de adicionar exp sempre ao criar algo, está presente atualmente nas páginas: tecnicas, treinos, competições, observações;
+
+### Páginas atualmente dentro do app:
+- /app;
+- /tecnicas;
+- /treinos;
+- /competicoes;
+- /obervacoes;
+- /pesquisar-usuario;
+- /plano-de-jogo;
+- /usuario;
+- /perfil;
+
+### Páginas atualmente fora do app:
+- /login;
+- /register;
+- /recuperar-senha;
+- /termos-de-uso;
+- /politica-de-privacidade;
+- /suporte;
+- /sobre-nos;
+- /contato;
+
+
+### faltando atualizar:
+/tecnicas:
+- paginação aba comunidade tecnica;
+- remover posição;
+
+/treinos:
+- colocar um feedback quando clicar em criar ou att;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ### PENDENTE:
 
 

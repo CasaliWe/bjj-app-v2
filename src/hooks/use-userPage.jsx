@@ -63,18 +63,12 @@ export const useUserPage = (bjjId) => {
     try {
       const profileData = await getUserProfile(bjjId);
       
-      // Log para debug
-      console.log("Profile data in hook:", profileData);
-      
       // Garantir que o perfil tenha uma propriedade perfilPublico consistente
       if (profileData) {
         // Se não tiver perfilPublico mas tiver perfil_publico (snake_case), usar este
         if (!profileData.perfilPublico && profileData.perfil_publico !== undefined) {
           profileData.perfilPublico = profileData.perfil_publico;
         }
-        
-        // Log após possível normalização
-        console.log("Profile data after normalization:", profileData);
       }
       
       setUserProfile(profileData);

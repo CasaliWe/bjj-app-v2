@@ -27,6 +27,9 @@ import { useObservacoes } from '@/hooks/use-observacoes';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useGetUser } from "@/hooks/use-getUser";
 
+// Upgrade
+import UpgradeModal from "@/components/upgrade/UpgradeModal";
+
 /**
  * Página de Observações
  * Permite ao usuário gerenciar suas observações, dicas e insights
@@ -154,6 +157,9 @@ const Observacoes = () => {
         onSave={salvarObservacao}
         observacaoAtual={observacaoAtual}
       />
+
+      {/* Modal de upgrade para o plano Plus */}
+      <UpgradeModal />
 
       {/* Diálogo de confirmação de exclusão */}
       <AlertDialog open={confirmacaoAberta} onOpenChange={setConfirmacaoAberta}>

@@ -44,8 +44,6 @@ export const useCompeticoes = () => {
         limitePorPagina
       );
       
-      console.log('Dados recebidos da API (minhas competições):', result.competicoes);
-      
       setCompeticoes(result.competicoes);
       setPaginacao(result.paginacao);
     } catch (error) {
@@ -69,8 +67,6 @@ export const useCompeticoes = () => {
         paginacaoComunidade.currentPage, 
         limitePorPagina
       );
-      
-      console.log('Dados recebidos da API (competições da comunidade):', result.competicoes);
       
       setCompeticoesComunidade(result.competicoes);
       setPaginacaoComunidade(result.paginacao);

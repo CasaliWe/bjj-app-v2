@@ -129,11 +129,9 @@ export const getPosicoes = async () => {
     }
     
     const data = await response.json();
-    console.log("Resposta da API (posições):", data);
     
     // Garantir que estamos retornando um array de posições
     const posicoes = data.data?.posicoes || [];
-    console.log("Posições encontradas:", posicoes);
     
     return posicoes;
   } catch (error) {

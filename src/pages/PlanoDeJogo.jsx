@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
@@ -8,9 +8,21 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Gamepad2, ArrowRight } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 
+import { useGetUser } from "@/hooks/use-getUser";
+
+// Upgrade
+import UpgradeModal from "@/components/upgrade/UpgradeModal";
+
 const PlanoDeJogo = () => {
   const location = useLocation();
   const isMobile = useIsMobile();
+
+  // Hook para buscar dados do usuário
+  const { fetchUserData } = useGetUser();
+
+  useEffect(() => {
+    fetchUserData();
+  }, []);
 
   return (
     <SidebarProvider>
@@ -86,6 +98,10 @@ const PlanoDeJogo = () => {
           </main>
         </div>
       </div>
+
+      {/* Modal de upgrade para o plano Plus */}
+      <UpgradeModal />
+
     </SidebarProvider>
   );
 };

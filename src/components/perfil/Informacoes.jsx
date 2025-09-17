@@ -45,7 +45,7 @@ export function Informacoes({profileData, setProfileData}) {
       
       // Aplicar máscara de telefone
       if (name === 'whatsapp') {
-        const formattedValue = formatPhoneNumber(value);
+        const formattedValue = formatPhoneNumber(value || '');
         setProfileData(prev => ({
           ...prev,
           [name]: formattedValue
@@ -53,13 +53,16 @@ export function Informacoes({profileData, setProfileData}) {
       } else {
         setProfileData(prev => ({
           ...prev,
-          [name]: value
+          [name]: value || ''
         }));
       }
     };
   
     // MASK INPUT TEL
     const formatPhoneNumber = (value) => {
+      // Garantir que value seja uma string
+      if (!value) return '';
+      
       // Remove todos os caracteres não numéricos
       const phoneNumber = value.replace(/\D/g, '');
       
@@ -82,7 +85,7 @@ export function Informacoes({profileData, setProfileData}) {
     const handleSelectChange = (name, value) => {
       setProfileData(prev => ({
         ...prev,
-        [name]: value
+        [name]: value || ''
       }));
     };
 
@@ -134,7 +137,6 @@ export function Informacoes({profileData, setProfileData}) {
         });
         const data = await response.json();
         setProfileSuccess(true);
-        console.log("Perfil atualizado com sucesso:", data);
       } catch (error) {
         console.error("Erro ao atualizar perfil:", error);
       } finally {
@@ -179,7 +181,6 @@ export function Informacoes({profileData, setProfileData}) {
           setTimeout(() => {
             setProfileSuccess(false);
           }, 4000);
-          console.log("Imagem enviada com sucesso:", data);
         } else {
           throw new Error(data.message || 'Erro ao enviar imagem.');
         }

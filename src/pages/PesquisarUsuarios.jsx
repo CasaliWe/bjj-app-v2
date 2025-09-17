@@ -6,9 +6,14 @@ import { MobileNav } from "@/components/MobileNav";
 import { setPageTitle } from "@/services/title";
 import { Search } from "lucide-react";
 
+import { useGetUser } from "@/hooks/use-getUser";
+
 // Componentes específicos da página
 import SearchForm from "@/components/userSearch/SearchForm";
 import UserResults from "@/components/userSearch/UserResults";
+
+// Upgrade
+import UpgradeModal from "@/components/upgrade/UpgradeModal";
 
 // Hook personalizado
 import { useUserSearch } from "@/hooks/use-user-search";
@@ -31,9 +36,13 @@ const PesquisarUsuarios = () => {
     handleSearchSubmit
   } = useUserSearch();
 
+  // Hook para buscar dados do usuário
+  const { fetchUserData } = useGetUser();
+
   // Definir o título da página
   useEffect(() => {
     setPageTitle("Pesquisar Usuários");
+    fetchUserData();
   }, []);
 
   return (
@@ -92,6 +101,10 @@ const PesquisarUsuarios = () => {
           </main>
         </div>
       </div>
+
+      {/* Modal de upgrade para o plano Plus */}
+      <UpgradeModal />
+      
     </SidebarProvider>
   );
 };

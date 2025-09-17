@@ -182,6 +182,7 @@ const App = () => (
               <Route path="/observacoes" element={<PrivateRoute><Observacoes /></PrivateRoute>} />
               <Route path="/pesquisar-usuarios" element={<PrivateRoute><PesquisarUsuarios /></PrivateRoute>} />
               <Route path="/plano-de-jogo" element={<PrivateRoute><PlanoDeJogo /></PrivateRoute>} />
+              <Route path="/usuario" element={<PrivateRoute><UserPage /></PrivateRoute>} />
             
             {/* Rotas públicas com redirecionamento para usuários autenticados */}
             <Route path="/login" element={<AuthRedirectRoute><Login /></AuthRedirectRoute>} />
@@ -190,7 +191,6 @@ const App = () => (
             
             {/* Rotas públicas que podem ser acessadas por todos */}
             <Route path="/" element={<LandingPage />} />
-            <Route path="/usuario" element={<UserPage />} />
             <Route path="/termos-de-uso" element={<TermsOfUse />} />
             <Route path="/politica-de-privacidade" element={<PrivacyPolicy />} />
             <Route path="/suporte" element={<Support />} />

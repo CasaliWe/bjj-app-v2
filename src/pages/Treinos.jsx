@@ -23,6 +23,9 @@ import {
 // hooks
 import { useGetUser } from "@/hooks/use-getUser";
 
+// Upgrade
+import UpgradeModal from "@/components/upgrade/UpgradeModal";
+
 /**
  * Página de treinos
  * @returns {JSX.Element} Componente React
@@ -198,6 +201,9 @@ const Treinos = () => {
         carregando={carregando}
         onMudarPagina={mudarPaginaTreinosComunidade}
       />
+
+      {/* Modal de upgrade para o plano Plus */}
+      <UpgradeModal />
 
       {/* Diálogo de confirmação de exclusão */}
       <AlertDialog open={confirmacaoAberta} onOpenChange={setConfirmacaoAberta}>
