@@ -6,7 +6,6 @@
 - fazer contatos vir do admin;
 - 2 formulários;
 - organizar código;
-- fazer o preço vir do banco;
 
 
 
