@@ -25,41 +25,46 @@ const Assinatura = () => {
   const [pixDadosApi, setPixDadosApi] = useState(null);
   const [cpf, setCpf] = useState('');
   const [cpfError, setCpfError] = useState('');
+  const [plans, setPlans] = useState({});
 
-  // Dados dos planos
-  const plans = {
-    '1': {
-      months: 1,
-      basePrice: 32.90,
-      discount: 0,
-      totalPrice: 32.90,
-      label: '1 mês'
-    },
-    '2': {
-      months: 2,
-      basePrice: 32.90,
-      discount: 0.05,
-      totalPrice: Math.round((2 * 32.90 * 0.95) * 100) / 100,
-      label: '2 meses'
-    },
-    '3': {
-      months: 3,
-      basePrice: 32.90,
-      discount: 0.10,
-      totalPrice: Math.round((3 * 32.90 * 0.90) * 100) / 100,
-      label: '3 meses'
-    },
-    '6': {
-      months: 6,
-      basePrice: 32.90,
-      discount: 0.15,
-      totalPrice: Math.round((6 * 32.90 * 0.85) * 100) / 100,
-      label: '6 meses'
-    }
-  };
+  // useEffect para definir os dados dos planos
+  useEffect(() => {
+    setPlans({
+      '1': {
+        months: 1,
+        basePrice: 32.90,
+        discount: 0,
+        totalPrice: 32.90,
+        label: '1 mês'
+      },
+      '2': {
+        months: 2,
+        basePrice: 32.90,
+        discount: 0.05,
+        totalPrice: Math.round((2 * 32.90 * 0.95) * 100) / 100,
+        label: '2 meses'
+      },
+      '3': {
+        months: 3,
+        basePrice: 32.90,
+        discount: 0.10,
+        totalPrice: Math.round((3 * 32.90 * 0.90) * 100) / 100,
+        label: '3 meses'
+      },
+      '6': {
+        months: 6,
+        basePrice: 32.90,
+        discount: 0.15,
+        totalPrice: Math.round((6 * 32.90 * 0.85) * 100) / 100,
+        label: '6 meses'
+      }
+    });
+  }, []);
 
   // buscando qrcode **********************************************
   const generatePixQrCode = async () => {
+    if (!plans[selectedPlan]) return;
+    
     setLoading(true);
 
     // monta os dados para enviar para a API
@@ -289,10 +294,10 @@ const Assinatura = () => {
               </p>
               <div className="bg-gray-700 p-3 rounded-md mb-3 text-center">
                 <p className="text-sm">
-                  <span className="font-medium">Plano contratado:</span> {plans[selectedPlan].label}
+                  <span className="font-medium">Plano contratado:</span> {plans[selectedPlan]?.label}
                 </p>
                 <p className="text-sm font-medium text-green-600">
-                  Valor total: R$ {plans[selectedPlan].totalPrice.toFixed(2)}
+                  Valor total: R$ {plans[selectedPlan]?.totalPrice.toFixed(2)}
                 </p>
               </div>
               
@@ -347,7 +352,7 @@ const Assinatura = () => {
                 defaultValue={selectedPlan}
                 onValueChange={setSelectedPlan}
               >
-                {Object.entries(plans).map(([key, plan]) => (
+                {Object.keys(plans).length > 0 && Object.entries(plans).map(([key, plan]) => (
                   <div key={key} className="flex items-center space-x-2 border p-3 rounded-md mb-2 hover:bg-gray-700 cursor-pointer">
                     <RadioGroupItem value={key} id={`plan-${key}`} />
                     <Label 
@@ -398,11 +403,11 @@ const Assinatura = () => {
             <div className="flex flex-col items-center py-2">
               <div className="bg-white border border-gray-200 px-4 py-3 rounded-md mb-4 text-center shadow-sm">
                 <p className="text-sm font-medium text-gray-800">
-                  {plans[selectedPlan].label} - Total: R$ {plans[selectedPlan].totalPrice.toFixed(2)}
+                  {plans[selectedPlan]?.label} - Total: R$ {plans[selectedPlan]?.totalPrice.toFixed(2)}
                 </p>
-                {plans[selectedPlan].months > 1 && (
+                {plans[selectedPlan]?.months > 1 && (
                   <p className="text-xs text-green-600 font-medium">
-                    Economia de {plans[selectedPlan].discount * 100}% aplicada
+                    Economia de {plans[selectedPlan]?.discount * 100}% aplicada
                   </p>
                 )}
               </div>
