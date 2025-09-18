@@ -157,7 +157,7 @@ const TermsOfUse = () => {
                     <p className="text-sm text-muted-foreground">
                       Ao continuar usando a plataforma BJJ Academy, você confirma que leu, entendeu e 
                       concordou com estes Termos de Uso. Se tiver dúvidas sobre estes termos, entre em 
-                      contato conosco através de contato@bjjacademy.com.
+                      contato conosco através de contato@bjjacademy.com.br
                     </p>
                   </div>
                 </div>
@@ -169,7 +169,7 @@ const TermsOfUse = () => {
       
       {/* Copyright footer */}
       <div className="text-center mt-6">
-        <p className="text-xs text-muted-foreground">© 2025 BJJ Academy. Todos os direitos reservados.</p>
+        <p className="text-xs text-muted-foreground">© {new Date().getFullYear()} BJJ Academy. Todos os direitos reservados.</p>
       </div>
     </div>
   );

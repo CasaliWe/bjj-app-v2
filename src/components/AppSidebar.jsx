@@ -65,6 +65,12 @@ const menuItems = [  {
     icon: Gamepad2,
     description: "Estratégia para a luta"
   },
+  {
+    title: "I.A Sensei",
+    url: "/ia-sensei",
+    icon: Bot,
+    description: "Chat com Inteligência Artificial"
+  }
   // {
   //   title: "Objetivos",
   //   url: "/objetivos",
@@ -105,12 +111,6 @@ const menuItems = [  {
   //   url: "/alongamentos",
   //   icon: Layers,
   //   description: "Vídeos de alongamentos"
-  // },
-  // {
-  //   title: "I.A Sensei",
-  //   url: "/ia-sensei",
-  //   icon: Bot,
-  //   description: "Chat com Inteligência Artificial"
   // },
 ];
 

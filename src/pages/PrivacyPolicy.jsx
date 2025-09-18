@@ -96,7 +96,7 @@ const PRIVACY_POLICY_CONTENT = {
     },
     {
       title: "10. Entre em Contato Conosco",
-      content: `Se você tiver dúvidas ou preocupações sobre esta Política de Privacidade ou nossas práticas de dados, entre em contato conosco através do e-mail: privacidade@bjjacademy.com`
+      content: `Se você tiver dúvidas ou preocupações sobre esta Política de Privacidade ou nossas práticas de dados, entre em contato conosco através do e-mail: contato@bjjacademy.com.br`
     }
   ]
 };
@@ -182,7 +182,7 @@ const PrivacyPolicy = () => {
       
       {/* Copyright footer */}
       <div className="text-center mt-6">
-        <p className="text-xs text-muted-foreground">© 2025 BJJ Academy. Todos os direitos reservados.</p>
+        <p className="text-xs text-muted-foreground">© {new Date().getFullYear()} BJJ Academy. Todos os direitos reservados.</p>
       </div>
     </div>
   );

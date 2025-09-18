@@ -8,12 +8,21 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { useNavigate } from "react-router-dom";
 import { Bot, ChevronRight, LogOut, Send, User } from "lucide-react";
 
+// hooks
+import { useGetUser } from "@/hooks/use-getUser";
+
+// Upgrade
+import UpgradeModal from "@/components/upgrade/UpgradeModal";
+
 const IASensei = () => {
   const navigate = useNavigate();
   const [messages, setMessages] = useState([]);
   const [inputValue, setInputValue] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef(null);
+
+  // Hook para buscar dados do usuário
+  const { fetchUserData } = useGetUser();
 
   // Rolagem automática para a última mensagem
   const scrollToBottom = () => {
@@ -23,6 +32,10 @@ const IASensei = () => {
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
+
+  useEffect(() => {
+    fetchUserData();
+  }, []);
 
   // Simulação de resposta da IA
   const handleSendMessage = () => {
@@ -200,6 +213,10 @@ const IASensei = () => {
           </div>
         </main>
       </div>
+
+      {/* Modal de upgrade para o plano Plus */}
+      <UpgradeModal />
+
     </SidebarProvider>
   );
 };

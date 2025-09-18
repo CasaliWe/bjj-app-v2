@@ -183,6 +183,7 @@ const App = () => (
               <Route path="/pesquisar-usuarios" element={<PrivateRoute><PesquisarUsuarios /></PrivateRoute>} />
               <Route path="/plano-de-jogo" element={<PrivateRoute><PlanoDeJogo /></PrivateRoute>} />
               <Route path="/usuario" element={<PrivateRoute><UserPage /></PrivateRoute>} />
+              <Route path="/ia-sensei" element={<PrivateRoute><IASensei /></PrivateRoute>} />
             
             {/* Rotas públicas com redirecionamento para usuários autenticados */}
             <Route path="/login" element={<AuthRedirectRoute><Login /></AuthRedirectRoute>} />
@@ -201,12 +202,10 @@ const App = () => (
             {/* 
             <Route path="/videos" element={<Videos />} />
             <Route path="/noticias" element={<Noticias />} />
-            <Route path="/metricas" element={<Metricas />} />
             <Route path="/dojo-market" element={<DojoMarket />} />
             <Route path="/drills" element={<Drills />} />
             <Route path="/alongamentos" element={<Alongamentos />} />
-            <Route path="/objetivos" element={<Objetivos />} />
-            <Route path="/ia-sensei" element={<IASensei />} /> */}
+            <Route path="/objetivos" element={<Objetivos />} />*/}
           </Routes>
           </TooltipProvider>
         </Exp>

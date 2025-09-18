@@ -106,6 +106,14 @@ const WelcomeModal = ({ forceShow = false }) => {
     };
   }, [user, forceShow]);
   
+  // Reset scroll para o topo quando mudar de passo
+  useEffect(() => {
+    const scrollContainer = document.querySelector('.welcome-modal-scroll-container');
+    if (scrollContainer) {
+      scrollContainer.scrollTop = 0;
+    }
+  }, [currentStep]);
+  
   // Adicionar event listener para prevenir o fechamento pelo ESC
   useEffect(() => {
     const handleKeyDown = (e) => {
@@ -182,7 +190,7 @@ const WelcomeModal = ({ forceShow = false }) => {
       </div>
       
       <div className="bg-bjj-gold/10 p-4 rounded-lg border border-bjj-gold/20 text-sm mb-2">
-        <p>Após esse período, será necessário fazer upgrade para o plano PLUS para continuar acessando todos os recursos. É menos que o preço de um açaí pós-treino!</p>
+        <p>Após esse período, será necessário fazer upgrade para o plano PLUS para continuar acessando todos os recursos!</p>
       </div>
     </div>
   );
@@ -391,7 +399,7 @@ const WelcomeModal = ({ forceShow = false }) => {
           {renderStepIndicator()}
         </div>
         
-        <div className="overflow-y-auto flex-grow pr-1 pb-4 overflow-x-hidden px-1">
+        <div className="overflow-y-auto flex-grow pr-1 pb-4 overflow-x-hidden px-1 welcome-modal-scroll-container">
           {renderStepContent()}
         </div>
         
