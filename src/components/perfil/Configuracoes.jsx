@@ -225,9 +225,6 @@ export function Configuracoes({profileData, setProfileData}) {
               </div>
               
               <div className="text-sm px-2">
-                <p className="mb-3">
-                  Por apenas <span className="font-semibold text-purple-400">R$32,90/mês</span>, tenha acesso a:
-                </p>
                 <ul className="text-xs space-y-1 mb-4">
                   <li className="flex items-center gap-2">
                     <span className="w-1 h-1 rounded-full bg-purple-500"></span>
