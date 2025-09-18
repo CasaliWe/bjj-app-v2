@@ -1,3 +1,20 @@
+### FALTANDO FAZER:
+- imagem do app no inicio, primeira sessão.
+- imagem treinos;
+- tecnicas imagens;
+- imagem competições;
+- iamgem observação;
+- plano de jogo imagme;
+- ia sensei imagem;
+- puxar do banco depoimentos com: nome, faixa e comentario;
+- puxar o preço do banco e colocar no card;
+- FAZER IA SENSEI;
+- FAZER CHEKLIST;
+- FAZER PLANO DE JOGO;
+
+
+
+
 ### Organização:
 - Todas as páginas após logado deve ter o hook que busca os dados do user, assim aparece o plus ao lado da logo;
 - Todas as páginas após logado tem o modal upgrade (quando o plano está grátis);
