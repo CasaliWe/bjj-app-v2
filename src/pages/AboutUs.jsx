@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -46,65 +47,9 @@ const ABOUT_US_CONTENT = {
   history: {
     title: "Nossa História",
     paragraphs: [
-      "A BJJ Academy nasceu em 2023 da frustração de um grupo de praticantes de Jiu-Jitsu que sentiam dificuldade em organizar e revisar as técnicas aprendidas nos treinos. O que começou como um simples aplicativo de anotações evoluiu para uma plataforma completa de gerenciamento técnico e desenvolvimento no Jiu-Jitsu.",
+      "A BJJ Academy nasceu em 2025 da frustração de um grupo de praticantes de Jiu-Jitsu que sentiam dificuldade em organizar e revisar as técnicas aprendidas nos treinos. O que começou como um simples aplicativo de anotações evoluiu para uma plataforma completa de gerenciamento técnico e desenvolvimento no Jiu-Jitsu.",
       "Nos primeiros meses, convidamos um grupo seleto de faixas-pretas e professores para testar e refinar nossas funcionalidades. O feedback foi tão positivo que rapidamente expandimos nossa base de usuários, chegando a praticantes de todos os níveis em academias de todo o Brasil.",
-      "Em 2024, lançamos recursos avançados de análise de desempenho e planejamento para competições, atraindo a atenção de atletas competitivos. Parcerias com academias renomadas foram estabelecidas, permitindo que professores utilizassem nossa plataforma para monitorar o progresso de seus alunos.",
-      "Hoje, em 2025, continuamos expandindo globalmente, com versões em múltiplos idiomas e uma comunidade ativa de praticantes que contribuem diariamente com novas técnicas e estratégias. Nossa missão permanece a mesma: transformar a maneira como o Jiu-Jitsu é aprendido e praticado através da tecnologia."
-    ]
-  },
-  team: {
-    title: "Nossa Equipe",
-    description: "Somos um time multidisciplinar unido pela paixão pelo Jiu-Jitsu e tecnologia.",
-    members: [
-      {
-        name: "Carlos Fernandes",
-        role: "Fundador & CEO",
-        belt: "Faixa-Preta 3º Grau",
-        bio: "Competidor experiente e desenvolvedor, Carlos combina sua paixão pelo Jiu-Jitsu com conhecimento técnico para liderar a visão da BJJ Academy."
-      },
-      {
-        name: "Juliana Silva",
-        role: "CTO & Desenvolvedora",
-        belt: "Faixa-Roxa",
-        bio: "Especialista em experiência do usuário, Juliana garante que a plataforma seja intuitiva e eficiente para praticantes de todos os níveis."
-      },
-      {
-        name: "Roberto Mendes",
-        role: "Diretor Técnico",
-        belt: "Faixa-Preta 4º Grau",
-        bio: "Professor renomado com mais de 20 anos de experiência, Roberto supervisiona todo o conteúdo técnico e a catalogação de técnicas."
-      },
-      {
-        name: "Mariana Costa",
-        role: "Gestora de Comunidade",
-        belt: "Faixa-Marrom",
-        bio: "Competidora ativa e comunicadora, Mariana mantém nossa comunidade engajada e coleta feedback valioso para melhorias contínuas."
-      }
-    ]
-  },
-  achievements: {
-    title: "Conquistas",
-    items: [
-      {
-        icon: Users,
-        value: "5,000+",
-        label: "Usuários Ativos"
-      },
-      {
-        icon: BookOpen,
-        value: "15,000+",
-        label: "Técnicas Catalogadas"
-      },
-      {
-        icon: Calendar,
-        value: "30,000+",
-        label: "Treinos Registrados"
-      },
-      {
-        icon: Medal,
-        value: "100+",
-        label: "Academias Parceiras"
-      }
+      "Hoje, continuamos expandindo, com uma comunidade ativa de praticantes que contribuem diariamente com novas técnicas e estratégias. Nossa missão permanece a mesma: transformar a maneira como o Jiu-Jitsu é aprendido e praticado através da tecnologia."
     ]
   },
   future: {
@@ -127,10 +72,10 @@ const ABOUT_US_CONTENT = {
   },
   contact: {
     title: "Entre em Contato",
-    email: "contato@bjjacademy.com",
+    email: "contato@bjjacademy.com.br",
     social: {
       instagram: "@bjjacademy",
-      facebook: "BJJ Academy Oficial",
+      tiktok: "BJJ Academy Oficial",
       youtube: "BJJ Academy Channel"
     }
   }
@@ -139,6 +84,51 @@ const ABOUT_US_CONTENT = {
 const AboutUs = () => {
   const navigate = useNavigate();
   const isMobile = useIsMobile();
+  const [contactData, setContactData] = useState({
+    email: ABOUT_US_CONTENT.contact.email,
+    instagram: { handle: ABOUT_US_CONTENT.contact.social.instagram, url: "https://instagram.com" },
+    tiktok: { handle: ABOUT_US_CONTENT.contact.social.tiktok, url: "https://tiktok.com" },
+    youtube: { handle: ABOUT_US_CONTENT.contact.social.youtube, url: "https://youtube.com" }
+  });
+
+  // Efeito para buscar dados de contato da API
+  useEffect(() => {
+    const fetchContactData = async () => {
+      try {
+        const response = await fetch(`${import.meta.env.VITE_API_URL}endpoint/sistema/buscar-contatos.php`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json"
+          }
+        });
+        
+        const result = await response.json();
+        console.log("Resposta da API de contatos:", result);
+        
+        if (result.success && result.data) {
+          setContactData({
+            email: result.data.email || ABOUT_US_CONTENT.contact.email,
+            instagram: { 
+              handle: result.data.instagram_handle || ABOUT_US_CONTENT.contact.social.instagram, 
+              url: result.data.instagram_url || "https://instagram.com"
+            },
+            tiktok: { 
+              handle: result.data.tiktok_handle || ABOUT_US_CONTENT.contact.social.tiktok, 
+              url: result.data.tiktok_url || "https://tiktok.com"
+            },
+            youtube: { 
+              handle: result.data.youtube_handle || ABOUT_US_CONTENT.contact.social.youtube, 
+              url: result.data.youtube_url || "https://youtube.com"
+            }
+          });
+        }
+      } catch (error) {
+        console.error("Erro ao buscar dados de contato:", error);
+      }
+    };
+    
+    fetchContactData();
+  }, []);
 
   const handleBack = () => {
     navigate(-1);
@@ -232,51 +222,6 @@ const AboutUs = () => {
                   </div>
                 </div>
                 
-                {/* Conquistas */}
-                <div className="mb-16">
-                  <h3 className="text-2xl font-bold text-center mb-8">{ABOUT_US_CONTENT.achievements.title}</h3>
-                  <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-6">
-                    {ABOUT_US_CONTENT.achievements.items.map((achievement, index) => (
-                      <div key={index} className="bg-card/30 border border-border/30 rounded-xl p-4 flex flex-col items-center text-center">
-                        <div className="w-12 h-12 rounded-full bg-bjj-gold/10 flex items-center justify-center mb-2">
-                          <achievement.icon className="w-6 h-6 text-bjj-gold" />
-                        </div>
-                        <span className="text-3xl font-bold text-bjj-gold">{achievement.value}</span>
-                        <span className="text-sm text-muted-foreground">{achievement.label}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-                
-                {/* Nossa Equipe */}
-                <div className="mb-16">
-                  <h3 className="text-2xl font-bold text-center mb-3">{ABOUT_US_CONTENT.team.title}</h3>
-                  <p className="text-muted-foreground text-center mb-8">{ABOUT_US_CONTENT.team.description}</p>
-                  
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                    {ABOUT_US_CONTENT.team.members.map((member, index) => (
-                      <div key={index} className="bg-card/30 border border-border/30 rounded-xl p-6">
-                        <div className="flex items-start gap-4">
-                          <div className="w-16 h-16 rounded-full bg-bjj-gold/10 flex-shrink-0 flex items-center justify-center">
-                            <Users className="w-8 h-8 text-bjj-gold" />
-                          </div>
-                          <div>
-                            <h4 className="font-semibold text-lg">{member.name}</h4>
-                            <p className="text-sm text-bjj-gold mb-1">{member.role}</p>
-                            <p className="text-xs text-muted-foreground mb-2">
-                              <span className="inline-flex items-center">
-                                <GraduationCap className="w-3 h-3 mr-1" />
-                                {member.belt}
-                              </span>
-                            </p>
-                            <p className="text-sm text-muted-foreground">{member.bio}</p>
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-                
                 {/* O Futuro */}
                 <div className="mb-16">
                   <h3 className="text-2xl font-bold text-center mb-3">{ABOUT_US_CONTENT.future.title}</h3>
@@ -295,13 +240,14 @@ const AboutUs = () => {
                 {/* Entre em Contato */}
                 <div className="text-center">
                   <h3 className="text-2xl font-bold mb-4">{ABOUT_US_CONTENT.contact.title}</h3>
-                  <p className="text-bjj-gold mb-2">{ABOUT_US_CONTENT.contact.email}</p>
+                  <p className="text-bjj-gold mb-2">{contactData.email}</p>
                   
                   <div className="flex justify-center gap-4 mt-4">
                     <Button 
                       variant="outline" 
                       size="sm"
                       className="border-bjj-gold/30 text-bjj-gold hover:bg-bjj-gold/10"
+                      onClick={() => window.open(contactData.instagram.url, '_blank')}
                     >
                       Instagram
                     </Button>
@@ -309,13 +255,15 @@ const AboutUs = () => {
                       variant="outline" 
                       size="sm"
                       className="border-bjj-gold/30 text-bjj-gold hover:bg-bjj-gold/10"
+                      onClick={() => window.open(contactData.tiktok.url, '_blank')}
                     >
-                      Facebook
+                      TikTok
                     </Button>
                     <Button 
                       variant="outline" 
                       size="sm"
                       className="border-bjj-gold/30 text-bjj-gold hover:bg-bjj-gold/10"
+                      onClick={() => window.open(contactData.youtube.url, '_blank')}
                     >
                       YouTube
                     </Button>
@@ -329,7 +277,7 @@ const AboutUs = () => {
       
       {/* Copyright footer */}
       <div className="text-center mt-6">
-        <p className="text-xs text-muted-foreground">© 2025 BJJ Academy. Todos os direitos reservados.</p>
+        <p className="text-xs text-muted-foreground">© {new Date().getFullYear()} BJJ Academy. Todos os direitos reservados.</p>
       </div>
     </div>
   );

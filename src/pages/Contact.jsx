@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -7,7 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
-import { ArrowLeft, Mail, MapPin, Send, CheckCircle2, ExternalLink, Instagram, Facebook, Youtube } from "lucide-react";
+import { ArrowLeft, Mail, Send, CheckCircle2, ExternalLink, Instagram, Video, Youtube, AlertCircle } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 
 // Constante com o conteúdo da página de Contato
@@ -16,12 +16,10 @@ const CONTACT_CONTENT = {
   title: "Contato",
   subtitle: "Entre em contato conosco",
   description: "Estamos à disposição para esclarecer suas dúvidas, receber feedback ou ajudá-lo com qualquer assunto relacionado à BJJ Academy.",
-    contactInfo: {
-    email: "contato@bjjacademy.com",
-    address: "Av. Paulista, 1000 - Bela Vista, São Paulo - SP, CEP 01310-000",
+  contactInfo: {
     socialMedia: [
       { name: "Instagram", handle: "@bjjacademy", url: "https://instagram.com/bjjacademy", icon: Instagram },
-      { name: "Facebook", handle: "BJJ Academy Oficial", url: "https://facebook.com/bjjacademy", icon: Facebook },
+      { name: "TikTok", handle: "BJJ Academy Oficial", url: "https://tiktok.com/@bjjacademy", icon: Video },
       { name: "YouTube", handle: "BJJ Academy Channel", url: "https://youtube.com/bjjacademy", icon: Youtube }
     ]
   },
@@ -70,31 +68,272 @@ const Contact = () => {
   const [message, setMessage] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
+  const [contactData, setContactData] = useState({
+    email: "",
+    instagram: { handle: "", url: "" },
+    tiktok: { handle: "", url: "" },
+    youtube: { handle: "", url: "" }
+  });
+  const [error, setError] = useState("");
+  
+  // Cloudflare Turnstile
+  const [turnstileToken, setTurnstileToken] = useState("");
+  const turnstileRef = useRef(null);
+  const TURNSTILE_SITE_KEY = import.meta.env.VITE_CLOUDFLARE_TURNSTILE;
+  
+  // Efeito para buscar dados de contato da API
+  useEffect(() => {
+    const fetchContactData = async () => {
+      try {
+        const response = await fetch(`${import.meta.env.VITE_API_URL}endpoint/sistema/buscar-contatos.php`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json"
+          }
+        });
+        
+        const result = await response.json();
+        
+        if (result.success && result.data) {
+          setContactData({
+            email: result.data.email || "",
+            instagram: { 
+              handle: result.data.instagram_handle || "@bjjacademy", 
+              url: result.data.instagram_url || "https://instagram.com/bjjacademy" 
+            },
+            tiktok: { 
+              handle: result.data.tiktok_handle || "BJJ Academy Oficial", 
+              url: result.data.tiktok_url || "https://tiktok.com/@bjjacademy" 
+            },
+            youtube: { 
+              handle: result.data.youtube_handle || "BJJ Academy Channel", 
+              url: result.data.youtube_url || "https://youtube.com/bjjacademy" 
+            }
+          });
+        } else {
+          // Valores padrão em caso de erro
+          setContactData({
+            email: "contato@bjjacademy.com.br",
+            instagram: { handle: "@bjjacademyapp", url: "https://instagram.com" },
+            tiktok: { handle: "BJJ Academy Oficial", url: "https://tiktok.com" },
+            youtube: { handle: "BJJ Academy Channel", url: "https://youtube.com" }
+          });
+        }
+      } catch (error) {
+        console.error("Erro ao buscar dados de contato:", error);
+        // Valores padrão em caso de erro
+        setContactData({
+          email: "contato@bjjacademy.com.br",
+          instagram: { handle: "@bjjacademyapp", url: "https://instagram.com" },
+          tiktok: { handle: "BJJ Academy Oficial", url: "https://tiktok.com" },
+          youtube: { handle: "BJJ Academy Channel", url: "https://youtube.com" }
+        });
+      }
+    };
+    
+    fetchContactData();
+  }, []);
+  
+  // Configuração do Cloudflare Turnstile
+  useEffect(() => {
+    // Limpar qualquer token existente quando o componente monta
+    setTurnstileToken("");
+    
+    // Flag para evitar verificações desnecessárias
+    let isCheckingToken = false;
+    
+    // Função para verificar o token no DOM
+    const checkTurnstileToken = () => {
+      if (isCheckingToken || turnstileToken) return;
+      
+      isCheckingToken = true;
+      const tokenInput = document.querySelector('input[name="cf-turnstile-response"]');
+      
+      if (tokenInput && tokenInput.value) {
+        setTurnstileToken(tokenInput.value);
+      }
+      
+      isCheckingToken = false;
+    };
+
+    // Iniciar verificação periódica (a cada 1000ms)
+    const tokenInterval = setInterval(checkTurnstileToken, 1000);
+    
+    // Configurar um MutationObserver para detectar mudanças no DOM
+    const observer = new MutationObserver((mutations) => {
+      checkTurnstileToken();
+    });
+    
+    // Função para remover e recarregar o script do Turnstile
+    const reloadTurnstile = () => {
+      // Remover qualquer script anterior do Turnstile
+      const oldScript = document.querySelector('script[src*="challenges.cloudflare.com/turnstile"]');
+      if (oldScript && oldScript.parentNode) {
+        oldScript.parentNode.removeChild(oldScript);
+      }
+      
+      // Remover qualquer iframe do Turnstile para forçar recriação
+      const oldIframes = document.querySelectorAll('iframe[src*="challenges.cloudflare.com"]');
+      oldIframes.forEach(iframe => {
+        if (iframe.parentNode) {
+          iframe.parentNode.removeChild(iframe);
+        }
+      });
+      
+      // Limpar o container do Turnstile
+      if (turnstileRef.current) {
+        turnstileRef.current.innerHTML = '';
+      }
+      
+      // Carregar novo script
+      const script = document.createElement("script");
+      script.src = "https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit";
+      script.async = true;
+      script.defer = true;
+      document.body.appendChild(script);
+      
+      // Após carregar o script, observe mudanças no DOM e renderize o widget
+      script.onload = () => {
+        // Observar mudanças em todo o corpo do documento
+        observer.observe(document.body, { 
+          childList: true, 
+          subtree: true,
+          attributes: true,
+          attributeFilter: ['value']
+        });
+        
+        // Renderizar o widget explicitamente
+        if (window.turnstile && turnstileRef.current) {
+          window.turnstile.render(turnstileRef.current, {
+            sitekey: TURNSTILE_SITE_KEY,
+            callback: (token) => {
+              setTurnstileToken(token);
+            },
+            theme: 'dark',
+            action: 'contact'
+          });
+        }
+        
+        // Verificação inicial após o carregamento
+        setTimeout(checkTurnstileToken, 1000);
+      };
+      
+      return script;
+    };
+    
+    const script = reloadTurnstile();
+    
+    // Limpeza
+    return () => {
+      clearInterval(tokenInterval);
+      observer.disconnect();
+      if (script && script.parentNode) {
+        script.parentNode.removeChild(script);
+      }
+    };
+  }, []);
+
+  // Reset de token do Turnstile quando necessário
+  const resetTurnstile = () => {
+    setTurnstileToken("");
+    if (window.turnstile && turnstileRef.current) {
+      // Limpar o container primeiro
+      turnstileRef.current.innerHTML = '';
+      
+      // Re-renderizar o widget
+      window.turnstile.render(turnstileRef.current, {
+        sitekey: TURNSTILE_SITE_KEY,
+        callback: (token) => {
+          setTurnstileToken(token);
+        },
+        theme: 'dark',
+        action: 'contact'
+      });
+    }
+  };
   
   const handleBack = () => {
     navigate(-1);
   };
 
-  const handleContactFormSubmit = (e) => {
+  // Função para validar o formulário
+  const validateForm = () => {
+    // Validação de email (formato básico)
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      setError("E-mail inválido");
+      return false;
+    }
+    
+    // Validação do Turnstile (CAPTCHA)
+    if (!turnstileToken) {
+      // Tenta obter o token diretamente do DOM - para casos onde a validação é invisível
+      const autoToken = document.querySelector('input[name="cf-turnstile-response"]')?.value;
+      if (autoToken) {
+        // Se encontrar o token no DOM, use-o
+        setTurnstileToken(autoToken);
+      } else {
+        setError("Por favor, confirme que você não é um robô");
+        return false;
+      }
+    }
+    
+    return true;
+  };
+
+  const handleContactFormSubmit = async (e) => {
     e.preventDefault();
+    setError("");
+    
+    // Validação do formulário
+    if (!validateForm()) return;
+    
     setIsSubmitting(true);
     
-    // Simulando envio
-    setTimeout(() => {
+    try {
+      // Dados para enviar à API
+      const contactFormData = {
+        name,
+        email,
+        subject,
+        message,
+        turnstileToken
+      };
+      
+      const response = await fetch(`${import.meta.env.VITE_API_URL}endpoint/sistema/dados-contato-site-email.php`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(contactFormData)
+      });
+      
+      const result = await response.json();
+      
+      if (result.success) {
+        setShowSuccessMessage(true);
+        
+        // Limpar formulário
+        setName("");
+        setEmail("");
+        setSubject("");
+        setMessage("");
+        
+        // Esconder mensagem de sucesso após 5 segundos
+        setTimeout(() => {
+          setShowSuccessMessage(false);
+        }, 5000);
+      } else {
+        setError(result.message || "Erro ao enviar mensagem. Tente novamente mais tarde.");
+        resetTurnstile();
+      }
+    } catch (error) {
+      console.error("Erro ao enviar mensagem:", error);
+      setError("Erro ao enviar mensagem. Tente novamente mais tarde.");
+      resetTurnstile();
+    } finally {
       setIsSubmitting(false);
-      setShowSuccessMessage(true);
-      
-      // Limpar formulário
-      setName("");
-      setEmail("");
-      setSubject("");
-      setMessage("");
-      
-      // Esconder mensagem de sucesso após 5 segundos
-      setTimeout(() => {
-        setShowSuccessMessage(false);
-      }, 5000);
-    }, 1500);
+    }
   };
 
   return (
@@ -152,20 +391,8 @@ const Contact = () => {
                         </div>
                         <div>
                           <h3 className="font-medium mb-1">Email</h3>
-                          <p className="text-bjj-gold text-sm mb-1">{CONTACT_CONTENT.contactInfo.email}</p>
+                          <p className="text-bjj-gold text-sm mb-1">{contactData.email}</p>
                           <p className="text-xs text-muted-foreground">Respondemos em até 24h</p>
-                        </div>
-                      </div>
-                        {/* Seção de telefone removida */}
-                      
-                      {/* Endereço */}
-                      <div className="flex items-start gap-4">
-                        <div className="w-10 h-10 rounded-lg bg-bjj-gold/10 flex items-center justify-center flex-shrink-0">
-                          <MapPin className="w-5 h-5 text-bjj-gold" />
-                        </div>
-                        <div>
-                          <h3 className="font-medium mb-1">Endereço</h3>
-                          <p className="text-sm text-muted-foreground">{CONTACT_CONTENT.contactInfo.address}</p>
                         </div>
                       </div>
                       
@@ -173,24 +400,56 @@ const Contact = () => {
                       <div>
                         <h3 className="font-medium mb-3">Redes Sociais</h3>
                         <div className="space-y-3">
-                          {CONTACT_CONTENT.contactInfo.socialMedia.map((social, index) => (
-                            <a 
-                              key={index}
-                              href={social.url}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="flex items-center gap-3 group text-muted-foreground hover:text-bjj-gold transition-colors"
-                            >
-                              <div className="w-8 h-8 rounded-full bg-bjj-gold/10 group-hover:bg-bjj-gold/20 flex items-center justify-center transition-colors">
-                                <social.icon className="w-4 h-4 text-bjj-gold" />
-                              </div>
-                              <div className="flex flex-col">
-                                <span className="text-sm">{social.name}</span>
-                                <span className="text-xs">{social.handle}</span>
-                              </div>
-                              <ExternalLink className="w-3 h-3 ml-auto opacity-0 group-hover:opacity-100 transition-opacity" />
-                            </a>
-                          ))}
+                          {/* Instagram */}
+                          <a 
+                            href={contactData.instagram.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex items-center gap-3 group text-muted-foreground hover:text-bjj-gold transition-colors"
+                          >
+                            <div className="w-8 h-8 rounded-full bg-bjj-gold/10 group-hover:bg-bjj-gold/20 flex items-center justify-center transition-colors">
+                              <Instagram className="w-4 h-4 text-bjj-gold" />
+                            </div>
+                            <div className="flex flex-col">
+                              <span className="text-sm">Instagram</span>
+                              <span className="text-xs">{contactData.instagram.handle}</span>
+                            </div>
+                            <ExternalLink className="w-3 h-3 ml-auto opacity-0 group-hover:opacity-100 transition-opacity" />
+                          </a>
+                          
+                          {/* TikTok */}
+                          <a 
+                            href={contactData.tiktok.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex items-center gap-3 group text-muted-foreground hover:text-bjj-gold transition-colors"
+                          >
+                            <div className="w-8 h-8 rounded-full bg-bjj-gold/10 group-hover:bg-bjj-gold/20 flex items-center justify-center transition-colors">
+                              <Video className="w-4 h-4 text-bjj-gold" />
+                            </div>
+                            <div className="flex flex-col">
+                              <span className="text-sm">TikTok</span>
+                              <span className="text-xs">{contactData.tiktok.handle}</span>
+                            </div>
+                            <ExternalLink className="w-3 h-3 ml-auto opacity-0 group-hover:opacity-100 transition-opacity" />
+                          </a>
+                          
+                          {/* YouTube */}
+                          <a 
+                            href={contactData.youtube.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex items-center gap-3 group text-muted-foreground hover:text-bjj-gold transition-colors"
+                          >
+                            <div className="w-8 h-8 rounded-full bg-bjj-gold/10 group-hover:bg-bjj-gold/20 flex items-center justify-center transition-colors">
+                              <Youtube className="w-4 h-4 text-bjj-gold" />
+                            </div>
+                            <div className="flex flex-col">
+                              <span className="text-sm">YouTube</span>
+                              <span className="text-xs">{contactData.youtube.handle}</span>
+                            </div>
+                            <ExternalLink className="w-3 h-3 ml-auto opacity-0 group-hover:opacity-100 transition-opacity" />
+                          </a>
                         </div>
                       </div>
                       
@@ -229,6 +488,14 @@ const Contact = () => {
                           <AlertDescription>
                             {CONTACT_CONTENT.contactForm.successMessage.description}
                           </AlertDescription>
+                        </Alert>
+                      )}
+                      
+                      {error && (
+                        <Alert className="mb-6 bg-red-900/20 border-red-800 text-red-400">
+                          <AlertCircle className="h-4 w-4" />
+                          <AlertTitle>Erro</AlertTitle>
+                          <AlertDescription>{error}</AlertDescription>
                         </Alert>
                       )}
                       
@@ -285,6 +552,14 @@ const Contact = () => {
                           />
                         </div>
                         
+                        {/* CloudFlare Turnstile */}
+                        <div className="py-2">
+                          <div 
+                            ref={turnstileRef} 
+                            className="flex justify-center py-2"
+                          ></div>
+                        </div>
+                        
                         <div className="pt-4">
                           <Button 
                             type="submit" 
@@ -306,7 +581,6 @@ const Contact = () => {
                         </div>
                       </form>
                     </div>
-                      {/* Seção de chat em tempo real removida */}
                   </div>
                 </div>
               </div>

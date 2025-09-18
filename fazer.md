@@ -1,10 +1,5 @@
 ### faltando atualizar:
 - landing page;
-- suporte;
-- sobre nós;
-- contato;
-- fazer contatos vir do admin;
-- 2 formulários;
 - organizar código;
 
 
