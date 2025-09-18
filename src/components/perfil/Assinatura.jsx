@@ -27,38 +27,65 @@ const Assinatura = () => {
   const [cpfError, setCpfError] = useState('');
   const [plans, setPlans] = useState({});
 
-  // useEffect para definir os dados dos planos
+  // useEffect para buscar os dados dos planos da API
   useEffect(() => {
-    setPlans({
-      '1': {
-        months: 1,
-        basePrice: 32.90,
-        discount: 0,
-        totalPrice: 32.90,
-        label: '1 mês'
-      },
-      '2': {
-        months: 2,
-        basePrice: 32.90,
-        discount: 0.05,
-        totalPrice: Math.round((2 * 32.90 * 0.95) * 100) / 100,
-        label: '2 meses'
-      },
-      '3': {
-        months: 3,
-        basePrice: 32.90,
-        discount: 0.10,
-        totalPrice: Math.round((3 * 32.90 * 0.90) * 100) / 100,
-        label: '3 meses'
-      },
-      '6': {
-        months: 6,
-        basePrice: 32.90,
-        discount: 0.15,
-        totalPrice: Math.round((6 * 32.90 * 0.85) * 100) / 100,
-        label: '6 meses'
+    const fetchPlans = async () => {
+      try {
+        const response = await fetch(`${import.meta.env.VITE_API_URL}endpoint/sistema/buscar-planos.php`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${getAuthToken()}`
+          }
+        });
+        const result = await response.json();
+        
+        if (result.success && result.data.length > 0) {
+          // Converte o array de planos da API em um objeto indexado pelo ID
+          const plansObj = {};
+          result.data.forEach(plan => {
+            plansObj[plan.id] = {
+              months: plan.months,
+              basePrice: parseFloat(plan.basePrice),
+              discount: parseFloat(plan.discount),
+              totalPrice: parseFloat(plan.totalPrice),
+              label: plan.label
+            };
+          });
+          setPlans(plansObj);
+          // Define o plano padrão como o primeiro da lista
+          if (result.data.length > 0) {
+            setSelectedPlan(result.data[0].id.toString());
+          }
+        } else {
+          console.error("Erro ao buscar planos ou nenhum plano disponível");
+          // Define planos padrão caso a API falhe
+          setPlans({
+            '1': {
+              months: 1,
+              basePrice: 32.90,
+              discount: 0,
+              totalPrice: 32.90,
+              label: '1 mês'
+            }
+          });
+        }
+      } catch (error) {
+        console.error("Erro ao buscar planos:", error);
+        // Define planos padrão caso a API falhe
+        setPlans({
+          '1': {
+            months: 1,
+            basePrice: 32.90,
+            discount: 0,
+            totalPrice: 32.90,
+            label: '1 mês'
+          }
+        });
       }
-    });
+    };
+    
+    fetchPlans();
   }, []);
 
   // buscando qrcode **********************************************
@@ -71,7 +98,8 @@ const Assinatura = () => {
     const apiData = {
       cpf: cpf.replace(/\D/g, ''),
       valor: plans[selectedPlan].totalPrice,
-      meses: plans[selectedPlan].months
+      meses: plans[selectedPlan].months,
+      plano_id: selectedPlan // Adicionando o ID do plano selecionado
     };
 
     // fazendo a chamada para a API
@@ -369,9 +397,11 @@ const Assinatura = () => {
                         ) : (
                           <>
                             <p className="font-medium">R$ {plan.totalPrice.toFixed(2)}</p>
-                            <p className="text-xs text-green-600">
-                              {plan.discount * 100}% de desconto
-                            </p>
+                            {plan.discount > 0 && (
+                              <p className="text-xs text-green-600">
+                                {(plan.discount * 100).toFixed(0)}% de desconto
+                              </p>
+                            )}
                           </>
                         )}
                       </div>
@@ -405,9 +435,9 @@ const Assinatura = () => {
                 <p className="text-sm font-medium text-gray-800">
                   {plans[selectedPlan]?.label} - Total: R$ {plans[selectedPlan]?.totalPrice.toFixed(2)}
                 </p>
-                {plans[selectedPlan]?.months > 1 && (
+                {plans[selectedPlan]?.discount > 0 && (
                   <p className="text-xs text-green-600 font-medium">
-                    Economia de {plans[selectedPlan]?.discount * 100}% aplicada
+                    Economia de {(plans[selectedPlan]?.discount * 100).toFixed(0)}% aplicada
                   </p>
                 )}
               </div>
