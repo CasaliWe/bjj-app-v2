@@ -303,6 +303,38 @@ export const useTecnicas = () => {
     await carregarTecnicas(filtrosAtuais, novaPagina);
   }, [carregarTecnicas, filtrosAtuais]);
 
+  // Adicionar nova posição
+  const adicionarPosicao = useCallback(async (nomePosicao) => {
+    try {
+      await tecnicasService.adicionarPosicao(nomePosicao);
+      
+      // Recarregar a lista de posições
+      const novasPosicoes = await tecnicasService.getPosicoes();
+      setPosicoesCadastradas(Array.isArray(novasPosicoes) ? novasPosicoes : []);
+      
+      return true;
+    } catch (error) {
+      console.error("Erro ao adicionar posição:", error);
+      throw error;
+    }
+  }, []);
+
+  // Excluir posição
+  const excluirPosicao = useCallback(async (nomePosicao) => {
+    try {
+      await tecnicasService.excluirPosicao(nomePosicao);
+      
+      // Recarregar a lista de posições
+      const novasPosicoes = await tecnicasService.getPosicoes();
+      setPosicoesCadastradas(Array.isArray(novasPosicoes) ? novasPosicoes : []);
+      
+      return true;
+    } catch (error) {
+      console.error("Erro ao excluir posição:", error);
+      throw error;
+    }
+  }, []);
+
   // Obter técnicas destacadas
   const getTecnicasDestacadas = useCallback(() => {
     return tecnicas.filter(t => t.destacado);
@@ -326,7 +358,9 @@ export const useTecnicas = () => {
     togglePublica,
     aplicarFiltros,
     mudarPagina,
-    getTecnicasDestacadas
+    getTecnicasDestacadas,
+    adicionarPosicao,
+    excluirPosicao
   };
 };
 

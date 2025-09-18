@@ -3,7 +3,7 @@ import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
 import { MobileNav } from "@/components/MobileNav";
 import { Button } from "@/components/ui/button";
-import { Book, Plus, Heart, Users } from "lucide-react";
+import { Book, Plus, Heart, Users, Target } from "lucide-react";
 import Exp from "@/components/exp/Exp";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import LoadingSpinner from "@/components/ui/LoadingSpinner";
@@ -18,6 +18,7 @@ import TecnicaFiltro from "@/components/tecnicas/TecnicaFiltro";
 import TecnicaFormModal from "@/components/tecnicas/TecnicaFormModal";
 import TecnicasDestacadasModal from "@/components/tecnicas/TecnicasDestacadasModal";
 import TecnicasComunidadeModal from "@/components/tecnicas/TecnicasComunidadeModal";
+import PosicijesModal from "@/components/tecnicas/PosicijesModal";
 import TecnicasList from "@/components/tecnicas/TecnicasList";
 
 // Upgrade
@@ -32,6 +33,7 @@ const Tecnicas = () => {
   const [modalAdicionarAberto, setModalAdicionarAberto] = useState(false);
   const [modalDestaquesAberto, setModalDestaquesAberto] = useState(false);
   const [modalComunidadeAberto, setModalComunidadeAberto] = useState(false);
+  const [modalPosicoesAberto, setModalPosicoesAberto] = useState(false);
   const [modalConfirmacaoExcluirAberto, setModalConfirmacaoExcluirAberto] = useState(false);
   const [tecnicaParaExcluir, setTecnicaParaExcluir] = useState(null);
   const [resetarPagina, setResetarPagina] = useState(null);
@@ -60,7 +62,9 @@ const Tecnicas = () => {
     aplicarFiltros,
     mudarPagina,
     getTecnicasDestacadas,
-    carregarTecnicasComunidade
+    carregarTecnicasComunidade,
+    adicionarPosicao,
+    excluirPosicao
   } = useTecnicas();
 
   // Técnicas destacadas
@@ -192,6 +196,15 @@ const Tecnicas = () => {
             </div>
             <div className="flex items-center gap-2">
               <Button
+                onClick={() => setModalPosicoesAberto(true)}
+                variant="outline"
+                size="sm"
+                className="px-2 md:px-3"
+              >
+                <Target className="h-4 w-4 md:mr-2" />
+                <span className="hidden md:inline">Posições</span>
+              </Button>
+              <Button
                 onClick={abrirModalComunidade}
                 variant="outline"
                 size="sm"
@@ -311,6 +324,16 @@ const Tecnicas = () => {
         paginacao={paginacaoComunidade}
         onSearch={pesquisarTecnicasComunidade}
         carregando={carregandoComunidade}
+      />
+
+      {/* Modal de gerenciamento de posições */}
+      <PosicijesModal 
+        isOpen={modalPosicoesAberto}
+        onClose={() => setModalPosicoesAberto(false)}
+        posicoes={posicoesCadastradas}
+        onAdicionarPosicao={adicionarPosicao}
+        onExcluirPosicao={excluirPosicao}
+        carregando={carregando}
       />
 
       {/* Modal de upgrade para o plano Plus */}

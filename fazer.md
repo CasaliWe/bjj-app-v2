@@ -27,13 +27,6 @@
 
 
 ### faltando atualizar:
-/tecnicas:
-- remover posição;
-
-/treinos:
-- colocar um feedback quando clicar em criar ou att;
-
-
 
 
 

@@ -55,6 +55,8 @@ const FormularioTreino = ({
 }) => {
   // Estado para armazenar imagens temporárias (para upload)
   const [imagensTemporarias, setImagensTemporarias] = useState([]);
+  // Estado para controlar loading durante salvamento
+  const [salvando, setSalvando] = useState(false);
 
   // Usar useEffect para sincronizar imagens com o estado do treino
   useEffect(() => {
@@ -156,43 +158,51 @@ const FormularioTreino = ({
   
   // Função para salvar o treino
   const handleSalvar = async () => {
-    // Ao invés de modificar o objeto novoTreino, vamos criar um FormData diretamente
-    // e enviar para a função de salvar
-    const formData = new FormData();
+    setSalvando(true);
     
-    // Adicionar campos básicos
-    formData.append('numeroAula', editando ? treino.numeroAula : proximoNumeroAula);
-    formData.append('tipo', novoTreino.tipo);
-    formData.append('diaSemana', novoTreino.diaSemana);
-    formData.append('horario', novoTreino.horario);
-    formData.append('data', novoTreino.data);
-    
-    // Adicionar observações se houver
-    if (novoTreino.observacoes) {
-      formData.append('observacoes', novoTreino.observacoes);
+    try {
+      // Ao invés de modificar o objeto novoTreino, vamos criar um FormData diretamente
+      // e enviar para a função de salvar
+      const formData = new FormData();
+      
+      // Adicionar campos básicos
+      formData.append('numeroAula', editando ? treino.numeroAula : proximoNumeroAula);
+      formData.append('tipo', novoTreino.tipo);
+      formData.append('diaSemana', novoTreino.diaSemana);
+      formData.append('horario', novoTreino.horario);
+      formData.append('data', novoTreino.data);
+      
+      // Adicionar observações se houver
+      if (novoTreino.observacoes) {
+        formData.append('observacoes', novoTreino.observacoes);
+      }
+      
+      // Definir visibilidade
+      formData.append('isPublico', novoTreino.isPublico ? 'true' : 'false');
+      
+      // Adicionar ID se for edição
+      if (editando && treino?.id) {
+        formData.append('id', treino.id);
+      }
+      
+      // Adicionar imagens temporárias, tanto para criação quanto para edição
+      if (imagensTemporarias.length > 0) {
+        // Adicionar cada arquivo diretamente com o nome do campo imagens[]
+        imagensTemporarias.forEach((file) => {
+          formData.append('imagens[]', file);
+        });
+      }
+      
+      // Chamar a função de salvar passando o FormData
+      await onSalvar(formData);
+      
+      // Limpar imagens temporárias
+      setImagensTemporarias([]);
+    } catch (error) {
+      console.error("Erro ao salvar treino:", error);
+    } finally {
+      setSalvando(false);
     }
-    
-    // Definir visibilidade
-    formData.append('isPublico', novoTreino.isPublico ? 'true' : 'false');
-    
-    // Adicionar ID se for edição
-    if (editando && treino?.id) {
-      formData.append('id', treino.id);
-    }
-    
-    // Adicionar imagens temporárias, tanto para criação quanto para edição
-    if (imagensTemporarias.length > 0) {
-      // Adicionar cada arquivo diretamente com o nome do campo imagens[]
-      imagensTemporarias.forEach((file) => {
-        formData.append('imagens[]', file);
-      });
-    }
-    
-    // Chamar a função de salvar passando o FormData
-    await onSalvar(formData);
-    
-    // Limpar imagens temporárias
-    setImagensTemporarias([]);
   };
   
   return (
@@ -391,11 +401,23 @@ const FormularioTreino = ({
         </div>
         
         <DialogFooter className="mt-4 sm:mt-6 pb-2 flex flex-col-reverse sm:flex-row gap-3">
-          <Button className="w-full sm:w-auto" variant="outline" onClick={() => setAberto(false)}>
+          <Button 
+            className="w-full sm:w-auto" 
+            variant="outline" 
+            onClick={() => setAberto(false)}
+            disabled={salvando}
+          >
             Cancelar
           </Button>
-          <Button className="w-full sm:w-auto" onClick={handleSalvar}>
-            {editando ? "Salvar alterações" : "Adicionar treino"}
+          <Button 
+            className="w-full sm:w-auto" 
+            onClick={handleSalvar}
+            disabled={salvando}
+          >
+            {salvando 
+              ? (editando ? "Salvando..." : "Adicionando...") 
+              : (editando ? "Salvar alterações" : "Adicionar treino")
+            }
           </Button>
         </DialogFooter>
       </DialogContent>

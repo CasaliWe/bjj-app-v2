@@ -339,3 +339,68 @@ export const updatePublica = async (id, publica) => {
     throw error;
   }
 };
+
+/**
+ * Adiciona uma nova posição
+ * @param {string} nomePosicao - Nome da nova posição
+ * @returns {Promise<Object>} Promessa que resolve para os dados da nova posição
+ */
+export const adicionarPosicao = async (nomePosicao) => {
+  try {
+    const url = `${BASE_URL}endpoint/tecnicas/adicionar-posicoes.php`;
+    
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        ...getAuthHeader()
+      },
+      body: JSON.stringify({
+        nome: nomePosicao.trim()
+      })
+    });
+    
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || 'Erro ao adicionar posição');
+    }
+    
+    const data = await response.json();
+    return data.data;
+  } catch (error) {
+    console.error("Erro ao adicionar posição:", error);
+    throw error;
+  }
+};
+
+/**
+ * Exclui uma posição existente
+ * @param {string} nomePosicao - Nome da posição a ser excluída
+ * @returns {Promise<boolean>} Promessa que resolve para true se excluída com sucesso
+ */
+export const excluirPosicao = async (nomePosicao) => {
+  try {
+    const url = `${BASE_URL}endpoint/tecnicas/excluir-posicoes.php`;
+    
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        ...getAuthHeader()
+      },
+      body: JSON.stringify({
+        nome: nomePosicao
+      })
+    });
+    
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || 'Erro ao excluir posição');
+    }
+    
+    return true;
+  } catch (error) {
+    console.error("Erro ao excluir posição:", error);
+    throw error;
+  }
+};
