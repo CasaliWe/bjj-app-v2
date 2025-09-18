@@ -17,30 +17,6 @@ const SUPPORT_CONTENT = {
   title: "Suporte",
   subtitle: "Como podemos ajudar?",
   description: "Nossa equipe está pronta para ajudar você com qualquer questão relacionada à BJJ Academy.",
-  contactChannels: [
-    {
-      title: "Chat ao Vivo",
-      description: "Converse diretamente com um atendente em tempo real",
-      icon: MessagesSquare,
-      availability: "Seg-Sex: 8h às 20h",
-      action: "Iniciar Chat"
-    },
-    {
-      title: "E-mail",
-      description: "Envie-nos uma mensagem detalhada e responderemos em até 24h",
-      icon: Mail,
-      availability: "Respondemos em até 24h",
-      action: "Enviar E-mail"
-    },
-    {
-      title: "Central de Atendimento",
-      description: "Entre em contato por telefone para suporte imediato",
-      icon: Headphones,
-      availability: "Seg-Sex: 9h às 18h",
-      action: "Ver Número",
-      phoneNumber: "(11) 4002-8922"
-    }
-  ],
   helpCategories: [
     {
       id: "account",
@@ -66,11 +42,11 @@ const SUPPORT_CONTENT = {
   faq: [
     {
       question: "Como altero minha senha?",
-      answer: "Para alterar sua senha, acesse seu perfil no app, vá em Configurações > Segurança > Alterar Senha. Você receberá um e-mail com instruções para criar uma nova senha."
+      answer: "Para alterar sua senha, acesse seu perfil no app, vá em Perfil > Alterar Senha. Digite a senha atual e a nova senha (caso o login tenha sido feito com google, deixe o campo senha atual em branco)."
     },
     {
       question: "Como cancelar minha assinatura?",
-      answer: "Para cancelar sua assinatura, acesse seu perfil no app, vá em Configurações > Assinatura > Cancelar Plano. Seu acesso continuará ativo até o final do período já pago."
+      answer: "Atualmente nosso modo de assinatura é em formato pré pago, portanto não é possível cancelar antes do término do período já pago, ao final do período você poderá optar por não renovar e não será cobrado novamente."
     },
     {
       question: "Perdi meus dados de treino, como recuperá-los?",
@@ -78,7 +54,7 @@ const SUPPORT_CONTENT = {
     },
     {
       question: "Como compartilhar técnicas com outros usuários?",
-      answer: "Abra a técnica desejada em sua biblioteca, toque no botão de compartilhar e escolha se deseja compartilhar via código QR, link ou diretamente com outro usuário do app pelo username."
+      answer: "Abra a técnica desejada em sua biblioteca, toque nos três pontos e escolha a opção de Tornar Pública."
     }
   ],
   contactForm: {
