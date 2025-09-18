@@ -275,6 +275,37 @@ export function Configuracoes({profileData, setProfileData}) {
             </CardContent>
           </Card>
           {/* Explicação download pwa  */}
+          
+          {/* Seção de Suporte */}
+          <Card className="bg-card/50 border-purple-500/20">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-base flex items-center gap-2">
+                <div className="w-5 h-5 rounded-full flex items-center justify-center bg-purple-500/20">
+                  <div className="w-2 h-2 rounded-full bg-purple-400"></div>
+                </div>
+                Precisa de Ajuda?
+              </CardTitle>
+              <CardDescription>
+                Encontrou algum problema ou tem dúvidas sobre o aplicativo?
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-3">
+                <p className="text-sm text-muted-foreground">
+                  Nossa equipe de suporte está disponível para ajudar você com qualquer questão relacionada à sua conta, 
+                  funcionalidades do aplicativo ou pagamentos.
+                </p>
+                <Button 
+                  variant="outline" 
+                  className="w-full border-purple-500/30 text-purple-400 hover:bg-purple-500/10"
+                  onClick={() => window.location.href = '/suporte'}
+                >
+                  Acessar Suporte
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+          {/* Seção de Suporte */}
         </div>
       </div>
     </TabsContent>
