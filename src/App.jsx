@@ -37,6 +37,7 @@ import Competicoes from "./pages/Competicoes";
 import Objetivos from "./pages/Objetivos";
 import Observacoes from "./pages/Observacoes";
 import PlanoDeJogo from "./pages/PlanoDeJogo";
+import Checklist from "./pages/Checklist";
 import Videos from "./pages/Videos";
 import Noticias from "./pages/Noticias";
 import Metricas from "./pages/Metricas";
@@ -182,6 +183,7 @@ const App = () => (
               <Route path="/observacoes" element={<PrivateRoute><Observacoes /></PrivateRoute>} />
               <Route path="/pesquisar-usuarios" element={<PrivateRoute><PesquisarUsuarios /></PrivateRoute>} />
               <Route path="/plano-de-jogo" element={<PrivateRoute><PlanoDeJogo /></PrivateRoute>} />
+              <Route path="/checklist" element={<PrivateRoute><Checklist /></PrivateRoute>} />
               <Route path="/usuario" element={<PrivateRoute><UserPage /></PrivateRoute>} />
               <Route path="/ia-sensei" element={<PrivateRoute><IASensei /></PrivateRoute>} />
             

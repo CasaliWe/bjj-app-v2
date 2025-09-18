@@ -1,6 +1,6 @@
 import { 
   Home, Book, Calendar, Award, Target, FileText, Bot, 
-  Gamepad2, Video, Newspaper, LineChart, Clock,
+  Gamepad2, Video, Newspaper, LineChart, Clock, CheckSquare,
   ShoppingBag, Dumbbell, Layers, LogOut, Search, Users
 } from "lucide-react";
 import {
@@ -64,6 +64,12 @@ const menuItems = [  {
     url: "/plano-de-jogo",
     icon: Gamepad2,
     description: "Estratégia para a luta"
+  },
+  {
+    title: "Checklist",
+    url: "/checklist",
+    icon: CheckSquare,
+    description: "Organize seus objetivos"
   },
   {
     title: "I.A Sensei",

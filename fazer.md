@@ -33,6 +33,7 @@
 - /plano-de-jogo;
 - /usuario;
 - /perfil;
+- /checklist;
 
 ### Páginas atualmente fora do app:
 - /login;
