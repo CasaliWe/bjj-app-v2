@@ -51,9 +51,9 @@ const Instagram = (props) => (
   </svg>
 );
 
-const Facebook = (props) => (
+const TikTok = (props) => (
   <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" {...props}>
-    <path d="M12 2C6.477 2 2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.879V14.89h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.989C18.343 21.129 22 16.99 22 12c0-5.523-4.477-10-10-10Z" />
+    <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z" />
   </svg>
 );
 
@@ -80,32 +80,22 @@ const MAIN_FEATURES_CONTENT = {
     {
       icon: BookOpen,
       title: "Técnicas Organizadas",
-      description: "Catalogue e organize todas as técnicas que você aprende nos treinos. Adicione vídeos, notas e agrupe por categorias."
+      description: "Anote suas técnicas de Jiu-Jitsu com o passo a passo, observações e vídeo."
     },
     {
       icon: Calendar,
       title: "Gestão de Treinos",
-      description: "Registre cada sessão de treino, técnicas praticadas, parceiros e observações para acompanhamento contínuo."
+      description: "Registre cada treino, colocando fotos, observações, data, além de poder deixar publico ou privado."
     },
     {
       icon: Trophy,
       title: "Competições",
-      description: "Registre suas participações em campeonatos, guarde informações sobre adversários e analise seu desempenho."
-    },
-    {
-      icon: Gamepad2,
-      title: "Plano de Jogo",
-      description: "Monte estratégias e táticas personalizadas para treinos e competições, baseadas nos seus pontos fortes."
+      description: "Registre suas participações em campeonatos, salve cada detalhe e analise seu desempenho."
     },
     {
       icon: Target,
-      title: "Objetivos e Metas",
-      description: "Defina metas claras para sua evolução no Jiu-Jitsu e acompanhe seu progresso de forma visual."
-    },
-    {
-      icon: Video,
-      title: "Conteúdo em Vídeo",
-      description: "Acesse uma biblioteca de vídeos com técnicas, drills de treinamento e alongamentos específicos."
+      title: "Observações",
+      description: "Organize suas anotações e insights técnicos para fácil referência e revisão."
     },
     {
       icon: Bot,
@@ -113,10 +103,15 @@ const MAIN_FEATURES_CONTENT = {
       description: "Tire dúvidas e obtenha recomendações personalizadas com um assistente de inteligência artificial."
     },
     {
-      icon: LineChart,
-      title: "Métricas Avançadas",
-      description: "Analise seu desempenho com estatísticas detalhadas e visualize tendências ao longo do tempo."
-    }
+      icon: Target,
+      title: "Plano de jogo",
+      description: "Monte estratégias e táticas personalizadas para treinos e competições, baseadas nos seus pontos fortes."
+    },
+    {
+      icon: Calendar,
+      title: "Checklists",
+      description: "Monte checklists personalizadas para treinos e competições, garantindo que você não esqueça nenhum detalhe importante."
+    },
   ]
 };
 
@@ -128,7 +123,7 @@ const TRAINING_TRACKING_CONTENT = {
     {
       icon: Calendar,
       title: "Registro Detalhado",
-      description: "Documente duração, intensidade, técnicas praticadas e parceiros de treino."
+      description: "Fotos, Data, Observações, Horário."
     },
     {
       icon: BarChart,
@@ -148,22 +143,22 @@ const TRAINING_TRACKING_CONTENT = {
 // Conteúdo da seção de Biblioteca de Técnicas
 const TECHNIQUES_LIBRARY_CONTENT = {
   title: "Biblioteca de Técnicas",
-  description: "Mantenha um catálogo personalizado de todas as técnicas que você aprende, com detalhes e dicas para revisão.",
+  description: "Organize e acesse todas as técnicas que você aprende, com suporte para vídeos e notas detalhadas.",
   features: [
     {
       icon: Tag,
       title: "Categorização Intuitiva",
-      description: "Organize técnicas por posição, tipo, nível de dificuldade e favoritas."
+      description: "Organize técnicas por posição, tipo e favoritas."
     },
     {
       icon: Video,
-      title: "Vídeos e Imagens",
+      title: "Vídeo",
       description: "Adicione conteúdo visual para facilitar a revisão das técnicas."
     },
     {
       icon: PenTool,
       title: "Notas Detalhadas",
-      description: "Registre dicas do professor, variações e detalhes importantes de cada técnica."
+      description: "Anote o passo a passo e obervações."
     }
   ],
   image: "/techniques-library.png", // Substitua pelo caminho da sua imagem
@@ -173,233 +168,26 @@ const TECHNIQUES_LIBRARY_CONTENT = {
 // Conteúdo da seção de Gestão de Competições
 const COMPETITIONS_MANAGEMENT_CONTENT = {
   title: "Gestão de Competições",
-  description: "Prepare-se melhor para competições com ferramentas de planejamento e análise pós-evento.",
+  description: "Organize suas participações em competições, acompanhe resultados e planeje melhorias.",
   features: [
     {
       icon: Calendar,
-      title: "Calendário de Eventos",
-      description: "Acompanhe datas importantes, inscrições e programação de competições."
+      title: "Anotações",
+      description: "Registre datas, categorias e detalhes importantes de cada competição."
     },
     {
       icon: User,
-      title: "Perfil de Adversários",
-      description: "Crie perfis com características, técnicas e estratégias dos seus adversários."
+      title: "Imagens",
+      description: "Adicione imagens das competições."
     },
     {
       icon: FileCheck,
       title: "Análise Pós-Competição",
-      description: "Registre resultados, aprenda com erros e planeje melhorias para as próximas competições."
+      description: "Analise seu desempenho para identificar pontos fortes e áreas de melhoria."
     }
   ],
   image: "/competitions-management.png", // Substitua pelo caminho da sua imagem
   ctaButton: "Organize suas Competições"
-};
-
-// Conteúdo da seção de Comunidade
-const COMMUNITY_CONTENT = {
-  title: "Comunidade BJJ",
-  description: "Conecte-se com outros praticantes, compartilhe experiências e aprenda em conjunto.",
-  features: [
-    {
-      icon: MessageSquare,
-      title: "Dúvidas e Discussões",
-      description: "Compartilhe dúvidas sobre técnicas específicas e receba feedback da comunidade."
-    },
-    {
-      icon: Users,
-      title: "Grupos de Estudo",
-      description: "Crie ou participe de grupos focados em estilos específicos de Jiu-Jitsu."
-    },
-    {
-      icon: Medal,
-      title: "Conquistas e Faixas",
-      description: "Registre suas graduações e celebre cada passo na sua jornada no Jiu-Jitsu."
-    }
-  ],
-  statistics: [
-    { value: "5,000+", label: "Usuários Ativos", icon: Users },
-    { value: "15,000+", label: "Técnicas Catalogadas", icon: BookOpen },
-    { value: "30,000+", label: "Treinos Registrados", icon: Calendar },
-    { value: "1,200+", label: "Faixas-Pretas", icon: GraduationCap }
-  ],
-  ctaButton: "Junte-se à Comunidade"
-};
-
-// Conteúdo da seção de Depoimentos
-const TESTIMONIALS_CONTENT = {
-  title: "O que Dizem Nossos Usuários",
-  testimonials: [
-    {
-      name: "Carlos Silva",
-      role: "Faixa Preta 2º Grau",
-      image: "/testimonial-1.jpg", // Substitua pelo caminho da sua imagem
-      content: "A BJJ Academy transformou a forma como organizo minhas técnicas. Consigo revisar tudo com facilidade e meu progresso acelerou significativamente."
-    },
-    {
-      name: "Paula Martins",
-      role: "Faixa Roxa",
-      image: "/testimonial-2.jpg", // Substitua pelo caminho da sua imagem
-      content: "O recurso de análise de competições me ajudou a identificar padrões nos meus erros e melhorar minha estratégia. Recomendo para todos os competidores."
-    },
-    {
-      name: "Ricardo Almeida",
-      role: "Professor - Faixa Preta 3º Grau",
-      image: "/testimonial-3.jpg", // Substitua pelo caminho da sua imagem
-      content: "Como professor, uso o BJJ Academy para acompanhar o desenvolvimento dos meus alunos. É uma ferramenta incrível para gestão de academia."
-    }
-  ]
-};
-
-// Conteúdo da seção de Preços
-const PRICING_CONTENT = {
-  title: "Planos e Preços",
-  subtitle: "Comece com 7 dias grátis",
-  description: "Acesso completo a todas as funcionalidades durante o período de teste.",
-  plans: [
-    {
-      name: "Teste Grátis",
-      price: "7 dias grátis",
-      description: "Acesso completo a todas as funcionalidades",
-      features: [
-        "Biblioteca de técnicas completa",
-        "Acompanhamento de treinos",
-        "Gestão de competições",
-        "Planos de jogo personalizados",
-        "Recursos da comunidade"
-      ],
-      ctaButton: "Começar Agora",
-      icon: Zap
-    },
-    {
-      name: "Premium",
-      price: "R$ 19,90/mês",
-      priceHighlight: "Primeiro mês 50% OFF: R$ 9,95",
-      description: "Acesso total a todas as funcionalidades",
-      features: [
-        "Todas as funcionalidades do teste grátis",
-        "Armazenamento ilimitado",
-        "Análises avançadas de desempenho",
-        "Exportação de dados",
-        "Suporte prioritário"
-      ],
-      ctaButton: "Assinar Agora",
-      popular: true,
-      icon: Star
-    },
-    {
-      name: "Acesso Limitado",
-      price: "Gratuito",
-      description: "Após o período de teste sem assinatura",
-      features: [
-        "Até 10 técnicas cadastradas",
-        "5 registros de treino por mês",
-        "Histórico limitado a 30 dias",
-        "Sem recursos da comunidade",
-        "Sem análises avançadas"
-      ],
-      ctaButton: "Conhecer Limitações",
-      icon: Settings
-    }
-  ],
-  note: "Cancele a qualquer momento sem taxas adicionais. Disponível para Android e iOS."
-};
-
-// Conteúdo da seção FAQ
-const FAQ_CONTENT = {
-  title: "Perguntas Frequentes",
-  faqs: [
-    {
-      question: "Preciso ter experiência em Jiu-Jitsu para usar o app?",
-      answer: "Não, o BJJ Academy é adequado para praticantes de todos os níveis, desde iniciantes até faixas pretas avançados. A interface é intuitiva e fácil de usar."
-    },
-    {
-      question: "O app funciona offline?",
-      answer: "Sim, muitas funcionalidades estão disponíveis offline. Você pode registrar treinos e técnicas sem conexão à internet, e os dados serão sincronizados quando você estiver online novamente."
-    },
-    {
-      question: "Posso compartilhar minha biblioteca de técnicas com amigos?",
-      answer: "Sim! Você pode compartilhar técnicas específicas ou categorias inteiras com outros usuários do app, ideal para estudo em grupo ou para professores compartilharem com seus alunos."
-    },
-    {
-      question: "Como faço para cancelar minha assinatura?",
-      answer: "Você pode cancelar sua assinatura a qualquer momento através das configurações da sua conta. Após o cancelamento, você ainda terá acesso até o final do período pago, depois disso seu acesso será limitado."
-    },
-    {
-      question: "O que acontece após os 7 dias de teste grátis?",
-      answer: "Após o período de teste de 7 dias, você pode optar por assinar o plano Premium (com 50% de desconto no primeiro mês) ou continuar com acesso limitado às funcionalidades básicas do app."
-    }
-  ]
-};
-
-// Conteúdo do CTA final
-const FINAL_CTA_CONTENT = {
-  title: "Pronto para Evoluir seu Jiu-Jitsu?",
-  description: "Comece agora com 7 dias de teste grátis e transforme sua maneira de treinar e evoluir no Jiu-Jitsu.",
-  primaryButton: "Criar Conta Grátis",
-  secondaryButton: "Ver Demonstração"
-};
-
-// Conteúdo do Footer
-const FOOTER_CONTENT = {
-  logo: "BJJ Academy",
-  tagline: "Evolua seu Jiu-Jitsu",
-  copyright: "© 2025 BJJ Academy. Todos os direitos reservados.",
-  sections: [
-    {      title: "Produto",
-      links: [
-        { name: "Funcionalidades", href: "#features", icon: CheckCircle2 },
-        { name: "Preços", href: "#pricing", icon: Tag },
-        { name: "FAQ", href: "#faq", icon: MessageSquare },
-        { name: "Suporte", href: "/suporte", icon: Inbox }
-      ]
-    },
-    {      title: "Empresa",
-      links: [
-        { name: "Sobre nós", href: "/sobre-nos", icon: Users },
-        { name: "Contato", href: "/contato", icon: Mail }
-      ]
-    },
-    {
-      title: "Legal",
-      links: [
-        { name: "Termos de Uso", href: "/termos-de-uso", icon: FileCheck },
-        { name: "Política de Privacidade", href: "/politica-de-privacidade", icon: Shield }
-      ]
-    },
-    {
-      title: "Redes Sociais",
-      links: [
-        { name: "Instagram", href: "#instagram", icon: Instagram },
-        { name: "Facebook", href: "#facebook", icon: Facebook },
-        { name: "YouTube", href: "#youtube", icon: Youtube }
-      ]
-    }
-  ]
-};
-
-// Conteúdo da seção de Objetivos e Metas
-const GOALS_CONTENT = {
-  title: "Objetivos e Metas",
-  description: "Estabeleça objetivos claros, acompanhe seu progresso e celebre suas conquistas no Jiu-Jitsu.",
-  features: [
-    {
-      icon: Target,
-      title: "Metas Personalizadas",
-      description: "Defina objetivos específicos como aprender novas técnicas, conquistar faixas ou medalhas."
-    },
-    {
-      icon: TrendingUp,
-      title: "Acompanhamento Visual",
-      description: "Visualize seu progresso com gráficos e indicadores claros para manter a motivação."
-    },
-    {
-      icon: CheckCircle2,
-      title: "Conquistas e Recompensas",
-      description: "Ganhe conquistas virtuais ao atingir marcos importantes na sua jornada."
-    }
-  ],
-  image: "/goals-tracking.png",
-  ctaButton: "Defina Seus Objetivos"
 };
 
 // Conteúdo da seção de Observações e Notas
@@ -427,6 +215,144 @@ const NOTES_CONTENT = {
   ctaButton: "Organize Suas Observações"
 };
 
+// Conteúdo da seção de Comunidade
+const COMMUNITY_CONTENT = {
+  title: "Comunidade BJJ",
+  description: "Conecte-se com outros praticantes, compartilhe experiências e aprenda em conjunto.",
+  features: [
+    {
+      icon: MessageSquare,
+      title: "Compartilhamento de Técnicas",
+      description: "Compartilhe suas técnicas favoritas com outros usuários e aprenda com a comunidade."
+    },
+    {
+      icon: Calendar,
+      title: "Compartilhamento de Treinos",
+      description: "Mostre seus treinos para a comunidade e veja os treinos de outros praticantes."
+    },
+    {
+      icon: Trophy,
+      title: "Compartilhamento de Competições",
+      description: "Compartilhe suas experiências em competições e veja o desempenho de outros atletas."
+    },
+    {
+      icon: Users,
+      title: "Pesquisa de Usuários",
+      description: "Encontre outros praticantes, veja suas pontuações e acompanhe seu progresso."
+    }
+  ],
+  ctaButton: "Junte-se à Comunidade"
+};
+
+// Conteúdo da seção de Depoimentos
+const TESTIMONIALS_CONTENT = {
+  title: "O que Dizem Nossos Usuários",
+  testimonials: [
+    {
+      name: "Carlos Silva",
+      role: "Faixa Preta 2º Grau",
+      content: "A BJJ Academy transformou a forma como organizo minhas técnicas. Consigo revisar tudo com facilidade e meu progresso acelerou significativamente."
+    },
+    {
+      name: "Paula Martins",
+      role: "Faixa Roxa",
+      content: "O recurso de análise de competições me ajudou a identificar padrões nos meus erros e melhorar minha estratégia. Recomendo para todos os competidores."
+    },
+    {
+      name: "Ricardo Almeida",
+      role: "Professor - Faixa Preta 3º Grau",
+      content: "Como professor, uso o BJJ Academy para acompanhar o desenvolvimento dos meus alunos. É uma ferramenta incrível para gestão de academia."
+    }
+  ]
+};
+
+// Conteúdo da seção de Preços
+const PRICING_CONTENT = {
+  title: "Planos e Preços",
+  subtitle: "Comece com 7 dias grátis",
+  description: "Acesso completo a todas as funcionalidades durante o período de teste.",
+  plans: [
+    {
+      name: "Plano Plus",
+      price: "R$ 32,90/mês",
+      description: "Acesso total a todas as funcionalidades",
+      features: [
+        "Biblioteca de técnicas completa",
+        "Acompanhamento de treinos",
+        "Gestão de competições",
+        "Planos de jogo personalizados",
+        "Compartilhamento com a comunidade",
+        "Armazenamento ilimitado",
+        "Suporte prioritário"
+      ],
+      ctaButton: "Começar 7 dias grátis",
+      popular: true,
+      icon: Star
+    }
+  ]
+};
+
+// Conteúdo da seção FAQ
+const FAQ_CONTENT = {
+  title: "Perguntas Frequentes",
+  faqs: [
+    {
+      question: "Preciso ter experiência em Jiu-Jitsu para usar o app?",
+      answer: "Não, o BJJ Academy é adequado para praticantes de todos os níveis, desde iniciantes até faixas pretas avançados. A interface é intuitiva e fácil de usar."
+    },
+    {
+      question: "Posso compartilhar minha biblioteca de técnicas com amigos?",
+      answer: "Sim! Você pode compartilhar técnicas específicas ou categorias inteiras com outros usuários do app, ideal para estudo em grupo ou para professores compartilharem com seus alunos."
+    },
+    {
+      question: "Como faço para cancelar minha assinatura?",
+      answer: "Nosso plano é pré pago, ou seja, você continuará tendo acesso ao plano até o final do período pago, após isso seu acesso será limitado caso não renove sua assinatura."
+    },
+    {
+      question: "O que acontece após os 7 dias de teste grátis?",
+      answer: "Após o período de teste de 7 dias, você pode optar por assinar o plano Premium ou continuar com acesso limitado às funcionalidades básicas do app."
+    }
+  ]
+};
+
+// Conteúdo do CTA final
+const FINAL_CTA_CONTENT = {
+  title: "Pronto para Evoluir seu Jiu-Jitsu?",
+  description: "Comece agora com 7 dias de teste grátis e transforme sua maneira de treinar e evoluir no Jiu-Jitsu.",
+  primaryButton: "Criar Conta Grátis",
+  secondaryButton: "Ver Demonstração"
+};
+
+// Conteúdo do Footer
+const FOOTER_CONTENT = {
+  logo: "BJJ Academy",
+  tagline: "Evolua seu Jiu-Jitsu",
+  copyright: `© ${new Date().getFullYear()} BJJ Academy. Todos os direitos reservados.`,
+  sections: [
+    {      title: "Produto",
+      links: [
+        { name: "Funcionalidades", href: "#features", icon: CheckCircle2 },
+        { name: "Preços", href: "#pricing", icon: Tag },
+        { name: "FAQ", href: "#faq", icon: MessageSquare },
+        { name: "Suporte", href: "/suporte", icon: Inbox }
+      ]
+    },
+    {      title: "Empresa",
+      links: [
+        { name: "Sobre nós", href: "/sobre-nos", icon: Users },
+        { name: "Contato", href: "/contato", icon: Mail }
+      ]
+    },
+    {
+      title: "Legal",
+      links: [
+        { name: "Termos de Uso", href: "/termos-de-uso", icon: FileCheck },
+        { name: "Política de Privacidade", href: "/politica-de-privacidade", icon: Shield }
+      ]
+    }
+  ]
+};
+
 // Conteúdo da seção de Plano de Jogo
 const GAME_PLAN_CONTENT = {
   title: "Plano de Jogo",
@@ -450,86 +376,6 @@ const GAME_PLAN_CONTENT = {
   ],
   image: "/game-plan.png",
   ctaButton: "Monte Sua Estratégia"
-};
-
-// Conteúdo da seção de Videos e Mídia
-const VIDEOS_CONTENT = {
-  title: "Conteúdo em Vídeo",
-  description: "Acesse uma extensa biblioteca de vídeos educativos para complementar seu aprendizado.",
-  features: [
-    {
-      icon: Video,
-      title: "Vídeos de Técnicas",
-      description: "Assista demonstrações detalhadas de técnicas em alta qualidade."
-    },
-    {
-      icon: Dumbbell,
-      title: "Drills de Treinamento",
-      description: "Acesse exercícios específicos para melhorar movimentação, timing e condicionamento."
-    },
-    {
-      icon: Layers,
-      title: "Alongamentos",
-      description: "Rotinas de alongamento específicas para praticantes de Jiu-Jitsu."
-    },
-    {
-      icon: Newspaper,
-      title: "Notícias e Entrevistas",
-      description: "Mantenha-se atualizado com as últimas notícias do mundo do Jiu-Jitsu e esportes de combate."
-    }
-  ],
-  image: "/video-content.png",
-  ctaButton: "Ver Biblioteca de Vídeos"
-};
-
-// Conteúdo da seção de Métricas e Análises
-const METRICS_CONTENT = {
-  title: "Métricas e Estatísticas",
-  description: "Análise avançada de dados para extrair informações valiosas sobre seu desempenho.",
-  features: [
-    {
-      icon: BarChart,
-      title: "Estatísticas Detalhadas",
-      description: "Acompanhe tempo de treino, técnicas mais utilizadas e taxa de sucesso."
-    },
-    {
-      icon: BarChart2,
-      title: "Análises Personalizadas",
-      description: "Painéis personalizados com as métricas que são mais importantes para você."
-    },
-    {
-      icon: TrendingUp,
-      title: "Tendências e Evolução",
-      description: "Visualize sua progressão ao longo do tempo com gráficos interativos."
-    }
-  ],
-  image: "/metrics-dashboard.png",
-  ctaButton: "Analise Seu Desempenho"
-};
-
-// Conteúdo da seção de Dojo Market
-const MARKETPLACE_CONTENT = {
-  title: "Dojo Market",
-  description: "Marketplace especializado para compra e venda de equipamentos de Jiu-Jitsu.",
-  features: [
-    {
-      icon: ShoppingBag,
-      title: "Compra e Venda",
-      description: "Negocie kimonos, faixas, equipamentos e acessórios com outros praticantes."
-    },
-    {
-      icon: Tag,
-      title: "Preços Justos",
-      description: "Economia na aquisição de itens seminovos ou troca de equipamentos."
-    },
-    {
-      icon: Shield,
-      title: "Transações Seguras",
-      description: "Sistema de avaliação de vendedores e compradores para maior segurança."
-    }
-  ],
-  image: "/marketplace.png",
-  ctaButton: "Explorar o Marketplace"
 };
 
 // Conteúdo da seção IA Sensei
@@ -606,7 +452,6 @@ const LandingPage = () => {
             <a href="#training" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Treinos</a>
             <a href="#techniques" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Técnicas</a>
             <a href="#competitions" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Competições</a>
-            <a href="#goals" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Objetivos</a>
             <a href="#ai-sensei" className="text-sm text-muted-foreground hover:text-foreground transition-colors">I.A Sensei</a>
             <a href="#pricing" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Preços</a>
           </nav>
@@ -668,34 +513,6 @@ const LandingPage = () => {
                 onClick={() => setIsMenuOpen(false)}
               >
                 Competições
-              </a>
-              <a 
-                href="#goals" 
-                className="text-sm text-muted-foreground hover:text-foreground transition-colors p-2"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                Objetivos
-              </a>
-              <a 
-                href="#gameplan" 
-                className="text-sm text-muted-foreground hover:text-foreground transition-colors p-2"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                Plano de Jogo
-              </a>
-              <a 
-                href="#videos" 
-                className="text-sm text-muted-foreground hover:text-foreground transition-colors p-2"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                Vídeos
-              </a>
-              <a 
-                href="#metrics" 
-                className="text-sm text-muted-foreground hover:text-foreground transition-colors p-2"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                Métricas
               </a>
               <a 
                 href="#ai-sensei" 
@@ -966,50 +783,6 @@ const LandingPage = () => {
         </section>
 
         {/* Goals and Objectives Section */}
-        <section id="goals" className="py-20 px-6">
-          <div className="max-w-7xl mx-auto">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-              <div className="order-2 lg:order-1 relative">
-                <div className="w-full aspect-[4/3] rounded-xl bg-card/30 border border-border/40 backdrop-blur-sm flex items-center justify-center">
-                  <p className="text-muted-foreground">Imagem de Objetivos e Metas</p>
-                </div>
-                {/* Elementos decorativos */}
-                <div className="absolute -bottom-6 -left-6 w-32 h-32 bg-bjj-gold/5 rounded-full blur-xl"></div>
-                <div className="absolute -top-10 -right-10 w-40 h-40 bg-bjj-gold/10 rounded-full blur-xl"></div>
-              </div>
-              
-              <div className="order-1 lg:order-2">
-                <h2 className="text-3xl md:text-4xl font-bold mb-4">{GOALS_CONTENT.title}</h2>
-                <p className="text-lg text-muted-foreground mb-8">
-                  {GOALS_CONTENT.description}
-                </p>
-                
-                <div className="space-y-6">
-                  {GOALS_CONTENT.features.map((feature, index) => (
-                    <div key={index} className="flex gap-4">
-                      <div className="flex-shrink-0 w-10 h-10 rounded-full bg-bjj-gold/10 flex items-center justify-center">
-                        <feature.icon className="w-5 h-5 text-bjj-gold" />
-                      </div>
-                      <div>
-                        <h3 className="text-lg font-semibold mb-1">{feature.title}</h3>
-                        <p className="text-muted-foreground">{feature.description}</p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-                
-                <Button 
-                  className="mt-10 bg-bjj-gold hover:bg-bjj-gold/90 text-primary-foreground"
-                  onClick={handleSignUp}
-                >
-                  <Target className="mr-2 h-5 w-5" />
-                  {GOALS_CONTENT.ctaButton}
-                </Button>
-              </div>
-            </div>
-          </div>
-        </section>
-        
         {/* Notes Section */}
         <section id="notes" className="py-20 px-6 bg-gradient-to-b from-transparent to-[#13141A]">
           <div className="max-w-7xl mx-auto">
@@ -1100,135 +873,6 @@ const LandingPage = () => {
           </div>
         </section>
         
-        {/* Videos and Media Section */}
-        <section id="videos" className="py-20 px-6 bg-gradient-to-b from-transparent to-[#13141A]">
-          <div className="max-w-7xl mx-auto">
-            <div className="text-center mb-16">
-              <h2 className="text-3xl md:text-4xl font-bold mb-4">{VIDEOS_CONTENT.title}</h2>
-              <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-                {VIDEOS_CONTENT.description}
-              </p>
-            </div>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
-              {VIDEOS_CONTENT.features.map((feature, index) => (
-                <Card 
-                  key={index}
-                  className="bg-card/50 border-border/50 backdrop-blur-sm hover:border-bjj-gold/30 transition-all duration-300 group"
-                >
-                  <CardContent className="p-6">
-                    <div className="p-3 w-14 h-14 rounded-lg bg-bjj-gold/10 group-hover:bg-bjj-gold/20 transition-colors mb-4 flex items-center justify-center">
-                      <feature.icon className="w-7 h-7 text-bjj-gold" />
-                    </div>
-                    <h3 className="text-xl font-semibold mb-2">{feature.title}</h3>
-                    <p className="text-muted-foreground">{feature.description}</p>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-            
-            <div className="mt-12 text-center">
-              <Button 
-                className="bg-bjj-gold hover:bg-bjj-gold/90 text-primary-foreground"
-                onClick={handleSignUp}
-              >
-                <Video className="mr-2 h-5 w-5" />
-                {VIDEOS_CONTENT.ctaButton}
-              </Button>
-            </div>
-          </div>
-        </section>
-        
-        {/* Metrics and Analysis Section */}
-        <section id="metrics" className="py-20 px-6">
-          <div className="max-w-7xl mx-auto">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-              <div>
-                <h2 className="text-3xl md:text-4xl font-bold mb-4">{METRICS_CONTENT.title}</h2>
-                <p className="text-lg text-muted-foreground mb-8">
-                  {METRICS_CONTENT.description}
-                </p>
-                
-                <div className="space-y-6">
-                  {METRICS_CONTENT.features.map((feature, index) => (
-                    <div key={index} className="flex gap-4">
-                      <div className="flex-shrink-0 w-10 h-10 rounded-full bg-bjj-gold/10 flex items-center justify-center">
-                        <feature.icon className="w-5 h-5 text-bjj-gold" />
-                      </div>
-                      <div>
-                        <h3 className="text-lg font-semibold mb-1">{feature.title}</h3>
-                        <p className="text-muted-foreground">{feature.description}</p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-                
-                <Button 
-                  className="mt-10 bg-bjj-gold hover:bg-bjj-gold/90 text-primary-foreground"
-                  onClick={handleSignUp}
-                >
-                  <BarChart className="mr-2 h-5 w-5" />
-                  {METRICS_CONTENT.ctaButton}
-                </Button>
-              </div>
-              
-              <div className="relative">
-                <div className="w-full aspect-[4/3] rounded-xl bg-card/30 border border-border/40 backdrop-blur-sm flex items-center justify-center">
-                  <p className="text-muted-foreground">Imagem do Dashboard de Métricas</p>
-                </div>
-                {/* Elementos decorativos */}
-                <div className="absolute -top-6 -left-6 w-32 h-32 bg-bjj-gold/5 rounded-full blur-xl"></div>
-                <div className="absolute -bottom-10 -right-10 w-40 h-40 bg-bjj-gold/10 rounded-full blur-xl"></div>
-              </div>
-            </div>
-          </div>
-        </section>
-        
-        {/* Marketplace Section */}
-        <section id="marketplace" className="py-20 px-6 bg-gradient-to-b from-transparent to-[#13141A]">
-          <div className="max-w-7xl mx-auto">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-              <div className="order-2 lg:order-1 relative">
-                <div className="w-full aspect-[4/3] rounded-xl bg-card/30 border border-border/40 backdrop-blur-sm flex items-center justify-center">
-                  <p className="text-muted-foreground">Imagem do Dojo Market</p>
-                </div>
-                {/* Elementos decorativos */}
-                <div className="absolute -bottom-6 -left-6 w-32 h-32 bg-bjj-gold/5 rounded-full blur-xl"></div>
-                <div className="absolute -top-10 -right-10 w-40 h-40 bg-bjj-gold/10 rounded-full blur-xl"></div>
-              </div>
-              
-              <div className="order-1 lg:order-2">
-                <h2 className="text-3xl md:text-4xl font-bold mb-4">{MARKETPLACE_CONTENT.title}</h2>
-                <p className="text-lg text-muted-foreground mb-8">
-                  {MARKETPLACE_CONTENT.description}
-                </p>
-                
-                <div className="space-y-6">
-                  {MARKETPLACE_CONTENT.features.map((feature, index) => (
-                    <div key={index} className="flex gap-4">
-                      <div className="flex-shrink-0 w-10 h-10 rounded-full bg-bjj-gold/10 flex items-center justify-center">
-                        <feature.icon className="w-5 h-5 text-bjj-gold" />
-                      </div>
-                      <div>
-                        <h3 className="text-lg font-semibold mb-1">{feature.title}</h3>
-                        <p className="text-muted-foreground">{feature.description}</p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-                
-                <Button 
-                  className="mt-10 bg-bjj-gold hover:bg-bjj-gold/90 text-primary-foreground"
-                  onClick={handleSignUp}
-                >
-                  <ShoppingBag className="mr-2 h-5 w-5" />
-                  {MARKETPLACE_CONTENT.ctaButton}
-                </Button>
-              </div>
-            </div>
-          </div>
-        </section>
-        
         {/* AI Sensei Section */}
         <section id="ai-sensei" className="py-20 px-6">
           <div className="max-w-7xl mx-auto">
@@ -1301,18 +945,6 @@ const LandingPage = () => {
               ))}
             </div>
             
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-10">
-              {COMMUNITY_CONTENT.statistics.map((stat, index) => (
-                <div key={index} className="bg-card/30 border border-border/40 backdrop-blur-sm rounded-xl p-6 text-center">
-                  <div className="w-12 h-12 rounded-full bg-bjj-gold/10 flex items-center justify-center mx-auto mb-4">
-                    <stat.icon className="w-6 h-6 text-bjj-gold" />
-                  </div>
-                  <p className="text-3xl md:text-4xl font-bold text-bjj-gold mb-2">{stat.value}</p>
-                  <p className="text-sm text-muted-foreground">{stat.label}</p>
-                </div>
-              ))}
-            </div>
-            
             <div className="text-center">
               <Button 
                 className="bg-bjj-gold hover:bg-bjj-gold/90 text-primary-foreground"
@@ -1345,12 +977,9 @@ const LandingPage = () => {
                   >
                     <Card className="bg-card/50 border-border/50 backdrop-blur-sm p-8">
                       <div className="flex flex-col items-center text-center">
-                        <div className="w-20 h-20 rounded-full bg-bjj-gold/20 mb-4 flex items-center justify-center">
-                          <span className="text-bjj-gold">Foto</span>
-                        </div>
-                        <p className="text-lg mb-6 italic text-muted-foreground">"{testimonial.content}"</p>
-                        <h4 className="font-semibold">{testimonial.name}</h4>
-                        <p className="text-sm text-muted-foreground">{testimonial.role}</p>
+                        <h4 className="text-xl font-bold text-bjj-gold mb-1">{testimonial.name}</h4>
+                        <p className="text-sm text-muted-foreground mb-6">{testimonial.role}</p>
+                        <p className="text-lg italic text-muted-foreground">"{testimonial.content}"</p>
                       </div>
                     </Card>
                   </div>
@@ -1384,9 +1013,9 @@ const LandingPage = () => {
               </p>
             </div>
             
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+            <div className="flex justify-center mb-8">
               {PRICING_CONTENT.plans.map((plan, index) => (
-                <div key={index} className="relative">                  <Card 
+                <div key={index} className="relative max-w-md w-full">                  <Card 
                     className={`h-full bg-card/50 backdrop-blur-sm relative ${
                       plan.popular 
                         ? "border-bjj-gold/50 mt-6" 
@@ -1444,10 +1073,6 @@ const LandingPage = () => {
                 </div>
               ))}
             </div>
-            
-            <p className="text-center text-sm text-muted-foreground mt-8">
-              {PRICING_CONTENT.note}
-            </p>
           </div>
         </section>
         
@@ -1525,8 +1150,8 @@ const LandingPage = () => {
                 <a href="#instagram" className="w-8 h-8 rounded-full bg-card/50 flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors">
                   <Instagram />
                 </a>
-                <a href="#facebook" className="w-8 h-8 rounded-full bg-card/50 flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors">
-                  <Facebook />
+                <a href="#tiktok" className="w-8 h-8 rounded-full bg-card/50 flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors">
+                  <TikTok />
                 </a>
                 <a href="#youtube" className="w-8 h-8 rounded-full bg-card/50 flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors">
                   <Youtube />
