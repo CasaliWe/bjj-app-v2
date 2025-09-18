@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
-import { ArrowLeft, MessagesSquare, Mail, Headphones, FileText, HelpCircle, Phone, Send, Clock, CheckCircle2 } from "lucide-react";
+import { ArrowLeft, MessagesSquare, Mail, Headphones, FileText, HelpCircle, Phone, Send, Clock, CheckCircle2, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Input } from "@/components/ui/input";
@@ -88,35 +88,216 @@ const Support = () => {
   const [category, setCategory] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
-  // Estado removido: selectedChannel
+  const [error, setError] = useState("");
+  
+  // Cloudflare Turnstile
+  const [turnstileToken, setTurnstileToken] = useState("");
+  const turnstileRef = useRef(null);
+  const TURNSTILE_SITE_KEY = import.meta.env.VITE_CLOUDFLARE_TURNSTILE;
+  
+  // Configuração do Cloudflare Turnstile
+  useEffect(() => {
+    // Limpar qualquer token existente quando o componente monta
+    setTurnstileToken("");
+    
+    // Flag para evitar verificações desnecessárias
+    let isCheckingToken = false;
+    
+    // Função para verificar o token no DOM
+    const checkTurnstileToken = () => {
+      if (isCheckingToken || turnstileToken) return;
+      
+      isCheckingToken = true;
+      const tokenInput = document.querySelector('input[name="cf-turnstile-response"]');
+      
+      if (tokenInput && tokenInput.value) {
+        setTurnstileToken(tokenInput.value);
+      }
+      
+      isCheckingToken = false;
+    };
+
+    // Iniciar verificação periódica (a cada 1000ms)
+    const tokenInterval = setInterval(checkTurnstileToken, 1000);
+    
+    // Configurar um MutationObserver para detectar mudanças no DOM
+    const observer = new MutationObserver((mutations) => {
+      checkTurnstileToken();
+    });
+    
+    // Função para remover e recarregar o script do Turnstile
+    const reloadTurnstile = () => {
+      // Remover qualquer script anterior do Turnstile
+      const oldScript = document.querySelector('script[src*="challenges.cloudflare.com/turnstile"]');
+      if (oldScript && oldScript.parentNode) {
+        oldScript.parentNode.removeChild(oldScript);
+      }
+      
+      // Remover qualquer iframe do Turnstile para forçar recriação
+      const oldIframes = document.querySelectorAll('iframe[src*="challenges.cloudflare.com"]');
+      oldIframes.forEach(iframe => {
+        if (iframe.parentNode) {
+          iframe.parentNode.removeChild(iframe);
+        }
+      });
+      
+      // Limpar o container do Turnstile
+      if (turnstileRef.current) {
+        turnstileRef.current.innerHTML = '';
+      }
+      
+      // Carregar novo script
+      const script = document.createElement("script");
+      script.src = "https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit";
+      script.async = true;
+      script.defer = true;
+      document.body.appendChild(script);
+      
+      // Após carregar o script, observe mudanças no DOM e renderize o widget
+      script.onload = () => {
+        // Observar mudanças em todo o corpo do documento
+        observer.observe(document.body, { 
+          childList: true, 
+          subtree: true,
+          attributes: true,
+          attributeFilter: ['value']
+        });
+        
+        // Renderizar o widget explicitamente
+        if (window.turnstile && turnstileRef.current) {
+          window.turnstile.render(turnstileRef.current, {
+            sitekey: TURNSTILE_SITE_KEY,
+            callback: (token) => {
+              setTurnstileToken(token);
+            },
+            theme: 'dark',
+            action: 'support'
+          });
+        }
+        
+        // Verificação inicial após o carregamento
+        setTimeout(checkTurnstileToken, 1000);
+      };
+      
+      return script;
+    };
+    
+    const script = reloadTurnstile();
+    
+    // Limpeza
+    return () => {
+      clearInterval(tokenInterval);
+      observer.disconnect();
+      if (script && script.parentNode) {
+        script.parentNode.removeChild(script);
+      }
+    };
+  }, []);
+
+  // Reset de token do Turnstile quando necessário
+  const resetTurnstile = () => {
+    setTurnstileToken("");
+    if (window.turnstile && turnstileRef.current) {
+      // Limpar o container primeiro
+      turnstileRef.current.innerHTML = '';
+      
+      // Re-renderizar o widget
+      window.turnstile.render(turnstileRef.current, {
+        sitekey: TURNSTILE_SITE_KEY,
+        callback: (token) => {
+          setTurnstileToken(token);
+        },
+        theme: 'dark',
+        action: 'support'
+      });
+    }
+  };
   
   const handleBack = () => {
     navigate(-1);
   };
 
-  const handleContactFormSubmit = (e) => {
+  // Função para validar o formulário
+  const validateForm = () => {
+    // Validação de email (formato básico)
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      setError("E-mail inválido");
+      return false;
+    }
+    
+    // Validação do Turnstile (CAPTCHA)
+    if (!turnstileToken) {
+      // Tenta obter o token diretamente do DOM - para casos onde a validação é invisível
+      const autoToken = document.querySelector('input[name="cf-turnstile-response"]')?.value;
+      if (autoToken) {
+        // Se encontrar o token no DOM, use-o
+        setTurnstileToken(autoToken);
+      } else {
+        setError("Por favor, confirme que você não é um robô");
+        return false;
+      }
+    }
+    
+    return true;
+  };
+
+  const handleContactFormSubmit = async (e) => {
     e.preventDefault();
+    setError("");
+    
+    // Validação do formulário
+    if (!validateForm()) return;
+    
     setIsSubmitting(true);
     
-    // Simulando envio
-    setTimeout(() => {
+    try {
+      // Dados para enviar à API
+      const supportFormData = {
+        name,
+        email,
+        subject,
+        message,
+        category,
+        turnstileToken
+      };
+      
+      const response = await fetch(`${import.meta.env.VITE_API_URL}endpoint/sistema/enviar-suporte.php`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(supportFormData)
+      });
+      
+      const result = await response.json();
+      
+      if (result.success) {
+        setShowSuccessMessage(true);
+        
+        // Limpar formulário
+        setName("");
+        setEmail("");
+        setSubject("");
+        setMessage("");
+        setCategory("");
+        
+        // Esconder mensagem de sucesso após 5 segundos
+        setTimeout(() => {
+          setShowSuccessMessage(false);
+        }, 5000);
+      } else {
+        setError(result.message || "Erro ao enviar mensagem. Tente novamente mais tarde.");
+        resetTurnstile();
+      }
+    } catch (error) {
+      console.error("Erro ao enviar mensagem:", error);
+      setError("Erro ao enviar mensagem. Tente novamente mais tarde.");
+      resetTurnstile();
+    } finally {
       setIsSubmitting(false);
-      setShowSuccessMessage(true);
-      
-      // Limpar formulário
-      setName("");
-      setEmail("");
-      setSubject("");
-      setMessage("");
-      setCategory("");
-      
-      // Esconder mensagem de sucesso após 5 segundos
-      setTimeout(() => {
-        setShowSuccessMessage(false);
-      }, 5000);
-    }, 1500);
+    }
   };
-  // Nenhuma função de seleção de canal é necessária
 
   return (
     <div className="min-h-screen bg-[#121315] flex flex-col justify-between p-4">
@@ -173,6 +354,14 @@ const Support = () => {
                       <AlertDescription>
                         Nossa equipe de suporte entrará em contato em breve. Obrigado pelo seu contato.
                       </AlertDescription>
+                    </Alert>
+                  )}
+                  
+                  {error && (
+                    <Alert className="mb-6 bg-red-900/20 border-red-800 text-red-400">
+                      <AlertCircle className="h-4 w-4" />
+                      <AlertTitle>Erro</AlertTitle>
+                      <AlertDescription>{error}</AlertDescription>
                     </Alert>
                   )}
                   
@@ -244,6 +433,14 @@ const Support = () => {
                         rows={5}
                         className="bg-card/50 border-border/40 resize-none"
                       />
+                    </div>
+                    
+                    {/* CloudFlare Turnstile */}
+                    <div className="py-2">
+                      <div 
+                        ref={turnstileRef} 
+                        className="flex justify-center py-2"
+                      ></div>
                     </div>
                     
                     <div className="pt-4">

@@ -1,15 +1,10 @@
-### faltando atualizar:
-- landing page;
-- organizar código;
-
-
-
 ### Organização:
 - Todas as páginas após logado deve ter o hook que busca os dados do user, assim aparece o plus ao lado da logo;
 - Todas as páginas após logado tem o modal upgrade (quando o plano está grátis);
 - Modal de adicionar exp sempre ao criar algo, está presente atualmente nas páginas: tecnicas, treinos, competições, observações;
 - Sempre usar o loading padrão (component);
 - Modal welcome apenas na dashboard no primeiro acesso;
+- Todos os form publicos precisam ter o turnstile;
 
 ### Páginas atualmente dentro do app:
 - /app;
