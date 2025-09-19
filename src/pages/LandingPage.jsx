@@ -40,7 +40,10 @@ import {
   ShoppingBag,
   Dumbbell,
   Layers,
-  Newspaper
+  Newspaper,
+  CheckSquare,
+  List,
+  Filter
 } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 
@@ -384,6 +387,31 @@ const AI_SENSEI_CONTENT = {
   ctaButton: "Converse com o I.A Sensei"
 };
 
+// Conteúdo da seção Checklist
+const CHECKLIST_CONTENT = {
+  title: "Checklists Personalizadas",
+  description: "Organize suas tarefas, preparativos para treinos e competições com checklists detalhadas e fáceis de usar.",
+  features: [
+    {
+      icon: CheckSquare,
+      title: "Criação Simples",
+      description: "Crie listas personalizadas de forma rápida e organizada para qualquer situação do seu treino."
+    },
+    {
+      icon: Filter,
+      title: "Filtros Inteligentes",
+      description: "Filtre suas listas por categorias, datas ou status para encontrar rapidamente o que precisa."
+    },
+    {
+      icon: List,
+      title: "Acompanhamento de Progresso",
+      description: "Marque itens como concluídos e acompanhe seu progresso em tempo real."
+    }
+  ],
+  image: "/checklist.png",
+  ctaButton: "Crie Suas Checklists"
+};
+
 // Componente da landing page
 const LandingPage = () => {
   const navigate = useNavigate();
@@ -551,6 +579,7 @@ const LandingPage = () => {
             <a href="#techniques" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Técnicas</a>
             <a href="#competitions" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Competições</a>
             <a href="#ai-sensei" className="text-sm text-muted-foreground hover:text-foreground transition-colors">I.A Sensei</a>
+            <a href="#checklist" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Checklists</a>
             <a href="#pricing" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Preços</a>
           </nav>
           
@@ -618,6 +647,13 @@ const LandingPage = () => {
                 onClick={() => setIsMenuOpen(false)}
               >
                 I.A Sensei
+              </a>
+              <a 
+                href="#checklist" 
+                className="text-sm text-muted-foreground hover:text-foreground transition-colors p-2"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                Checklists
               </a>
               <a 
                 href="#pricing" 
@@ -689,13 +725,28 @@ const LandingPage = () => {
               </div>
               
               {/* App Preview Image */}
-              <div className="mt-16 relative">
-                <div className="w-full h-[500px] rounded-xl bg-card/30 border border-border/40 backdrop-blur-sm flex items-center justify-center">
-                  <p className="text-muted-foreground">Imagem do App aqui</p>
+              <div className="mt-16 relative flex justify-center">
+                <div className="relative flex items-center justify-center">
+                  {/* Dispositivo móvel simulado */}
+                  <div className="relative bg-black rounded-[36px] p-2 shadow-xl border-4 border-gray-800">
+                    {/* Adicionando notch simulado */}
+                    <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-1/3 h-6 bg-black rounded-b-xl z-10"></div>
+                    {/* GIF do aplicativo */}
+                    <div className="overflow-hidden rounded-[24px] bg-gray-900">
+                      <img 
+                        src="/inicio.gif" 
+                        alt="Demonstração do aplicativo BJJ Academy" 
+                        className="w-[250px] h-[455px] object-cover"
+                      />
+                    </div>
+                    {/* Botão home simulado */}
+                    <div className="absolute bottom-1 left-1/2 transform -translate-x-1/2 w-1/3 h-1 bg-gray-600 rounded-full"></div>
+                  </div>
+                  
+                  {/* Elementos decorativos */}
+                  <div className="absolute -z-10 -bottom-6 -right-6 w-32 h-32 bg-card/80 rounded-lg border border-border/40 backdrop-blur-sm hidden md:block"></div>
+                  <div className="absolute -z-10 -top-6 -left-6 w-24 h-24 bg-card/80 rounded-lg border border-border/40 backdrop-blur-sm hidden md:block"></div>
                 </div>
-                {/* Mock UI elementos */}
-                <div className="absolute -bottom-6 -right-6 w-32 h-32 bg-card/80 rounded-lg border border-border/40 backdrop-blur-sm"></div>
-                <div className="absolute -top-6 -left-6 w-24 h-24 bg-card/80 rounded-lg border border-border/40 backdrop-blur-sm"></div>
               </div>
             </div>
           </div>
@@ -779,10 +830,22 @@ const LandingPage = () => {
                 </Button>
               </div>
               
-              <div className="relative">
-                <div className="w-full aspect-[4/3] rounded-xl bg-card/30 border border-border/40 backdrop-blur-sm flex items-center justify-center">
-                  <p className="text-muted-foreground">Imagem de Acompanhamento de Treinos</p>
+              <div className="relative flex justify-center">
+                <div className="relative bg-black rounded-[36px] p-2 shadow-xl border-4 border-gray-800">
+                  {/* Adicionando notch simulado */}
+                  <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-1/3 h-6 bg-black rounded-b-xl z-10"></div>
+                  {/* GIF de treinos */}
+                  <div className="overflow-hidden rounded-[24px] bg-gray-900">
+                    <img 
+                      src="/treinos.gif" 
+                      alt="Demonstração da funcionalidade de treinos" 
+                      className="w-[250px] h-[455px] object-cover"
+                    />
+                  </div>
+                  {/* Botão home simulado */}
+                  <div className="absolute bottom-1 left-1/2 transform -translate-x-1/2 w-1/3 h-1 bg-gray-600 rounded-full"></div>
                 </div>
+                
                 {/* Elementos decorativos */}
                 <div className="absolute -top-6 -left-6 w-32 h-32 bg-bjj-gold/5 rounded-full blur-xl"></div>
                 <div className="absolute -bottom-10 -right-10 w-40 h-40 bg-bjj-gold/10 rounded-full blur-xl"></div>
@@ -795,10 +858,22 @@ const LandingPage = () => {
         <section id="techniques" className="py-20 px-6">
           <div className="max-w-7xl mx-auto">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-              <div className="order-2 lg:order-1 relative">
-                <div className="w-full aspect-[4/3] rounded-xl bg-card/30 border border-border/40 backdrop-blur-sm flex items-center justify-center">
-                  <p className="text-muted-foreground">Imagem da Biblioteca de Técnicas</p>
+              <div className="order-2 lg:order-1 relative flex justify-center">
+                <div className="relative bg-black rounded-[36px] p-2 shadow-xl border-4 border-gray-800">
+                  {/* Adicionando notch simulado */}
+                  <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-1/3 h-6 bg-black rounded-b-xl z-10"></div>
+                  {/* GIF de técnicas */}
+                  <div className="overflow-hidden rounded-[24px] bg-gray-900">
+                    <img 
+                      src="/tecnicas.gif" 
+                      alt="Demonstração da biblioteca de técnicas" 
+                      className="w-[250px] h-[455px] object-cover"
+                    />
+                  </div>
+                  {/* Botão home simulado */}
+                  <div className="absolute bottom-1 left-1/2 transform -translate-x-1/2 w-1/3 h-1 bg-gray-600 rounded-full"></div>
                 </div>
+                
                 {/* Elementos decorativos */}
                 <div className="absolute -bottom-6 -left-6 w-32 h-32 bg-bjj-gold/5 rounded-full blur-xl"></div>
                 <div className="absolute -top-10 -right-10 w-40 h-40 bg-bjj-gold/10 rounded-full blur-xl"></div>
@@ -868,10 +943,22 @@ const LandingPage = () => {
                 </Button>
               </div>
               
-              <div className="relative">
-                <div className="w-full aspect-[4/3] rounded-xl bg-card/30 border border-border/40 backdrop-blur-sm flex items-center justify-center">
-                  <p className="text-muted-foreground">Imagem de Gestão de Competições</p>
+              <div className="relative flex justify-center">
+                <div className="relative bg-black rounded-[36px] p-2 shadow-xl border-4 border-gray-800">
+                  {/* Adicionando notch simulado */}
+                  <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-1/3 h-6 bg-black rounded-b-xl z-10"></div>
+                  {/* GIF de competições */}
+                  <div className="overflow-hidden rounded-[24px] bg-gray-900">
+                    <img 
+                      src="/competicoes.gif" 
+                      alt="Demonstração da gestão de competições" 
+                      className="w-[250px] h-[455px] object-cover"
+                    />
+                  </div>
+                  {/* Botão home simulado */}
+                  <div className="absolute bottom-1 left-1/2 transform -translate-x-1/2 w-1/3 h-1 bg-gray-600 rounded-full"></div>
                 </div>
+                
                 {/* Elementos decorativos */}
                 <div className="absolute -top-6 -left-6 w-32 h-32 bg-bjj-gold/5 rounded-full blur-xl"></div>
                 <div className="absolute -bottom-10 -right-10 w-40 h-40 bg-bjj-gold/10 rounded-full blur-xl"></div>
@@ -914,10 +1001,22 @@ const LandingPage = () => {
                 </Button>
               </div>
               
-              <div className="relative">
-                <div className="w-full aspect-[4/3] rounded-xl bg-card/30 border border-border/40 backdrop-blur-sm flex items-center justify-center">
-                  <p className="text-muted-foreground">Imagem de Observações e Notas</p>
+              <div className="relative flex justify-center">
+                <div className="relative bg-black rounded-[36px] p-2 shadow-xl border-4 border-gray-800">
+                  {/* Adicionando notch simulado */}
+                  <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-1/3 h-6 bg-black rounded-b-xl z-10"></div>
+                  {/* GIF de observações */}
+                  <div className="overflow-hidden rounded-[24px] bg-gray-900">
+                    <img 
+                      src="/Observacoes.gif" 
+                      alt="Demonstração de observações e anotações" 
+                      className="w-[250px] h-[455px] object-cover"
+                    />
+                  </div>
+                  {/* Botão home simulado */}
+                  <div className="absolute bottom-1 left-1/2 transform -translate-x-1/2 w-1/3 h-1 bg-gray-600 rounded-full"></div>
                 </div>
+                
                 {/* Elementos decorativos */}
                 <div className="absolute -top-6 -left-6 w-32 h-32 bg-bjj-gold/5 rounded-full blur-xl"></div>
                 <div className="absolute -bottom-10 -right-10 w-40 h-40 bg-bjj-gold/10 rounded-full blur-xl"></div>
@@ -930,10 +1029,22 @@ const LandingPage = () => {
         <section id="gameplan" className="py-20 px-6">
           <div className="max-w-7xl mx-auto">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-              <div className="order-2 lg:order-1 relative">
-                <div className="w-full aspect-[4/3] rounded-xl bg-card/30 border border-border/40 backdrop-blur-sm flex items-center justify-center">
-                  <p className="text-muted-foreground">Imagem do Plano de Jogo</p>
+              <div className="order-2 lg:order-1 relative flex justify-center">
+                <div className="relative bg-black rounded-[36px] p-2 shadow-xl border-4 border-gray-800">
+                  {/* Adicionando notch simulado */}
+                  <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-1/3 h-6 bg-black rounded-b-xl z-10"></div>
+                  {/* GIF do plano de jogo */}
+                  <div className="overflow-hidden rounded-[24px] bg-gray-900">
+                    <img 
+                      src="/plano-de-jogo.gif" 
+                      alt="Demonstração da funcionalidade de plano de jogo" 
+                      className="w-[250px] h-[455px] object-cover"
+                    />
+                  </div>
+                  {/* Botão home simulado */}
+                  <div className="absolute bottom-1 left-1/2 transform -translate-x-1/2 w-1/3 h-1 bg-gray-600 rounded-full"></div>
                 </div>
+                
                 {/* Elementos decorativos */}
                 <div className="absolute -bottom-6 -left-6 w-32 h-32 bg-bjj-gold/5 rounded-full blur-xl"></div>
                 <div className="absolute -top-10 -right-10 w-40 h-40 bg-bjj-gold/10 rounded-full blur-xl"></div>
@@ -1004,10 +1115,79 @@ const LandingPage = () => {
                 </Button>
               </div>
               
-              <div className="relative">
-                <div className="w-full aspect-[4/3] rounded-xl bg-card/30 border border-border/40 backdrop-blur-sm flex items-center justify-center">
-                  <p className="text-muted-foreground">Imagem do I.A Sensei</p>
+              <div className="relative flex justify-center">
+                <div className="relative bg-black rounded-[36px] p-2 shadow-xl border-4 border-gray-800">
+                  {/* Adicionando notch simulado */}
+                  <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-1/3 h-6 bg-black rounded-b-xl z-10"></div>
+                  {/* GIF da IA Sensei */}
+                  <div className="overflow-hidden rounded-[24px] bg-gray-900">
+                    <img 
+                      src="/ia-sensei.gif" 
+                      alt="Demonstração da funcionalidade IA Sensei" 
+                      className="w-[250px] h-[455px] object-cover"
+                    />
+                  </div>
+                  {/* Botão home simulado */}
+                  <div className="absolute bottom-1 left-1/2 transform -translate-x-1/2 w-1/3 h-1 bg-gray-600 rounded-full"></div>
                 </div>
+                
+                {/* Elementos decorativos */}
+                <div className="absolute -top-6 -left-6 w-32 h-32 bg-bjj-gold/5 rounded-full blur-xl"></div>
+                <div className="absolute -bottom-10 -right-10 w-40 h-40 bg-bjj-gold/10 rounded-full blur-xl"></div>
+              </div>
+            </div>
+          </div>
+        </section>
+        
+        {/* Checklist Section */}
+        <section id="checklist" className="py-20 px-6 bg-gradient-to-b from-transparent to-[#13141A]">
+          <div className="max-w-7xl mx-auto">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+              <div>
+                <h2 className="text-3xl md:text-4xl font-bold mb-4">{CHECKLIST_CONTENT.title}</h2>
+                <p className="text-lg text-muted-foreground mb-8">
+                  {CHECKLIST_CONTENT.description}
+                </p>
+                
+                <div className="space-y-6">
+                  {CHECKLIST_CONTENT.features.map((feature, index) => (
+                    <div key={index} className="flex gap-4">
+                      <div className="flex-shrink-0 w-10 h-10 rounded-full bg-bjj-gold/10 flex items-center justify-center">
+                        <feature.icon className="w-5 h-5 text-bjj-gold" />
+                      </div>
+                      <div>
+                        <h3 className="text-lg font-semibold mb-1">{feature.title}</h3>
+                        <p className="text-muted-foreground">{feature.description}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                
+                <Button 
+                  className="mt-10 bg-bjj-gold hover:bg-bjj-gold/90 text-primary-foreground"
+                  onClick={handleSignUp}
+                >
+                  <CheckSquare className="mr-2 h-5 w-5" />
+                  {CHECKLIST_CONTENT.ctaButton}
+                </Button>
+              </div>
+              
+              <div className="relative flex justify-center">
+                <div className="relative bg-black rounded-[36px] p-2 shadow-xl border-4 border-gray-800">
+                  {/* Adicionando notch simulado */}
+                  <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-1/3 h-6 bg-black rounded-b-xl z-10"></div>
+                  {/* GIF de checklist */}
+                  <div className="overflow-hidden rounded-[24px] bg-gray-900">
+                    <img 
+                      src="/checklist.gif" 
+                      alt="Demonstração da funcionalidade de Checklist" 
+                      className="w-[250px] h-[455px] object-cover"
+                    />
+                  </div>
+                  {/* Botão home simulado */}
+                  <div className="absolute bottom-1 left-1/2 transform -translate-x-1/2 w-1/3 h-1 bg-gray-600 rounded-full"></div>
+                </div>
+                
                 {/* Elementos decorativos */}
                 <div className="absolute -top-6 -left-6 w-32 h-32 bg-bjj-gold/5 rounded-full blur-xl"></div>
                 <div className="absolute -bottom-10 -right-10 w-40 h-40 bg-bjj-gold/10 rounded-full blur-xl"></div>
