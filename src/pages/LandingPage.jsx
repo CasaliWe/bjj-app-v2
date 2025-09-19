@@ -245,26 +245,7 @@ const COMMUNITY_CONTENT = {
 };
 
 // Conteúdo da seção de Depoimentos
-const TESTIMONIALS_CONTENT = {
-  title: "O que Dizem Nossos Usuários",
-  testimonials: [
-    {
-      name: "Carlos Silva",
-      role: "Faixa Preta 2º Grau",
-      content: "A BJJ Academy transformou a forma como organizo minhas técnicas. Consigo revisar tudo com facilidade e meu progresso acelerou significativamente."
-    },
-    {
-      name: "Paula Martins",
-      role: "Faixa Roxa",
-      content: "O recurso de análise de competições me ajudou a identificar padrões nos meus erros e melhorar minha estratégia. Recomendo para todos os competidores."
-    },
-    {
-      name: "Ricardo Almeida",
-      role: "Professor - Faixa Preta 3º Grau",
-      content: "Como professor, uso o BJJ Academy para acompanhar o desenvolvimento dos meus alunos. É uma ferramenta incrível para gestão de academia."
-    }
-  ]
-};
+const TESTIMONIALS_TITLE = "O que Dizem Nossos Usuários";
 
 // Conteúdo da seção de Preços
 const PRICING_CONTENT = {
@@ -409,16 +390,87 @@ const LandingPage = () => {
   const isMobile = useIsMobile();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeTestimonial, setActiveTestimonial] = useState(0);
+  const [testimonials, setTestimonials] = useState([]);
+
+  // Buscar os depoimentos da API
+  useEffect(() => {
+    const fetchTestimonials = async () => {
+      try {
+        const response = await fetch(`${import.meta.env.VITE_API_URL}endpoint/sistema/buscar-avaliacoes.php`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json"
+          }
+        });
+        
+        const result = await response.json();
+        
+        if (result.success && result.data && result.data.length > 0) {
+          // Mapear os dados para o formato esperado pelos componentes
+          const formattedTestimonials = result.data.map(item => ({
+            name: item.nome,
+            role: item.faixa,
+            content: item.texto
+          }));
+          setTestimonials(formattedTestimonials);
+        } else {
+          // Dados padrão caso a API não retorne nada
+          setTestimonials([
+            {
+              name: "Carlos Silva",
+              role: "Faixa Preta 2º Grau",
+              content: "A BJJ Academy transformou a forma como organizo minhas técnicas. Consigo revisar tudo com facilidade e meu progresso acelerou significativamente."
+            },
+            {
+              name: "Paula Martins",
+              role: "Faixa Roxa",
+              content: "O recurso de análise de competições me ajudou a identificar padrões nos meus erros e melhorar minha estratégia. Recomendo para todos os competidores."
+            },
+            {
+              name: "Ricardo Almeida",
+              role: "Professor - Faixa Preta 3º Grau",
+              content: "Como professor, uso o BJJ Academy para acompanhar o desenvolvimento dos meus alunos. É uma ferramenta incrível para gestão de academia."
+            }
+          ]);
+        }
+      } catch (error) {
+        console.error("Erro ao buscar depoimentos:", error);
+        // Dados padrão em caso de erro
+        setTestimonials([
+          {
+            name: "Carlos Silva",
+            role: "Faixa Preta 2º Grau",
+            content: "A BJJ Academy transformou a forma como organizo minhas técnicas. Consigo revisar tudo com facilidade e meu progresso acelerou significativamente."
+          },
+          {
+            name: "Paula Martins",
+            role: "Faixa Roxa",
+            content: "O recurso de análise de competições me ajudou a identificar padrões nos meus erros e melhorar minha estratégia. Recomendo para todos os competidores."
+          },
+          {
+            name: "Ricardo Almeida",
+            role: "Professor - Faixa Preta 3º Grau",
+            content: "Como professor, uso o BJJ Academy para acompanhar o desenvolvimento dos meus alunos. É uma ferramenta incrível para gestão de academia."
+          }
+        ]);
+      }
+    };
+    
+    fetchTestimonials();
+  }, []);
 
   // Alterna para o próximo depoimento a cada 5 segundos
   useEffect(() => {
+    // Só inicia o intervalo se houver depoimentos
+    if (testimonials.length === 0) return;
+    
     const interval = setInterval(() => {
       setActiveTestimonial((current) => {
-        return (current + 1) % TESTIMONIALS_CONTENT.testimonials.length;
+        return (current + 1) % testimonials.length;
       });
     }, 5000);
     return () => clearInterval(interval);
-  }, []);
+  }, [testimonials]);
 
   // Função para navegar para a página de cadastro
   const handleSignUp = () => {
@@ -961,44 +1013,50 @@ const LandingPage = () => {
         <section className="py-20 px-6 bg-gradient-to-b from-transparent to-[#13141A]">
           <div className="max-w-7xl mx-auto">
             <div className="text-center mb-16">
-              <h2 className="text-3xl md:text-4xl font-bold mb-4">{TESTIMONIALS_CONTENT.title}</h2>
+              <h2 className="text-3xl md:text-4xl font-bold mb-4">{TESTIMONIALS_TITLE}</h2>
             </div>
             
-            <div className="relative max-w-3xl mx-auto">
-              <div className="overflow-hidden relative min-h-[280px]">
-                {TESTIMONIALS_CONTENT.testimonials.map((testimonial, index) => (
-                  <div 
-                    key={index}
-                    className={`absolute top-0 left-0 w-full transition-all duration-700 ${
-                      index === activeTestimonial 
-                        ? "opacity-100 translate-x-0" 
-                        : "opacity-0 translate-x-24"
-                    }`}
-                  >
-                    <Card className="bg-card/50 border-border/50 backdrop-blur-sm p-8">
-                      <div className="flex flex-col items-center text-center">
-                        <h4 className="text-xl font-bold text-bjj-gold mb-1">{testimonial.name}</h4>
-                        <p className="text-sm text-muted-foreground mb-6">{testimonial.role}</p>
-                        <p className="text-lg italic text-muted-foreground">"{testimonial.content}"</p>
-                      </div>
-                    </Card>
-                  </div>
-                ))}
+            {testimonials.length > 0 ? (
+              <div className="relative max-w-3xl mx-auto">
+                <div className="overflow-hidden relative min-h-[280px]">
+                  {testimonials.map((testimonial, index) => (
+                    <div 
+                      key={index}
+                      className={`absolute top-0 left-0 w-full transition-all duration-700 ${
+                        index === activeTestimonial 
+                          ? "opacity-100 translate-x-0" 
+                          : "opacity-0 translate-x-24"
+                      }`}
+                    >
+                      <Card className="bg-card/50 border-border/50 backdrop-blur-sm p-8">
+                        <div className="flex flex-col items-center text-center">
+                          <h4 className="text-xl font-bold text-bjj-gold mb-1">{testimonial.name}</h4>
+                          <p className="text-sm text-muted-foreground mb-6">{testimonial.role}</p>
+                          <p className="text-lg italic text-muted-foreground">"{testimonial.content}"</p>
+                        </div>
+                      </Card>
+                    </div>
+                  ))}
+                </div>
+                
+                <div className="flex justify-center gap-2 mt-6">
+                  {testimonials.map((_, index) => (
+                    <button 
+                      key={index}
+                      onClick={() => setActiveTestimonial(index)}
+                      className={`w-3 h-3 rounded-full ${
+                        index === activeTestimonial ? "bg-bjj-gold" : "bg-muted-foreground/30"
+                      }`}
+                      aria-label={`Ver depoimento ${index + 1}`}
+                    ></button>
+                  ))}
+                </div>
               </div>
-              
-              <div className="flex justify-center gap-2 mt-6">
-                {TESTIMONIALS_CONTENT.testimonials.map((_, index) => (
-                  <button 
-                    key={index}
-                    onClick={() => setActiveTestimonial(index)}
-                    className={`w-3 h-3 rounded-full ${
-                      index === activeTestimonial ? "bg-bjj-gold" : "bg-muted-foreground/30"
-                    }`}
-                    aria-label={`Ver depoimento ${index + 1}`}
-                  ></button>
-                ))}
+            ) : (
+              <div className="flex justify-center">
+                <div className="w-16 h-16 border-4 border-bjj-gold/20 border-t-bjj-gold rounded-full animate-spin"></div>
               </div>
-            </div>
+            )}
           </div>
         </section>
         
