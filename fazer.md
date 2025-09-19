@@ -6,7 +6,6 @@
 - iamgem observação;
 - plano de jogo imagme;
 - ia sensei imagem;
-- puxar do banco depoimentos com: nome, faixa e comentario;
 - puxar o preço do banco e colocar no card;
 - FAZER IA SENSEI;
 - FAZER CHEKLIST;

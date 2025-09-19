@@ -391,6 +391,13 @@ const LandingPage = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeTestimonial, setActiveTestimonial] = useState(0);
   const [testimonials, setTestimonials] = useState([]);
+  const [contactData, setContactData] = useState({
+    email: "contato@bjjacademy.com.br",
+    instagram: { handle: "@bjjacademyapp", url: "https://instagram.com" },
+    tiktok: { handle: "BJJ Academy Oficial", url: "https://tiktok.com" },
+    youtube: { handle: "BJJ Academy Channel", url: "https://youtube.com" },
+    precoMensal: "32.90"
+  });
 
   // Buscar os depoimentos da API
   useEffect(() => {
@@ -471,6 +478,45 @@ const LandingPage = () => {
     }, 5000);
     return () => clearInterval(interval);
   }, [testimonials]);
+  
+  // Buscar dados de contato da API
+  useEffect(() => {
+    const fetchContactData = async () => {
+      try {
+        const response = await fetch(`${import.meta.env.VITE_API_URL}endpoint/sistema/buscar-contatos.php`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json"
+          }
+        });
+        
+        const result = await response.json();
+        
+        if (result.success && result.data) {
+          setContactData({
+            email: result.data.email || "contato@bjjacademy.com.br",
+            instagram: { 
+              handle: result.data.instagram_handle || "@bjjacademy", 
+              url: result.data.instagram_url || "https://instagram.com/bjjacademy" 
+            },
+            tiktok: { 
+              handle: result.data.tiktok_handle || "BJJ Academy Oficial", 
+              url: result.data.tiktok_url || "https://tiktok.com/@bjjacademy" 
+            },
+            youtube: { 
+              handle: result.data.youtube_handle || "BJJ Academy Channel", 
+              url: result.data.youtube_url || "https://youtube.com/bjjacademy" 
+            },
+            precoMensal: result.data.preco_mensal || "32.90"
+          });
+        }
+      } catch (error) {
+        console.error("Erro ao buscar dados de contato:", error);
+      }
+    };
+    
+    fetchContactData();
+  }, []);
 
   // Função para navegar para a página de cadastro
   const handleSignUp = () => {
@@ -1096,7 +1142,9 @@ const LandingPage = () => {
                       <p className="text-muted-foreground text-sm mb-4">{plan.description}</p>
                       
                       <div className="mb-2">
-                        <span className="text-3xl font-bold">{plan.price}</span>
+                        <span className="text-3xl font-bold">
+                          {`R$ ${Number(contactData.precoMensal).toFixed(2).replace('.', ',')}/mês`}
+                        </span>
                       </div>
                       
                       {plan.priceHighlight && (
@@ -1205,13 +1253,31 @@ const LandingPage = () => {
               </div>
               <p className="text-muted-foreground mb-6">{FOOTER_CONTENT.tagline}</p>
               <div className="flex gap-4">
-                <a href="#instagram" className="w-8 h-8 rounded-full bg-card/50 flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors">
+                <a 
+                  href={contactData.instagram.url} 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  className="w-8 h-8 rounded-full bg-card/50 flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors"
+                  aria-label="Instagram"
+                >
                   <Instagram />
                 </a>
-                <a href="#tiktok" className="w-8 h-8 rounded-full bg-card/50 flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors">
+                <a 
+                  href={contactData.tiktok.url} 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  className="w-8 h-8 rounded-full bg-card/50 flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors"
+                  aria-label="TikTok"
+                >
                   <TikTok />
                 </a>
-                <a href="#youtube" className="w-8 h-8 rounded-full bg-card/50 flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors">
+                <a 
+                  href={contactData.youtube.url} 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  className="w-8 h-8 rounded-full bg-card/50 flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors"
+                  aria-label="YouTube"
+                >
                   <Youtube />
                 </a>
               </div>
