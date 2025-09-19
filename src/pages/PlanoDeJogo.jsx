@@ -1,14 +1,13 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
 import { MobileNav } from "@/components/MobileNav";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Gamepad2, ArrowRight } from "lucide-react";
+import { Gamepad2 } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
-
 import { useGetUser } from "@/hooks/use-getUser";
+import PlanoJogoContainer from "@/components/planoJogo/PlanoJogoContainer";
+import TitleUpdater from "@/components/TitleUpdater";
 
 // Upgrade
 import UpgradeModal from "@/components/upgrade/UpgradeModal";
@@ -26,75 +25,21 @@ const PlanoDeJogo = () => {
 
   return (
     <SidebarProvider>
-      <div className="h-screen flex flex-col">
-        <div className="flex flex-1">
-          <AppSidebar />
-          
-          <main className="flex-1 flex flex-col">
-            <div className="flex items-center h-16 px-4 border-b bg-background md:px-6">
-              <div className="hidden md:block">
-                {/* <SidebarTrigger /> */}
-              </div>
-              <div className="md:hidden">
-                <MobileNav />
-              </div>              <div className="flex items-center w-full justify-between">
-                <div className="flex items-center gap-2">
-                  <SidebarTrigger />
-                  <h1 className="text-xl font-bold">Plano de Jogo</h1>
-                </div>
-              </div>
+      <TitleUpdater title="Plano de Jogo" />
+      <div className="flex min-h-screen w-full bg-background overflow-x-hidden">
+        <AppSidebar />
+        <div className="flex-1 flex flex-col overflow-x-hidden">
+          <header className="sticky top-0 z-10 border-b bg-background p-4 flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <SidebarTrigger />
+              <h1 className="text-xl font-semibold">Plano de Jogo</h1>
             </div>
-            
-            <div className="flex-1 p-4 md:p-6 overflow-auto pb-20 md:pb-6">
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-2xl font-bold flex items-center gap-2">
-                  <Gamepad2 className="h-5 w-5 text-primary" />
-                  Em breve
-                </h2>
-              </div>
+          </header>
 
-              <Card className="mb-6">
-                <CardHeader className="pb-3">
-                  <CardTitle>Estratégia para a luta</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="flex flex-col md:flex-row gap-6 items-center">
-                    <div className="md:w-1/4 flex justify-center">
-                      <Gamepad2 className="h-32 w-32 text-primary opacity-80" />
-                    </div>
-                    <div className="md:w-3/4">
-                      <p className="text-lg mb-6">
-                        Estamos trabalhando para disponibilizar em breve uma ferramenta completa 
-                        para planejar suas estratégias de luta no Jiu-Jitsu, adaptando seu jogo 
-                        para diferentes situações e oponentes.
-                      </p>
-                      
-                      <div className="bg-muted p-4 rounded-lg">
-                        <h3 className="font-medium mb-4">Funcionalidades que estarão disponíveis:</h3>
-                        <ul className="space-y-3 pl-1">
-                          <li className="flex items-center gap-2">
-                            <ArrowRight className="h-5 w-5 text-primary flex-shrink-0" />
-                            <span>Definição de estratégias personalizadas para cada tipo de oponente</span>
-                          </li>
-                          <li className="flex items-center gap-2">
-                            <ArrowRight className="h-5 w-5 text-primary flex-shrink-0" />
-                            <span>Construção de árvores de decisão para diferentes situações de luta</span>
-                          </li>
-                          <li className="flex items-center gap-2">
-                            <ArrowRight className="h-5 w-5 text-primary flex-shrink-0" />
-                            <span>Análise de pontos fortes e fracos do seu jogo</span>
-                          </li>
-                          <li className="flex items-center gap-2">
-                            <ArrowRight className="h-5 w-5 text-primary flex-shrink-0" />
-                            <span>Recomendações de técnicas conforme seu estilo de luta</span>
-                          </li>
-                        </ul>
-                      </div>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
+          <MobileNav />
+          
+          <main className="flex-1 p-4 md:p-6 pb-32 md:pb-6 overflow-x-hidden">
+            <PlanoJogoContainer />
           </main>
         </div>
       </div>
