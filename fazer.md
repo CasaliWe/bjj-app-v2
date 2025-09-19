@@ -1,12 +1,4 @@
 ### FALTANDO FAZER:
-- imagem do app no inicio, primeira sessão.
-- imagem treinos;
-- tecnicas imagens;
-- imagem competições;
-- iamgem observação;
-- plano de jogo imagme;
-- ia sensei imagem;
-- puxar o preço do banco e colocar no card;
 - FAZER IA SENSEI;
 - FAZER CHEKLIST;
 - FAZER PLANO DE JOGO;
