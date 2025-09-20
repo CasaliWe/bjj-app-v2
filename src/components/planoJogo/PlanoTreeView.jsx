@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { ChevronRight, ChevronDown, Plus, Check, X, Trash2, Edit, ArrowLeft } from "lucide-react";
+import { ChevronRight, ChevronDown, Plus, Check, X, Trash2, Edit, ArrowLeft, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { usePlanoJogo } from "@/hooks/use-plano-jogo";
@@ -18,6 +18,7 @@ export default function PlanoTreeView({ plano, onBack }) {
   const [actionPerformed, setActionPerformed] = useState(false);
   const [detalhesOpen, setDetalhesOpen] = useState(false);
   const [detalhesTecnica, setDetalhesTecnica] = useState({ tecnicaId: null, tecnicaInline: null });
+  const [processing, setProcessing] = useState({}); // { [nodeId_action]: true }
   const { toast } = useToast();
   
   // Evita recarregamentos redundantes; as ações já atualizam o estado via hook
@@ -65,14 +66,14 @@ export default function PlanoTreeView({ plano, onBack }) {
     }
   };
 
-  const handleAddRespostaCerto = (parentId) => {
+  const handleAddRespostaCerto = async (parentId) => {
+    setProcessing(prev => ({ ...prev, [parentId + '_certo']: true }));
     const resposta = {
       nome: "Deu certo",
       descricao: "",
       tipo: "certo"
     };
-    
-    const novoNode = adicionarRespostaCerto(plano.id, parentId, resposta);
+    const novoNode = await adicionarRespostaCerto(plano.id, parentId, resposta);
     if (novoNode) {
       // Expandir o nó pai automaticamente
       setExpandedNodes(prev => ({
@@ -83,16 +84,17 @@ export default function PlanoTreeView({ plano, onBack }) {
       // Indicar que uma ação foi realizada
       setActionPerformed(true);
     }
+    setProcessing(prev => ({ ...prev, [parentId + '_certo']: false }));
   };
 
-  const handleAddRespostaErrado = (parentId) => {
+  const handleAddRespostaErrado = async (parentId) => {
+    setProcessing(prev => ({ ...prev, [parentId + '_errado']: true }));
     const resposta = {
       nome: "Deu errado",
       descricao: "",
       tipo: "errado"
     };
-    
-    const novoNode = adicionarRespostaErrado(plano.id, parentId, resposta);
+    const novoNode = await adicionarRespostaErrado(plano.id, parentId, resposta);
     if (novoNode) {
       // Expandir o nó pai automaticamente
       setExpandedNodes(prev => ({
@@ -103,10 +105,12 @@ export default function PlanoTreeView({ plano, onBack }) {
       // Indicar que uma ação foi realizada
       setActionPerformed(true);
     }
+    setProcessing(prev => ({ ...prev, [parentId + '_errado']: false }));
   };
 
-  const handleDeleteNode = (nodeId) => {
-    const planoAtualizado = removerNode(plano.id, nodeId);
+  const handleDeleteNode = async (nodeId) => {
+    setProcessing(prev => ({ ...prev, [nodeId + '_delete']: true }));
+    const planoAtualizado = await removerNode(plano.id, nodeId);
     if (planoAtualizado) {
       toast({
         title: "Item removido",
@@ -116,6 +120,7 @@ export default function PlanoTreeView({ plano, onBack }) {
       // Indicar que uma ação foi realizada
       setActionPerformed(true);
     }
+    setProcessing(prev => ({ ...prev, [nodeId + '_delete']: false }));
   };
 
   const handleTecnicaSelected = (tecnica) => {
@@ -242,9 +247,14 @@ export default function PlanoTreeView({ plano, onBack }) {
                         size="icon" 
                         className="h-6 w-6 sm:h-6 sm:w-6 bg-green-50 border-green-200 text-green-700 hover:bg-green-100"
                         onClick={() => handleAddRespostaCerto(node.id)}
+                        disabled={!!processing[node.id + '_certo']}
                         title="Adicionar resposta positiva"
                       >
-                        <Check className="h-3 w-3" />
+                        {processing[node.id + '_certo'] ? (
+                          <Loader2 className="h-3 w-3 animate-spin" />
+                        ) : (
+                          <Check className="h-3 w-3" />
+                        )}
                       </Button>
                       
                       <Button 
@@ -252,9 +262,14 @@ export default function PlanoTreeView({ plano, onBack }) {
                         size="icon" 
                         className="h-6 w-6 sm:h-6 sm:w-6 bg-red-50 border-red-200 text-red-700 hover:bg-red-100"
                         onClick={() => handleAddRespostaErrado(node.id)}
+                        disabled={!!processing[node.id + '_errado']}
                         title="Adicionar resposta negativa"
                       >
-                        <X className="h-3 w-3" />
+                        {processing[node.id + '_errado'] ? (
+                          <Loader2 className="h-3 w-3 animate-spin" />
+                        ) : (
+                          <X className="h-3 w-3" />
+                        )}
                       </Button>
                     </>
                   )}
@@ -274,9 +289,14 @@ export default function PlanoTreeView({ plano, onBack }) {
                     size="icon" 
                     className="h-6 w-6 sm:h-6 sm:w-6 text-destructive hover:text-destructive/80 hover:bg-destructive/10"
                     onClick={() => handleDeleteNode(node.id)}
+                    disabled={!!processing[node.id + '_delete']}
                     title="Remover"
                   >
-                    <Trash2 className="h-3 w-3" />
+                    {processing[node.id + '_delete'] ? (
+                      <Loader2 className="h-3 w-3 animate-spin" />
+                    ) : (
+                      <Trash2 className="h-3 w-3" />
+                    )}
                   </Button>
                 </div>
               </div>

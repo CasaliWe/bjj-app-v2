@@ -10,6 +10,7 @@ import { usePlanoJogo } from "@/hooks/use-plano-jogo";
 import PlanoFormModal from "./PlanoFormModal";
 import { useToast } from "@/hooks/use-toast";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
+import LoadingSpinner from "@/components/ui/LoadingSpinner";
 
 export default function PlanosList({ onSelectPlano }) {
   const { planos, criarPlano, excluirPlano, carregando } = usePlanoJogo();
@@ -55,9 +56,7 @@ export default function PlanosList({ onSelectPlano }) {
         </div>
 
         {carregando ? (
-          <div className="flex justify-center items-center py-12">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-          </div>
+          <LoadingSpinner message="Carregando planos..." />
         ) : planos.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-12 text-center p-4 border rounded-lg border-dashed">
             <p className="text-muted-foreground mb-4 text-sm">Você ainda não possui planos de jogo cadastrados.</p>

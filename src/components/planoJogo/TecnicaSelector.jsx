@@ -8,6 +8,7 @@ import { Search, Tag } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { useTecnicas } from "@/hooks/use-tecnicas.js";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import LoadingSpinner from "@/components/ui/LoadingSpinner";
 
 export default function TecnicaSelector({ isOpen, onClose, onSelectTecnica }) {
   const { tecnicas, carregarTecnicas, carregando } = useTecnicas();
@@ -81,9 +82,7 @@ export default function TecnicaSelector({ isOpen, onClose, onSelectTecnica }) {
             </div>
 
             {carregando ? (
-              <div className="flex justify-center items-center h-48">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-              </div>
+              <LoadingSpinner message="Carregando técnicas..." className="py-10" />
             ) : tecnicasFiltradas.length === 0 ? (
               <div className="flex flex-col items-center justify-center h-48 text-center">
                 <p className="text-muted-foreground mb-4">
