@@ -39,12 +39,11 @@ export default function PlanoJogoContainer() {
         <PlanoTreeView 
           plano={planoAtual} 
           onBack={handleBackToList} 
-          key={`tree-${planoAtual?.id}-${updateCounter}`} 
+          key={`tree-${planoAtual?.id || selectedPlanoId}`}
         />
       ) : (
         <PlanosList 
-          onSelectPlano={handleSelectPlano} 
-          key={`list-${updateCounter}`} 
+          onSelectPlano={handleSelectPlano}
         />
       )}
     </div>

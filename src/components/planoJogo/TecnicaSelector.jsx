@@ -7,11 +7,13 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter }
 import { Search, Tag } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { useTecnicas } from "@/hooks/use-tecnicas.js";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export default function TecnicaSelector({ isOpen, onClose, onSelectTecnica }) {
   const { tecnicas, carregarTecnicas, carregando } = useTecnicas();
   const [pesquisa, setPesquisa] = useState("");
   const [tecnicasFiltradas, setTecnicasFiltradas] = useState([]);
+  const [acaoNome, setAcaoNome] = useState("");
 
   // Carregar técnicas quando o componente montar
   useEffect(() => {
@@ -46,77 +48,107 @@ export default function TecnicaSelector({ isOpen, onClose, onSelectTecnica }) {
     onSelectTecnica(tecnica);
   };
 
+  const handleAddAcao = () => {
+    const nome = acaoNome.trim();
+    if (!nome) return;
+    // Dispara no mesmo contrato do onSelectTecnica, mas marcando como ação custom
+    onSelectTecnica({ nome, descricao: "", tipo: "acao" });
+    setAcaoNome("");
+  };
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[600px] max-h-[80vh] flex flex-col">
+      <DialogContent className="w-[calc(100%-2rem)] sm:max-w-[640px] max-h-[80vh] flex flex-col overflow-hidden">
         <DialogHeader>
           <DialogTitle>Selecionar Técnica</DialogTitle>
         </DialogHeader>
-        
-        <div className="relative mb-4">
-          <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
-          <Input
-            placeholder="Pesquisar técnica..."
-            className="pl-8"
-            value={pesquisa}
-            onChange={handleSearch}
-          />
-        </div>
 
-        {carregando ? (
-          <div className="flex justify-center items-center h-48">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-          </div>
-        ) : tecnicasFiltradas.length === 0 ? (
-          <div className="flex flex-col items-center justify-center h-48 text-center">
-            <p className="text-muted-foreground mb-4">
-              {pesquisa 
-                ? "Nenhuma técnica encontrada para sua pesquisa" 
-                : "Você ainda não possui técnicas cadastradas"}
-            </p>
-            <p className="text-xs text-muted-foreground">
-              Vá para a seção "Técnicas" para adicionar suas primeiras técnicas
-            </p>
-          </div>
-        ) : (
-          <ScrollArea className="h-[300px] sm:h-[400px] w-full pr-4">
-            <div className="grid grid-cols-1 gap-3">
-              {tecnicasFiltradas.map((tecnica) => (
-                <Card 
-                  key={tecnica.id} 
-                  className="cursor-pointer hover:shadow-md transition-shadow"
-                  onClick={() => handleSelectTecnica(tecnica)}
-                >
-                  <CardHeader className="pb-2">
-                    <CardTitle className="text-base">{tecnica.nome}</CardTitle>
-                    {tecnica.posicao && (
-                      <CardDescription className="text-xs flex items-center">
-                        <Tag className="h-3 w-3 mr-1" />
-                        {tecnica.posicao}
-                      </CardDescription>
-                    )}
-                  </CardHeader>
-                  
-                  {tecnica.descricao && (
-                    <CardContent className="py-2">
-                      <p className="text-sm line-clamp-2">{tecnica.descricao}</p>
-                    </CardContent>
-                  )}
-                  
-                  <CardFooter className="pt-0 pb-3">
-                    <div className="flex flex-wrap gap-2">
-                      {tecnica.categoria && (
-                        <Badge variant="outline" className="text-xs">
-                          {tecnica.categoria}
-                        </Badge>
-                      )}
-                    </div>
-                  </CardFooter>
-                </Card>
-              ))}
+        <Tabs defaultValue="tecnicas" className="w-full">
+          <TabsList className="w-full grid grid-cols-2">
+            <TabsTrigger value="tecnicas">Técnicas</TabsTrigger>
+            <TabsTrigger value="acao">Ação manual</TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="tecnicas">
+            <div className="relative mb-4">
+              <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+              <Input
+                placeholder="Pesquisar técnica..."
+                className="pl-8"
+                value={pesquisa}
+                onChange={handleSearch}
+              />
             </div>
-          </ScrollArea>
-        )}
+
+            {carregando ? (
+              <div className="flex justify-center items-center h-48">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+              </div>
+            ) : tecnicasFiltradas.length === 0 ? (
+              <div className="flex flex-col items-center justify-center h-48 text-center">
+                <p className="text-muted-foreground mb-4">
+                  {pesquisa 
+                    ? "Nenhuma técnica encontrada para sua pesquisa" 
+                    : "Você ainda não possui técnicas cadastradas"}
+                </p>
+                <p className="text-xs text-muted-foreground">
+                  Vá para a seção "Técnicas" para adicionar suas primeiras técnicas
+                </p>
+              </div>
+            ) : (
+              <ScrollArea className="h-[300px] sm:h-[400px] w-full overflow-x-hidden pr-2">
+                <div className="grid grid-cols-1 gap-3 w-full">
+                  {tecnicasFiltradas.map((tecnica) => (
+                    <Card 
+                      key={tecnica.id} 
+                      className="cursor-pointer hover:shadow-md transition-shadow"
+                      onClick={() => handleSelectTecnica(tecnica)}
+                    >
+                      <CardHeader className="pb-2">
+                        <CardTitle className="text-base">{tecnica.nome}</CardTitle>
+                        {tecnica.posicao && (
+                          <CardDescription className="text-xs flex items-center">
+                            <Tag className="h-3 w-3 mr-1" />
+                            {tecnica.posicao}
+                          </CardDescription>
+                        )}
+                      </CardHeader>
+                      {tecnica.descricao && (
+                        <CardContent className="py-2">
+                          <p className="text-sm line-clamp-2">{tecnica.descricao}</p>
+                        </CardContent>
+                      )}
+                      <CardFooter className="pt-0 pb-3">
+                        <div className="flex flex-wrap gap-2">
+                          {tecnica.categoria && (
+                            <Badge variant="outline" className="text-xs">
+                              {tecnica.categoria}
+                            </Badge>
+                          )}
+                        </div>
+                      </CardFooter>
+                    </Card>
+                  ))}
+                </div>
+              </ScrollArea>
+            )}
+          </TabsContent>
+
+          <TabsContent value="acao">
+            <div className="space-y-3">
+              <p className="text-sm text-muted-foreground">Digite apenas o nome da ação. Ex.: "Viro o quadril e ajusto a pegada"</p>
+              <div className="flex gap-2">
+                <Input 
+                  placeholder="Ex.: Viro o quadril e ajusto a pegada"
+                  value={acaoNome}
+                  onChange={(e) => setAcaoNome(e.target.value)}
+                  onKeyDown={(e) => { if (e.key === 'Enter') handleAddAcao(); }}
+                />
+                <Button onClick={handleAddAcao} disabled={!acaoNome.trim()}>Adicionar</Button>
+              </div>
+            </div>
+          </TabsContent>
+        </Tabs>
       </DialogContent>
     </Dialog>
   );

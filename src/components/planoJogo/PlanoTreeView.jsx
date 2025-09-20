@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
 import NodeFormModal from "./NodeFormModal";
 import TecnicaSelector from "./TecnicaSelector";
+import TecnicaDetailsModal from "./modals/TecnicaDetailsModal";
 
 export default function PlanoTreeView({ plano, onBack }) {
   const { adicionarNode, adicionarRespostaCerto, adicionarRespostaErrado, removerNode, carregarPlanos, selecionarPlano } = usePlanoJogo();
@@ -15,25 +16,16 @@ export default function PlanoTreeView({ plano, onBack }) {
   const [formNodeOpen, setFormNodeOpen] = useState(false);
   const [seletorTecnicaOpen, setSeletorTecnicaOpen] = useState(false);
   const [actionPerformed, setActionPerformed] = useState(false);
+  const [detalhesOpen, setDetalhesOpen] = useState(false);
+  const [detalhesTecnica, setDetalhesTecnica] = useState({ tecnicaId: null, tecnicaInline: null });
   const { toast } = useToast();
   
-  // Força atualização do plano quando alterações são feitas
+  // Evita recarregamentos redundantes; as ações já atualizam o estado via hook
   useEffect(() => {
-    if (plano) {
-      // Recarregar o plano atual para garantir que esteja atualizado
-      selecionarPlano(plano.id);
-    }
-  }, [plano?.id, selecionarPlano]);
-  
-  // Recarregar quando uma ação é executada
-  useEffect(() => {
-    if (actionPerformed && plano) {
-      // Recarregar o plano atual para garantir que esteja atualizado após ações
-      selecionarPlano(plano.id);
-      carregarPlanos();
+    if (actionPerformed) {
       setActionPerformed(false);
     }
-  }, [actionPerformed, plano, selecionarPlano, carregarPlanos]);
+  }, [actionPerformed]);
 
   if (!plano) {
     return (
@@ -130,8 +122,16 @@ export default function PlanoTreeView({ plano, onBack }) {
     const newNode = {
       nome: tecnica.nome,
       descricao: tecnica.descricao || "",
-      tipo: "tecnica",
-      tecnicaId: tecnica.id
+      tipo: tecnica.tipo || "tecnica",
+      ...(tecnica.id ? { tecnicaId: tecnica.id } : {}),
+      // Guardar alguns campos úteis para exibição futura (fallback se não achar por ID)
+      categoria: tecnica.categoria,
+      posicao: tecnica.posicao,
+      passos: Array.isArray(tecnica.passos) ? tecnica.passos : [],
+      observacoes: Array.isArray(tecnica.observacoes) ? tecnica.observacoes : [],
+      video_url: tecnica.video_url,
+      video_poster: tecnica.video_poster,
+      video: tecnica.video
     };
     
     handleNodeCreate(newNode, nodeParaAdicionar);
@@ -139,6 +139,25 @@ export default function PlanoTreeView({ plano, onBack }) {
     
     // Indicar que uma ação foi realizada
     setActionPerformed(true);
+  };
+
+  const abrirDetalhesTecnica = (node) => {
+    if (node.tipo === 'tecnica' && (node.tecnicaId || node.nome)) {
+      setDetalhesTecnica({
+        tecnicaId: node.tecnicaId || null,
+        tecnicaInline: node.tecnicaId ? null : {
+          nome: node.nome,
+          categoria: node.categoria,
+          posicao: node.posicao,
+          passos: node.passos || [],
+          observacoes: node.observacoes || [],
+          video_url: node.video_url,
+          video_poster: node.video_poster,
+          video: node.video
+        }
+      });
+      setDetalhesOpen(true);
+    }
   };
 
   // Componente recursivo para renderizar a árvore
@@ -199,9 +218,18 @@ export default function PlanoTreeView({ plano, onBack }) {
                   </div>
                   
                   {/* Nome do nó */}
-                  <div className="flex-1 min-w-0 text-xs sm:text-sm font-medium truncate max-w-[140px] sm:max-w-full mr-2 sm:mr-4">
+                  <button
+                    type="button"
+                    className={cn(
+                      "flex-1 min-w-0 text-left text-xs sm:text-sm font-medium truncate max-w-[140px] sm:max-w-full mr-2 sm:mr-4",
+                      node.tipo === 'tecnica' ? "hover:underline" : "pointer-events-none"
+                    )}
+                    onClick={() => abrirDetalhesTecnica(node)}
+                    disabled={node.tipo !== 'tecnica'}
+                    title={node.tipo === 'tecnica' ? 'Ver detalhes da técnica' : undefined}
+                  >
                     {node.nome}
-                  </div>
+                  </button>
                 </div>
                 
                 {/* Ações */}
@@ -268,28 +296,28 @@ export default function PlanoTreeView({ plano, onBack }) {
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center">
+      <div className="flex items-center justify-between gap-2">
+        <h2 className="text-lg sm:text-xl font-bold truncate">{plano.nome}</h2>
+        <div className="flex items-center gap-2">
           <Button 
             variant="outline" 
             size="sm" 
-            className="mr-2"
             onClick={onBack}
+            className="px-2"
           >
-            <ArrowLeft className="h-4 w-4 mr-1" />
+            <ArrowLeft className="h-4 w-4 sm:mr-2" />
             <span className="hidden sm:inline">Voltar</span>
           </Button>
-          <h2 className="text-lg sm:text-xl font-bold">{plano.nome}</h2>
+          <Button 
+            onClick={() => handleAddNode(null)} 
+            variant="outline" 
+            size="sm"
+            className="whitespace-nowrap px-2"
+          >
+            <Plus className="h-4 w-4 sm:mr-2" />
+            <span className="hidden sm:inline">Adicionar Técnica Raiz</span>
+          </Button>
         </div>
-        <Button 
-          onClick={() => handleAddNode(null)} 
-          variant="outline" 
-          size="sm"
-          className="whitespace-nowrap"
-        >
-          <Plus className="h-4 w-4 sm:mr-2" />
-          <span className="hidden sm:inline">Adicionar Técnica Raiz</span>
-        </Button>
       </div>
       
       {plano.descricao && (
@@ -297,7 +325,7 @@ export default function PlanoTreeView({ plano, onBack }) {
       )}
       
       <div 
-        className="bg-muted/20 rounded-lg p-4 border w-full overflow-x-auto overscroll-contain touch-pan-x"
+        className="bg-muted/20 rounded-lg p-4 border w-full overflow-x-auto overscroll-contain touch-pan-x touch-pan-y overflow-y-auto max-h-[60vh] sm:max-h-[70vh]"
       >
         <div className="min-w-full w-max">
           {renderTreeNodes(plano.nodes)}
@@ -336,6 +364,16 @@ export default function PlanoTreeView({ plano, onBack }) {
             setNodeParaAdicionar(null);
           }}
           onSubmit={(node) => handleNodeCreate(node, nodeParaAdicionar)}
+        />
+      )}
+
+      {/* Modal de detalhes da técnica */}
+      {detalhesOpen && (
+        <TecnicaDetailsModal
+          isOpen={detalhesOpen}
+          onClose={() => setDetalhesOpen(false)}
+          tecnicaId={detalhesTecnica.tecnicaId}
+          tecnicaInline={detalhesTecnica.tecnicaInline}
         />
       )}
     </div>

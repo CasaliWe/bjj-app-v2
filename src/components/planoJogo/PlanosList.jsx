@@ -25,13 +25,8 @@ export default function PlanosList({ onSelectPlano }) {
   };
 
   const handleDelete = (id) => {
-    const sucesso = excluirPlano(id);
-    if (sucesso) {
-      toast({
-        title: "Plano excluído",
-        description: "O plano de jogo foi excluído com sucesso.",
-      });
-    }
+    // O hook `usePlanoJogo` já emite o toast apropriado.
+    excluirPlano(id);
   };
 
   const handleEdit = (plano) => {
@@ -81,14 +76,14 @@ export default function PlanosList({ onSelectPlano }) {
                   <CardHeader className="pb-1 sm:pb-2">
                     <div className="flex justify-between items-start">
                       <CardTitle className="text-sm sm:text-base truncate max-w-[150px] sm:max-w-full">{plano.nome}</CardTitle>
-                      <div className="flex space-x-0 ml-1 flex-shrink-0">
-                        <Button variant="ghost" size="icon" onClick={() => handleEdit(plano)} className="h-6 w-6 sm:h-8 sm:w-8">
-                          <Edit className="h-3 w-3 sm:h-4 sm:w-4" />
+                      <div className="flex ml-1 flex-shrink-0 gap-2 sm:gap-1">
+                        <Button variant="ghost" size="icon" onClick={() => handleEdit(plano)} className="h-7 w-7 sm:h-8 sm:w-8">
+                          <Edit className="h-4 w-4 sm:h-4 sm:w-4" />
                         </Button>
                         <AlertDialog>
                           <AlertDialogTrigger asChild>
-                            <Button variant="ghost" size="icon" className="h-6 w-6 sm:h-8 sm:w-8">
-                              <Trash2 className="h-3 w-3 sm:h-4 sm:w-4 text-destructive" />
+                            <Button variant="ghost" size="icon" className="h-7 w-7 sm:h-8 sm:w-8">
+                              <Trash2 className="h-4 w-4 sm:h-4 sm:w-4 text-destructive" />
                             </Button>
                           </AlertDialogTrigger>
                           <AlertDialogContent>
@@ -115,9 +110,6 @@ export default function PlanosList({ onSelectPlano }) {
                   <CardContent className="pb-1 sm:pb-2">
                     <p className="text-xs sm:text-sm mb-2 line-clamp-2">{plano.descricao || "Sem descrição"}</p>
                     <div className="flex flex-wrap gap-1 sm:gap-2">
-                      <Badge variant="outline" className="text-[10px] sm:text-xs px-1.5 py-0 h-4 sm:h-5">
-                        {plano.nodes?.length || 0} técnicas
-                      </Badge>
                       {plano.categoria && (
                         <Badge variant="secondary" className="text-[10px] sm:text-xs px-1.5 py-0 h-4 sm:h-5">
                           {plano.categoria}

@@ -79,14 +79,14 @@ export default function PlanoFormModal({ isOpen, onClose, onSubmit, planoParaEdi
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-[425px] w-[calc(100%-2rem)]">
         <DialogHeader>
           <DialogTitle>
             {planoParaEditar ? "Editar plano de jogo" : "Criar novo plano de jogo"}
           </DialogTitle>
         </DialogHeader>
         
-        <form onSubmit={handleSubmit} className="space-y-4 py-4">
+  <form onSubmit={handleSubmit} className="space-y-4 py-4">
           <div className="space-y-2">
             <Label htmlFor="nome">Nome do plano</Label>
             <Input
@@ -125,7 +125,7 @@ export default function PlanoFormModal({ isOpen, onClose, onSubmit, planoParaEdi
             />
           </div>
           
-          <DialogFooter className="pt-4">
+          <DialogFooter className="pt-4 flex-col sm:flex-row gap-2">
             <Button type="button" variant="outline" onClick={onClose}>Cancelar</Button>
             <Button type="submit">{planoParaEditar ? "Salvar alterações" : "Criar plano"}</Button>
           </DialogFooter>

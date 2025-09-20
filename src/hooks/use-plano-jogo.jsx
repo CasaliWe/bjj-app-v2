@@ -42,15 +42,12 @@ export const usePlanoJogo = () => {
   // Registra um listener para o evento de atualização do plano de jogo
   useEffect(() => {
     const handlePlanoUpdate = () => {
-      carregarPlanos();
-      // Se tiver um plano atual selecionado, recarrega-o
+      const planosData = planoJogoService.getPlanos();
+      setPlanos([...planosData]);
       if (planoAtualId) {
         const planoAtualizado = planoJogoService.getPlanoById(planoAtualId);
-        if (planoAtualizado) {
-          setPlanoAtual({...planoAtualizado});
-        }
+        if (planoAtualizado) setPlanoAtual({ ...planoAtualizado });
       }
-      // Incrementa contador para forçar atualizações em componentes que dependem
       setUpdateCounter(prev => prev + 1);
     };
     
@@ -99,11 +96,9 @@ export const usePlanoJogo = () => {
         return null;
       }
 
-      const novoPlano = planoJogoService.criarPlano(dados);
-      
-      // Forçar a atualização do estado local
-      const novosPlanos = planoJogoService.getPlanos();
-      setPlanos([...novosPlanos]); // Cria um novo array para forçar a re-renderização
+  const novoPlano = planoJogoService.criarPlano(dados);
+  const novosPlanos = planoJogoService.getPlanos();
+  setPlanos([...novosPlanos]);
       
       toast({
         title: "Sucesso",
@@ -132,8 +127,8 @@ export const usePlanoJogo = () => {
       
       if (planoAtualizado) {
         // Forçar a atualização do estado local
-        const novosPlanos = planoJogoService.getPlanos();
-        setPlanos([...novosPlanos]); // Cria um novo array para forçar a re-renderização
+  const novosPlanos = planoJogoService.getPlanos();
+  setPlanos([...novosPlanos]);
         
         // Se o plano sendo atualizado é o atual, atualizar também o estado do plano atual
         if (planoAtual && planoAtual.id === id) {
@@ -177,9 +172,8 @@ export const usePlanoJogo = () => {
       const sucesso = planoJogoService.excluirPlano(id);
       
       if (sucesso) {
-        // Forçar a atualização do estado local
         const novosPlanos = planoJogoService.getPlanos();
-        setPlanos([...novosPlanos]); // Cria um novo array para forçar a re-renderização
+        setPlanos([...novosPlanos]);
         
         // Se o plano sendo excluído é o atual, resetar o plano atual
         if (planoAtual && planoAtual.id === id) {
@@ -236,14 +230,9 @@ export const usePlanoJogo = () => {
       const planoAtualizado = planoJogoService.adicionarNode(planoId, node, parentId);
       
       if (planoAtualizado) {
-        // Forçar a atualização do estado local
         const novosPlanos = planoJogoService.getPlanos();
-        setPlanos([...novosPlanos]); // Cria um novo array para forçar a re-renderização
-        
-        // Se o plano sendo atualizado é o atual, atualizar também o estado do plano atual
-        if (planoAtual && planoAtual.id === planoId) {
-          setPlanoAtual({...planoAtualizado}); // Cria um novo objeto para forçar a re-renderização
-        }
+        setPlanos([...novosPlanos]);
+        if (planoAtual && planoAtual.id === planoId) setPlanoAtual({ ...planoAtualizado });
         
         toast({
           title: "Sucesso",
@@ -282,14 +271,9 @@ export const usePlanoJogo = () => {
       const planoAtualizado = planoJogoService.removerNode(planoId, nodeId);
       
       if (planoAtualizado) {
-        // Forçar a atualização do estado local
         const novosPlanos = planoJogoService.getPlanos();
-        setPlanos([...novosPlanos]); // Cria um novo array para forçar a re-renderização
-        
-        // Se o plano sendo atualizado é o atual, atualizar também o estado do plano atual
-        if (planoAtual && planoAtual.id === planoId) {
-          setPlanoAtual({...planoAtualizado}); // Cria um novo objeto para forçar a re-renderização
-        }
+        setPlanos([...novosPlanos]);
+        if (planoAtual && planoAtual.id === planoId) setPlanoAtual({ ...planoAtualizado });
         
         toast({
           title: "Sucesso",

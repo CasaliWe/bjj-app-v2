@@ -12,7 +12,7 @@ export function Toaster() {
   const { toasts } = useToast()
 
   return (
-    <ToastProvider>
+  <ToastProvider swipeDirection="down" duration={4000}>
       {toasts.map(function ({ id, title, description, action, ...props }) {
         return (
           <Toast key={id} {...props}>
@@ -27,7 +27,7 @@ export function Toaster() {
           </Toast>
         )
       })}
-      <ToastViewport />
+      <ToastViewport className="fixed bottom-4 left-1/2 -translate-x-1/2 m-0 flex max-h-screen w-full max-w-[calc(100%-2rem)] flex-col-reverse gap-2 p-0 outline-none sm:bottom-4 sm:right-4 sm:left-auto sm:translate-x-0 sm:max-w-sm" />
     </ToastProvider>
   )
 }

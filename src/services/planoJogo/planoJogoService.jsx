@@ -7,19 +7,8 @@
 // URL base da API (para futura implementação)
 const BASE_URL = import.meta.env.VITE_API_URL || '';
 
-// Importando o service de cookies
-import { 
-  setCookie, 
-  getCookie, 
-  removeCookie, 
-  hasCookie 
-} from '@/services/cookies/cookies';
-
-// Importando o service de autenticação para quando implementarmos com a API
-import { getAuthToken } from '@/services/cookies/cookies';
-
-// Nome do cookie que armazenará os planos de jogo
-const PLANO_JOGO_COOKIE = 'plano_jogo_data';
+// Chave do localStorage que armazenará os planos de jogo
+const STORAGE_KEY = 'plano_jogo_data';
 
 // Criando um evento personalizado para notificar os componentes quando houver mudanças
 export const PLANO_JOGO_UPDATE_EVENT = 'plano_jogo_update';
@@ -35,10 +24,8 @@ export const notifyUpdate = () => {
  * @returns {Object} Header com token de autenticação
  */
 const getAuthHeader = () => {
-  const token = getAuthToken();
-  return {
-    'Authorization': `Bearer ${token}`
-  };
+  // Placeholder para futura autenticação com API
+  return {};
 };
 
 /**
@@ -47,10 +34,10 @@ const getAuthHeader = () => {
  */
 export const getPlanos = () => {
   try {
-    const planosString = getCookie(PLANO_JOGO_COOKIE);
+    const planosString = localStorage.getItem(STORAGE_KEY);
     if (!planosString) return [];
-    
-    return JSON.parse(planosString);
+    const planos = JSON.parse(planosString);
+    return Array.isArray(planos) ? planos : [];
   } catch (error) {
     console.error('Erro ao obter planos de jogo:', error);
     return [];
@@ -63,7 +50,7 @@ export const getPlanos = () => {
  */
 export const salvarPlanos = (planos) => {
   try {
-    setCookie(PLANO_JOGO_COOKIE, JSON.stringify(planos), { days: 90 });
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(planos));
     notifyUpdate(); // Notifica os componentes sobre a mudança
     return true;
   } catch (error) {
@@ -82,7 +69,7 @@ export const criarPlano = (plano) => {
     const planos = getPlanos();
     const novoPlano = {
       ...plano,
-      id: Date.now().toString(), // ID único baseado no timestamp
+      id: `plano-${Date.now()}-${Math.random().toString(36).slice(2,7)}`,
       dataCriacao: new Date().toISOString(),
       nodes: [] // Inicializa sem nós (árvore vazia)
     };
@@ -105,7 +92,8 @@ export const criarPlano = (plano) => {
 export const getPlanoById = (id) => {
   try {
     const planos = getPlanos();
-    return planos.find(plano => plano.id === id) || null;
+    const found = planos.find(plano => plano.id === id) || null;
+    return found ? JSON.parse(JSON.stringify(found)) : null; // retorna cópia para evitar mutações externas
   } catch (error) {
     console.error('Erro ao buscar plano de jogo:', error);
     return null;
@@ -134,7 +122,7 @@ export const atualizarPlano = (id, dadosAtualizados) => {
     planos[index] = planoAtualizado;
     salvarPlanos(planos);
     
-    return planoAtualizado;
+    return JSON.parse(JSON.stringify(planoAtualizado));
   } catch (error) {
     console.error('Erro ao atualizar plano de jogo:', error);
     return null;
@@ -150,12 +138,14 @@ export const atualizarPlano = (id, dadosAtualizados) => {
  */
 export const adicionarNode = (planoId, node, parentId = null) => {
   try {
-    const plano = getPlanoById(planoId);
-    if (!plano) return null;
+    const planos = getPlanos();
+    const index = planos.findIndex(p => p.id === planoId);
+    if (index === -1) return null;
+    const plano = planos[index];
     
     const novoNode = {
       ...node,
-      id: Date.now().toString(), // ID único baseado no timestamp
+      id: `${Date.now().toString()}-${Math.random().toString(36).slice(2,7)}`,
       parentId,
       children: []
     };
@@ -170,11 +160,14 @@ export const adicionarNode = (planoId, node, parentId = null) => {
       
       for (let i = 0; i < nodes.length; i++) {
         if (nodes[i].id === parent) {
+          if (!Array.isArray(nodes[i].children)) {
+            nodes[i].children = [];
+          }
           nodes[i].children.push(novoNode);
           return true;
         }
         
-        if (nodes[i].children?.length) {
+        if (nodes[i].children && nodes[i].children.length >= 0) {
           const adicionado = adicionarAoParent(nodes[i].children, parent);
           if (adicionado) return true;
         }
@@ -183,10 +176,15 @@ export const adicionarNode = (planoId, node, parentId = null) => {
       return false;
     };
     
+    if (!Array.isArray(plano.nodes)) {
+      plano.nodes = [];
+    }
     const adicionado = adicionarAoParent(plano.nodes, parentId);
     
     if (adicionado) {
-      return atualizarPlano(planoId, { nodes: plano.nodes });
+      planos[index] = { ...plano, nodes: plano.nodes, dataAtualizacao: new Date().toISOString() };
+      salvarPlanos(planos);
+      return JSON.parse(JSON.stringify(planos[index]));
     }
     
     return null;
@@ -204,8 +202,10 @@ export const adicionarNode = (planoId, node, parentId = null) => {
  */
 export const removerNode = (planoId, nodeId) => {
   try {
-    const plano = getPlanoById(planoId);
-    if (!plano) return null;
+    const planos = getPlanos();
+    const index = planos.findIndex(p => p.id === planoId);
+    if (index === -1) return null;
+    const plano = planos[index];
     
     // Função recursiva para encontrar e remover o nó
     const removerDoArray = (nodes) => {
@@ -217,7 +217,7 @@ export const removerNode = (planoId, nodeId) => {
       }
       
       for (let i = 0; i < nodes.length; i++) {
-        if (nodes[i].children?.length) {
+        if (nodes[i].children && nodes[i].children.length > 0) {
           const removido = removerDoArray(nodes[i].children);
           if (removido) return true;
         }
@@ -226,10 +226,15 @@ export const removerNode = (planoId, nodeId) => {
       return false;
     };
     
+    if (!Array.isArray(plano.nodes)) {
+      plano.nodes = [];
+    }
     const removido = removerDoArray(plano.nodes);
     
     if (removido) {
-      return atualizarPlano(planoId, { nodes: plano.nodes });
+      planos[index] = { ...plano, nodes: plano.nodes, dataAtualizacao: new Date().toISOString() };
+      salvarPlanos(planos);
+      return JSON.parse(JSON.stringify(planos[index]));
     }
     
     return null;
@@ -267,7 +272,8 @@ export const excluirPlano = (id) => {
  */
 export const limparPlanos = () => {
   try {
-    removeCookie(PLANO_JOGO_COOKIE);
+    localStorage.removeItem(STORAGE_KEY);
+    notifyUpdate();
     return true;
   } catch (error) {
     console.error('Erro ao limpar planos de jogo:', error);

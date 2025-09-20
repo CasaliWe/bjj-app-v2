@@ -52,7 +52,7 @@ export default function NodeFormModal({ isOpen, onClose, onSubmit }) {
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-[425px] w-[calc(100%-2rem)]">
         <DialogHeader>
           <DialogTitle>Adicionar técnica manualmente</DialogTitle>
         </DialogHeader>
@@ -85,7 +85,7 @@ export default function NodeFormModal({ isOpen, onClose, onSubmit }) {
             />
           </div>
           
-          <DialogFooter className="pt-4">
+          <DialogFooter className="pt-4 flex-col sm:flex-row gap-2">
             <Button type="button" variant="outline" onClick={onClose}>Cancelar</Button>
             <Button type="submit">Adicionar</Button>
           </DialogFooter>
