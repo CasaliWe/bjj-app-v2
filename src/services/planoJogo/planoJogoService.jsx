@@ -1,83 +1,90 @@
 /**
- * Serviço para gerenciar os planos de jogo do usuário
- * Este serviço implementa o gerenciamento de planos de jogo, inicialmente com cookies
- * mas preparado para futura integração com API
+ * Serviço para gerenciar os planos de jogo do usuário via API
+ * Este serviço segue os padrões dos services de Técnicas e Treinos (GET/POST + token)
  */
 
-// URL base da API (para futura implementação)
+// URL base da API
 const BASE_URL = import.meta.env.VITE_API_URL || '';
 
-// Chave do localStorage que armazenará os planos de jogo
-const STORAGE_KEY = 'plano_jogo_data';
-
-// Criando um evento personalizado para notificar os componentes quando houver mudanças
+// Evento para notificar os componentes quando houver mudanças
 export const PLANO_JOGO_UPDATE_EVENT = 'plano_jogo_update';
+export const notifyUpdate = () => window.dispatchEvent(new CustomEvent(PLANO_JOGO_UPDATE_EVENT));
 
-// Função para disparar o evento de atualização
-export const notifyUpdate = () => {
-  // Dispara um evento global para todos os componentes que estão ouvindo
-  window.dispatchEvent(new CustomEvent(PLANO_JOGO_UPDATE_EVENT));
-};
+// Header de autenticação (Bearer token via cookies service)
+import { getAuthToken } from '@/services/cookies/cookies';
+const getAuthHeader = () => ({ Authorization: `Bearer ${getAuthToken()}` });
 
-/**
- * Função auxiliar para obter o header de autenticação
- * @returns {Object} Header com token de autenticação
- */
-const getAuthHeader = () => {
-  // Placeholder para futura autenticação com API
-  return {};
-};
-
-/**
- * Obtém todos os planos de jogo do usuário
- * @returns {Array} Lista de planos de jogo
- */
-export const getPlanos = () => {
+// Helpers
+const parseJson = async (response) => {
+  const text = await response.text();
   try {
-    const planosString = localStorage.getItem(STORAGE_KEY);
-    if (!planosString) return [];
-    const planos = JSON.parse(planosString);
-    return Array.isArray(planos) ? planos : [];
+    return JSON.parse(text);
+  } catch {
+    throw new Error(`Resposta inválida da API: ${text.substring(0, 200)}...`);
+  }
+};
+
+/**
+ * Lista todos os planos do usuário
+ * @returns {Promise<Array>} Array de planos
+ */
+export const getPlanos = async () => {
+  try {
+    const url = `${BASE_URL}endpoint/plano-jogo/listar.php`;
+    const response = await fetch(url, { method: 'GET', headers: { ...getAuthHeader() } });
+    if (!response.ok) {
+      const err = await parseJson(response);
+      throw new Error(err.message || 'Erro ao listar planos de jogo');
+    }
+    const data = await parseJson(response);
+    return data.data?.planos || [];
   } catch (error) {
-    console.error('Erro ao obter planos de jogo:', error);
+    console.error('Erro ao buscar planos de jogo da API:', error);
     return [];
   }
 };
 
 /**
- * Salva a lista completa de planos de jogo
- * @param {Array} planos - Lista de planos de jogo
+ * Obtém um plano por ID
+ * @param {string|number} id
+ * @returns {Promise<Object|null>}
  */
-export const salvarPlanos = (planos) => {
+export const getPlanoById = async (id) => {
   try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(planos));
-    notifyUpdate(); // Notifica os componentes sobre a mudança
-    return true;
+    const url = `${BASE_URL}endpoint/plano-jogo/obter.php?id=${encodeURIComponent(id)}`;
+    const response = await fetch(url, { method: 'GET', headers: { ...getAuthHeader() } });
+    if (!response.ok) {
+      const err = await parseJson(response);
+      throw new Error(err.message || 'Erro ao obter plano de jogo');
+    }
+    const data = await parseJson(response);
+    return data.data?.plano || null;
   } catch (error) {
-    console.error('Erro ao salvar planos de jogo:', error);
-    return false;
+    console.error('Erro ao obter plano de jogo:', error);
+    return null;
   }
 };
 
 /**
  * Cria um novo plano de jogo
- * @param {Object} plano - Dados do novo plano
- * @returns {Object} Plano criado com ID
+ * @param {Object} plano - { nome, descricao?, categoria? }
+ * @returns {Promise<Object>} plano criado
  */
-export const criarPlano = (plano) => {
+export const criarPlano = async (plano) => {
   try {
-    const planos = getPlanos();
-    const novoPlano = {
-      ...plano,
-      id: `plano-${Date.now()}-${Math.random().toString(36).slice(2,7)}`,
-      dataCriacao: new Date().toISOString(),
-      nodes: [] // Inicializa sem nós (árvore vazia)
-    };
-    
-    planos.push(novoPlano);
-    salvarPlanos(planos);
-    
-    return novoPlano;
+    const url = `${BASE_URL}endpoint/plano-jogo/criar.php`;
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', ...getAuthHeader() },
+      body: JSON.stringify(plano)
+    });
+    if (!response.ok) {
+      const err = await parseJson(response);
+      throw new Error(err.message || 'Erro ao criar plano de jogo');
+    }
+    const data = await parseJson(response);
+    notifyUpdate();
+    return data.data?.plano || data.data || data;
   } catch (error) {
     console.error('Erro ao criar plano de jogo:', error);
     throw error;
@@ -85,44 +92,26 @@ export const criarPlano = (plano) => {
 };
 
 /**
- * Obtém um plano de jogo específico pelo ID
- * @param {string} id - ID do plano de jogo
- * @returns {Object|null} Plano de jogo ou null se não encontrado
+ * Atualiza dados do plano
+ * @param {string|number} id
+ * @param {Object} dadosAtualizados
+ * @returns {Promise<Object|null>}
  */
-export const getPlanoById = (id) => {
+export const atualizarPlano = async (id, dadosAtualizados) => {
   try {
-    const planos = getPlanos();
-    const found = planos.find(plano => plano.id === id) || null;
-    return found ? JSON.parse(JSON.stringify(found)) : null; // retorna cópia para evitar mutações externas
-  } catch (error) {
-    console.error('Erro ao buscar plano de jogo:', error);
-    return null;
-  }
-};
-
-/**
- * Atualiza um plano de jogo existente
- * @param {string} id - ID do plano a ser atualizado
- * @param {Object} dadosAtualizados - Novos dados do plano
- * @returns {Object|null} Plano atualizado ou null se falhou
- */
-export const atualizarPlano = (id, dadosAtualizados) => {
-  try {
-    const planos = getPlanos();
-    const index = planos.findIndex(plano => plano.id === id);
-    
-    if (index === -1) return null;
-    
-    const planoAtualizado = {
-      ...planos[index],
-      ...dadosAtualizados,
-      dataAtualizacao: new Date().toISOString()
-    };
-    
-    planos[index] = planoAtualizado;
-    salvarPlanos(planos);
-    
-    return JSON.parse(JSON.stringify(planoAtualizado));
+    const url = `${BASE_URL}endpoint/plano-jogo/atualizar.php`;
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', ...getAuthHeader() },
+      body: JSON.stringify({ id, ...dadosAtualizados })
+    });
+    if (!response.ok) {
+      const err = await parseJson(response);
+      throw new Error(err.message || 'Erro ao atualizar plano de jogo');
+    }
+    const data = await parseJson(response);
+    notifyUpdate();
+    return data.data?.plano || data.data || null;
   } catch (error) {
     console.error('Erro ao atualizar plano de jogo:', error);
     return null;
@@ -130,64 +119,28 @@ export const atualizarPlano = (id, dadosAtualizados) => {
 };
 
 /**
- * Adiciona um nó (técnica) ao plano de jogo
- * @param {string} planoId - ID do plano
- * @param {Object} node - Nó a ser adicionado
- * @param {string|null} parentId - ID do nó pai (null para nó raiz)
- * @returns {Object|null} Plano atualizado ou null se falhou
+ * Adiciona um nó à árvore de um plano
+ * @param {string|number} planoId
+ * @param {Object} node - { nome, tipo, descricao?, tecnicaId?, categoria?, posicao?, passos?, observacoes?, video_url?, video_poster?, video? }
+ * @param {string|null} parentId
+ * @returns {Promise<Object|null>} plano atualizado
  */
-export const adicionarNode = (planoId, node, parentId = null) => {
+export const adicionarNode = async (planoId, node, parentId = null) => {
   try {
-    const planos = getPlanos();
-    const index = planos.findIndex(p => p.id === planoId);
-    if (index === -1) return null;
-    const plano = planos[index];
-    
-    const novoNode = {
-      ...node,
-      id: `${Date.now().toString()}-${Math.random().toString(36).slice(2,7)}`,
-      parentId,
-      children: []
-    };
-    
-    // Função recursiva para encontrar o nó pai e adicionar o filho
-    const adicionarAoParent = (nodes, parent) => {
-      if (!parent) {
-        // Adicionar como nó raiz
-        nodes.push(novoNode);
-        return true;
-      }
-      
-      for (let i = 0; i < nodes.length; i++) {
-        if (nodes[i].id === parent) {
-          if (!Array.isArray(nodes[i].children)) {
-            nodes[i].children = [];
-          }
-          nodes[i].children.push(novoNode);
-          return true;
-        }
-        
-        if (nodes[i].children && nodes[i].children.length >= 0) {
-          const adicionado = adicionarAoParent(nodes[i].children, parent);
-          if (adicionado) return true;
-        }
-      }
-      
-      return false;
-    };
-    
-    if (!Array.isArray(plano.nodes)) {
-      plano.nodes = [];
+    const url = `${BASE_URL}endpoint/plano-jogo/adicionar-node.php`;
+    const payload = { planoId, parentId, node };
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', ...getAuthHeader() },
+      body: JSON.stringify(payload)
+    });
+    if (!response.ok) {
+      const err = await parseJson(response);
+      throw new Error(err.message || 'Erro ao adicionar nó ao plano');
     }
-    const adicionado = adicionarAoParent(plano.nodes, parentId);
-    
-    if (adicionado) {
-      planos[index] = { ...plano, nodes: plano.nodes, dataAtualizacao: new Date().toISOString() };
-      salvarPlanos(planos);
-      return JSON.parse(JSON.stringify(planos[index]));
-    }
-    
-    return null;
+    const data = await parseJson(response);
+    notifyUpdate();
+    return data.data?.plano || data.data || null;
   } catch (error) {
     console.error('Erro ao adicionar nó ao plano:', error);
     return null;
@@ -195,49 +148,26 @@ export const adicionarNode = (planoId, node, parentId = null) => {
 };
 
 /**
- * Remove um nó (técnica) do plano de jogo
- * @param {string} planoId - ID do plano
- * @param {string} nodeId - ID do nó a ser removido
- * @returns {Object|null} Plano atualizado ou null se falhou
+ * Remove um nó do plano
+ * @param {string|number} planoId
+ * @param {string|number} nodeId
+ * @returns {Promise<Object|null>} plano atualizado
  */
-export const removerNode = (planoId, nodeId) => {
+export const removerNode = async (planoId, nodeId) => {
   try {
-    const planos = getPlanos();
-    const index = planos.findIndex(p => p.id === planoId);
-    if (index === -1) return null;
-    const plano = planos[index];
-    
-    // Função recursiva para encontrar e remover o nó
-    const removerDoArray = (nodes) => {
-      const index = nodes.findIndex(node => node.id === nodeId);
-      
-      if (index !== -1) {
-        nodes.splice(index, 1);
-        return true;
-      }
-      
-      for (let i = 0; i < nodes.length; i++) {
-        if (nodes[i].children && nodes[i].children.length > 0) {
-          const removido = removerDoArray(nodes[i].children);
-          if (removido) return true;
-        }
-      }
-      
-      return false;
-    };
-    
-    if (!Array.isArray(plano.nodes)) {
-      plano.nodes = [];
+    const url = `${BASE_URL}endpoint/plano-jogo/remover-node.php`;
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', ...getAuthHeader() },
+      body: JSON.stringify({ planoId, nodeId })
+    });
+    if (!response.ok) {
+      const err = await parseJson(response);
+      throw new Error(err.message || 'Erro ao remover nó do plano');
     }
-    const removido = removerDoArray(plano.nodes);
-    
-    if (removido) {
-      planos[index] = { ...plano, nodes: plano.nodes, dataAtualizacao: new Date().toISOString() };
-      salvarPlanos(planos);
-      return JSON.parse(JSON.stringify(planos[index]));
-    }
-    
-    return null;
+    const data = await parseJson(response);
+    notifyUpdate();
+    return data.data?.plano || data.data || null;
   } catch (error) {
     console.error('Erro ao remover nó do plano:', error);
     return null;
@@ -245,20 +175,24 @@ export const removerNode = (planoId, nodeId) => {
 };
 
 /**
- * Exclui um plano de jogo
- * @param {string} id - ID do plano a ser excluído
- * @returns {boolean} true se excluído com sucesso
+ * Exclui um plano
+ * @param {string|number} id
+ * @returns {Promise<boolean>}
  */
-export const excluirPlano = (id) => {
+export const excluirPlano = async (id) => {
   try {
-    const planos = getPlanos();
-    const novaLista = planos.filter(plano => plano.id !== id);
-    
-    if (novaLista.length === planos.length) {
-      return false; // Plano não encontrado
+    const url = `${BASE_URL}endpoint/plano-jogo/excluir.php`;
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', ...getAuthHeader() },
+      body: JSON.stringify({ id })
+    });
+    if (!response.ok) {
+      const err = await parseJson(response);
+      throw new Error(err.message || 'Erro ao excluir plano de jogo');
     }
-    
-    salvarPlanos(novaLista);
+    await parseJson(response);
+    notifyUpdate();
     return true;
   } catch (error) {
     console.error('Erro ao excluir plano de jogo:', error);
@@ -267,74 +201,9 @@ export const excluirPlano = (id) => {
 };
 
 /**
- * Limpa todos os planos de jogo
- * @returns {boolean} true se limpo com sucesso
+ * Limpeza local (sem efeito na API) – utilitária
  */
-export const limparPlanos = () => {
-  try {
-    localStorage.removeItem(STORAGE_KEY);
-    notifyUpdate();
-    return true;
-  } catch (error) {
-    console.error('Erro ao limpar planos de jogo:', error);
-    return false;
-  }
-};
-
-// Preparação para futura implementação com API
-// Estas funções serão implementadas quando a API estiver pronta
-
-/**
- * Obtém todos os planos de jogo do usuário (futura implementação com API)
- * @returns {Promise<Array>} Promise com lista de planos de jogo
- */
-export const getPlanosFuturo = async () => {
-  try {
-    const response = await fetch(`${BASE_URL}endpoint/planoJogo/listar.php`, {
-      method: 'GET',
-      headers: {
-        ...getAuthHeader()
-      }
-    });
-    
-    if (!response.ok) {
-      throw new Error('Erro ao listar planos de jogo');
-    }
-    
-    const data = await response.json();
-    return data.data.planos || [];
-  } catch (error) {
-    console.error('Erro ao buscar planos de jogo da API:', error);
-    // Fallback para cookies se a API falhar
-    return getPlanos();
-  }
-};
-
-/**
- * Cria um novo plano de jogo (futura implementação com API)
- * @param {Object} plano - Dados do novo plano
- * @returns {Promise<Object>} Promise com plano criado
- */
-export const criarPlanoFuturo = async (plano) => {
-  try {
-    const response = await fetch(`${BASE_URL}endpoint/planoJogo/criar.php`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        ...getAuthHeader()
-      },
-      body: JSON.stringify(plano)
-    });
-    
-    if (!response.ok) {
-      throw new Error('Erro ao criar plano de jogo');
-    }
-    
-    const data = await response.json();
-    return data.data.plano;
-  } catch (error) {
-    console.error('Erro ao criar plano de jogo na API:', error);
-    // Fallback para cookies se a API falhar
-    return criarPlano(plano);
-  }
+export const limparPlanos = async () => {
+  notifyUpdate();
+  return true;
 };

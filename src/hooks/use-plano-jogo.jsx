@@ -27,8 +27,8 @@ export const usePlanoJogo = () => {
   const carregarPlanos = useCallback(async () => {
     setCarregando(true);
     try {
-      const planosData = planoJogoService.getPlanos();
-      setPlanos([...planosData]); // Criando um novo array para forçar re-renderização
+      const planosData = await planoJogoService.getPlanos();
+      setPlanos([...(Array.isArray(planosData) ? planosData : [])]);
       setErro(null);
     } catch (error) {
       console.error("Erro ao carregar planos de jogo:", error);
@@ -42,12 +42,14 @@ export const usePlanoJogo = () => {
   // Registra um listener para o evento de atualização do plano de jogo
   useEffect(() => {
     const handlePlanoUpdate = () => {
-      const planosData = planoJogoService.getPlanos();
-      setPlanos([...planosData]);
-      if (planoAtualId) {
-        const planoAtualizado = planoJogoService.getPlanoById(planoAtualId);
-        if (planoAtualizado) setPlanoAtual({ ...planoAtualizado });
-      }
+      (async () => {
+        const planosData = await planoJogoService.getPlanos();
+        setPlanos([...(Array.isArray(planosData) ? planosData : [])]);
+        if (planoAtualId) {
+          const planoAtualizado = await planoJogoService.getPlanoById(planoAtualId);
+          if (planoAtualizado) setPlanoAtual({ ...planoAtualizado });
+        }
+      })();
       setUpdateCounter(prev => prev + 1);
     };
     
@@ -66,15 +68,19 @@ export const usePlanoJogo = () => {
   // Selecionar um plano específico pelo ID
   const selecionarPlano = useCallback((id) => {
     try {
-      const plano = planoJogoService.getPlanoById(id);
-      if (plano) {
-        setPlanoAtual({...plano});
-        setPlanoAtualId(id);
-        return plano;
-      } else {
-        setErro("Plano não encontrado");
-        return null;
-      }
+      // tornar assíncrono
+      const carregar = async () => {
+        const plano = await planoJogoService.getPlanoById(id);
+        if (plano) {
+          setPlanoAtual({ ...plano });
+          setPlanoAtualId(id);
+          return plano;
+        } else {
+          setErro("Plano não encontrado");
+          return null;
+        }
+      };
+      return carregar();
     } catch (error) {
       console.error("Erro ao selecionar plano:", error);
       setErro("Erro ao selecionar plano");
@@ -83,7 +89,7 @@ export const usePlanoJogo = () => {
   }, []);
 
   // Criar um novo plano de jogo
-  const criarPlano = useCallback((dados) => {
+  const criarPlano = useCallback(async (dados) => {
     try {
       // Validar dados mínimos
       if (!dados.nome) {
@@ -96,9 +102,9 @@ export const usePlanoJogo = () => {
         return null;
       }
 
-  const novoPlano = planoJogoService.criarPlano(dados);
-  const novosPlanos = planoJogoService.getPlanos();
-  setPlanos([...novosPlanos]);
+    const novoPlano = await planoJogoService.criarPlano(dados);
+    const novosPlanos = await planoJogoService.getPlanos();
+    setPlanos([...(Array.isArray(novosPlanos) ? novosPlanos : [])]);
       
       toast({
         title: "Sucesso",
@@ -121,14 +127,13 @@ export const usePlanoJogo = () => {
   }, [toast]);
 
   // Atualizar um plano existente
-  const atualizarPlano = useCallback((id, dados) => {
+  const atualizarPlano = useCallback(async (id, dados) => {
     try {
-      const planoAtualizado = planoJogoService.atualizarPlano(id, dados);
+      const planoAtualizado = await planoJogoService.atualizarPlano(id, dados);
       
       if (planoAtualizado) {
-        // Forçar a atualização do estado local
-  const novosPlanos = planoJogoService.getPlanos();
-  setPlanos([...novosPlanos]);
+        const novosPlanos = await planoJogoService.getPlanos();
+        setPlanos([...(Array.isArray(novosPlanos) ? novosPlanos : [])]);
         
         // Se o plano sendo atualizado é o atual, atualizar também o estado do plano atual
         if (planoAtual && planoAtual.id === id) {
@@ -167,13 +172,13 @@ export const usePlanoJogo = () => {
   }, [planoAtual, toast]);
 
   // Excluir um plano
-  const excluirPlano = useCallback((id) => {
+  const excluirPlano = useCallback(async (id) => {
     try {
-      const sucesso = planoJogoService.excluirPlano(id);
+      const sucesso = await planoJogoService.excluirPlano(id);
       
       if (sucesso) {
-        const novosPlanos = planoJogoService.getPlanos();
-        setPlanos([...novosPlanos]);
+  const novosPlanos = await planoJogoService.getPlanos();
+  setPlanos([...(Array.isArray(novosPlanos) ? novosPlanos : [])]);
         
         // Se o plano sendo excluído é o atual, resetar o plano atual
         if (planoAtual && planoAtual.id === id) {
@@ -212,7 +217,7 @@ export const usePlanoJogo = () => {
   }, [planoAtual, toast]);
 
   // Adicionar um nó (técnica) ao plano de jogo
-  const adicionarNode = useCallback((planoId, node, parentId = null) => {
+  const adicionarNode = useCallback(async (planoId, node, parentId = null) => {
     try {
       // Validar dados mínimos
       if (!node.nome) {
@@ -227,11 +232,11 @@ export const usePlanoJogo = () => {
         return null;
       }
 
-      const planoAtualizado = planoJogoService.adicionarNode(planoId, node, parentId);
+      const planoAtualizado = await planoJogoService.adicionarNode(planoId, node, parentId);
       
       if (planoAtualizado) {
-        const novosPlanos = planoJogoService.getPlanos();
-        setPlanos([...novosPlanos]);
+        const novosPlanos = await planoJogoService.getPlanos();
+        setPlanos([...(Array.isArray(novosPlanos) ? novosPlanos : [])]);
         if (planoAtual && planoAtual.id === planoId) setPlanoAtual({ ...planoAtualizado });
         
         toast({
@@ -266,13 +271,13 @@ export const usePlanoJogo = () => {
   }, [planoAtual, toast]);
 
   // Remover um nó (técnica) do plano de jogo
-  const removerNode = useCallback((planoId, nodeId) => {
+  const removerNode = useCallback(async (planoId, nodeId) => {
     try {
-      const planoAtualizado = planoJogoService.removerNode(planoId, nodeId);
+      const planoAtualizado = await planoJogoService.removerNode(planoId, nodeId);
       
       if (planoAtualizado) {
-        const novosPlanos = planoJogoService.getPlanos();
-        setPlanos([...novosPlanos]);
+        const novosPlanos = await planoJogoService.getPlanos();
+        setPlanos([...(Array.isArray(novosPlanos) ? novosPlanos : [])]);
         if (planoAtual && planoAtual.id === planoId) setPlanoAtual({ ...planoAtualizado });
         
         toast({
