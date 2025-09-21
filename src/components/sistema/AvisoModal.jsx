@@ -6,17 +6,6 @@ import { Card } from '../ui/card';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '../ui/carousel';
 import { ScrollArea } from '../ui/scroll-area';
 
-/**
- * Componente AvisoModal
- * 
- * Este componente exibe avisos importantes para os usuários.
- * O aviso só pode ser fechado clicando no botão de confirmação.
- * 
- * Fluxo de funcionamento:
- * 1. Ao carregar, verifica se há avisos ativos para o usuário atual
- * 2. Se houver, exibe o modal com o conteúdo do aviso
- * 3. Quando o usuário confirmar, marca o aviso como lido
- */
 const AvisoModal = () => {
   // Estados do componente
   const [open, setOpen] = useState(false);

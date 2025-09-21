@@ -1,18 +1,19 @@
 ### FALTANDO FAZER:
+- Modal aviso sistema;
 - FAZER IA SENSEI;
-- FAZER CHEKLIST;
-- FAZER PLANO DE JOGO;
-
-
 
 
 ### Organização:
 - Todas as páginas após logado deve ter o hook que busca os dados do user, assim aparece o plus ao lado da logo;
 - Todas as páginas após logado tem o modal upgrade (quando o plano está grátis);
-- Modal de adicionar exp sempre ao criar algo, está presente atualmente nas páginas: tecnicas, treinos, competições, observações;
+- Modal de adicionar exp sempre ao criar algo, está presente atualmente nas páginas: tecnicas, treinos, competições, observações, checklist 2x;
 - Sempre usar o loading padrão (component);
 - Modal welcome apenas na dashboard no primeiro acesso;
+- Modal avisos do sistema, importado apenas na dashboard;
 - Todos os form publicos precisam ter o turnstile;
+- Modal pwa instalar em tudo;
+- Deps: cloudflare (VITE_CLOUDFLARE_TURNSTILE) e google auth (VITE_GOOGLE_CLIENT_ID);
+- Precisa importar o titlePage em todas as páginas para definir o titulo da página;
 
 ### Páginas atualmente dentro do app:
 - /app;
@@ -25,6 +26,7 @@
 - /usuario;
 - /perfil;
 - /checklist;
+- /ia-sensei;
 
 ### Páginas atualmente fora do app:
 - /login;

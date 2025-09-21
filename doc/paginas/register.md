@@ -1,2 +1,0 @@
-### Doc para a rota /register (arquivo Register.jsx):
-- tem 1 funcs para lidar (handleRegister) ela chama a cadastrar que faz a req e retorna a resposta da api, com essa resposta processamos o resto dentro da própria func handleRegister;
