@@ -1,13 +1,12 @@
 /**
  * Serviço para gerenciar checklists
- * Este serviço implementa a integração com localStorage temporariamente
- * e está preparado para integração futura com a API
+ * Integração com API (Bearer) somente via API (sem localStorage)
  */
 
-// URL base da API (para futura implementação)
+// URL base da API
 const URL = import.meta.env.VITE_API_URL;
 
-// Importando utilitários de cookies para autenticação (para futura implementação)
+// Importando utilitários de cookies para autenticação
 import { getAuthToken } from '@/services/cookies/cookies';
 
 // Definindo as categorias disponíveis para checklists
@@ -20,9 +19,6 @@ export const CATEGORIAS_CHECKLIST = [
   { value: "alimentacao", label: "Alimentação", cor: "bg-orange-500 hover:bg-orange-600" },
   { value: "pessoal", label: "Pessoal", cor: "bg-pink-500 hover:bg-pink-600" },
 ];
-
-// Chave para armazenamento no localStorage
-const STORAGE_KEY = 'bjj_checklists';
 
 // Função para gerar timestamp no formato brasileiro
 const formatarTimestamp = (data = new Date()) => {
@@ -39,30 +35,7 @@ const formatarTimestamp = (data = new Date()) => {
   return `${dia} de ${mes} às ${horas}:${minutos}hrs`;
 };
 
-// Função para gerar ID único
-const gerarId = () => {
-  return Date.now() + Math.random().toString(36).substr(2, 9);
-};
-
-// Função para obter dados do localStorage
-const obterDadosLocalStorage = () => {
-  try {
-    const dados = localStorage.getItem(STORAGE_KEY);
-    return dados ? JSON.parse(dados) : [];
-  } catch (error) {
-    console.error('Erro ao ler localStorage:', error);
-    return [];
-  }
-};
-
-// Função para salvar dados no localStorage
-const salvarDadosLocalStorage = (dados) => {
-  try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(dados));
-  } catch (error) {
-    console.error('Erro ao salvar no localStorage:', error);
-  }
-};
+// (IDs e storage local não são mais usados; apenas API)
 
 /**
  * Busca a lista de checklists com base nos filtros e paginação
@@ -73,51 +46,24 @@ const salvarDadosLocalStorage = (dados) => {
  */
 export const getChecklists = async (filtros = {}, pagina = 1, limite = 12) => {
   try {
-    // Simular delay da API
-    await new Promise(resolve => setTimeout(resolve, 300));
-    
-    let checklists = obterDadosLocalStorage();
-    
-    // Aplicar filtros
-    if (filtros.categoria && filtros.categoria !== 'todas') {
-      checklists = checklists.filter(checklist => checklist.categoria === filtros.categoria);
+    const response = await fetch(`${URL}endpoint/checklists/listar.php`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${getAuthToken()}`,
+      },
+      body: JSON.stringify({ filtros, pagina, limite })
+    });
+    const data = await response.json();
+    if (!data?.success || !data?.data) {
+      console.error('Erro ao buscar checklists:', data?.message);
+      return { checklists: [], paginacao: { currentPage: 1, totalPages: 0, totalItems: 0 } };
     }
-    
-    if (filtros.termo && filtros.termo.trim()) {
-      const termo = filtros.termo.toLowerCase();
-      checklists = checklists.filter(checklist => 
-        checklist.titulo.toLowerCase().includes(termo)
-      );
-    }
-    
-    // Ordenar por data de criação (mais recente primeiro)
-    checklists.sort((a, b) => new Date(b.dataCriacao) - new Date(a.dataCriacao));
-    
-    // Calcular paginação
-    const totalItems = checklists.length;
-    const totalPages = Math.ceil(totalItems / limite);
-    const startIndex = (pagina - 1) * limite;
-    const endIndex = startIndex + limite;
-    const checklistsPaginados = checklists.slice(startIndex, endIndex);
-    
-    return {
-      checklists: checklistsPaginados,
-      paginacao: {
-        currentPage: pagina,
-        totalPages,
-        totalItems
-      }
-    };
+    const mapped = (data.data.checklists || []).map(mapChecklistFromApi);
+    return { checklists: mapped, paginacao: data.data.paginacao };
   } catch (error) {
     console.error('Erro ao buscar checklists:', error);
-    return {
-      checklists: [],
-      paginacao: {
-        currentPage: 1,
-        totalPages: 0,
-        totalItems: 0
-      }
-    };
+    return { checklists: [], paginacao: { currentPage: 1, totalPages: 0, totalItems: 0 } };
   }
 };
 
@@ -128,28 +74,17 @@ export const getChecklists = async (filtros = {}, pagina = 1, limite = 12) => {
  */
 export const addChecklist = async (checklist) => {
   try {
-    // Simular delay da API
-    await new Promise(resolve => setTimeout(resolve, 500));
-    
-    const checklists = obterDadosLocalStorage();
-    const agora = new Date();
-    
-    const novoChecklist = {
-      id: gerarId(),
-      titulo: checklist.titulo,
-      categoria: checklist.categoria,
-      dataCriacao: agora.toISOString(),
-      dataFinalizacao: null,
-      timestampCriacao: formatarTimestamp(agora),
-      timestampFinalizacao: null,
-      itens: [],
-      concluido: false
-    };
-    
-    checklists.push(novoChecklist);
-    salvarDadosLocalStorage(checklists);
-    
-    return novoChecklist;
+    const response = await fetch(`${URL}endpoint/checklists/adicionar.php`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${getAuthToken()}`,
+      },
+      body: JSON.stringify(checklist)
+    });
+    const data = await response.json();
+    if (!data?.success) throw new Error(data?.message || 'Erro ao adicionar checklist');
+    return mapChecklistFromApi(data.data);
   } catch (error) {
     console.error('Erro ao adicionar checklist:', error);
     throw error;
@@ -163,26 +98,17 @@ export const addChecklist = async (checklist) => {
  */
 export const updateChecklist = async (checklist) => {
   try {
-    // Simular delay da API
-    await new Promise(resolve => setTimeout(resolve, 500));
-    
-    const checklists = obterDadosLocalStorage();
-    const index = checklists.findIndex(c => c.id === checklist.id);
-    
-    if (index === -1) {
-      throw new Error('Checklist não encontrado');
-    }
-    
-    // Manter dados existentes e atualizar apenas os campos editáveis
-    checklists[index] = {
-      ...checklists[index],
-      titulo: checklist.titulo,
-      categoria: checklist.categoria
-    };
-    
-    salvarDadosLocalStorage(checklists);
-    
-    return checklists[index];
+    const response = await fetch(`${URL}endpoint/checklists/atualizar.php`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${getAuthToken()}`,
+      },
+      body: JSON.stringify(checklist)
+    });
+    const data = await response.json();
+    if (!data?.success) throw new Error(data?.message || 'Erro ao atualizar checklist');
+    return mapChecklistFromApi(data.data);
   } catch (error) {
     console.error('Erro ao atualizar checklist:', error);
     throw error;
@@ -196,18 +122,20 @@ export const updateChecklist = async (checklist) => {
  */
 export const deleteChecklist = async (id) => {
   try {
-    // Simular delay da API
-    await new Promise(resolve => setTimeout(resolve, 300));
-    
-    const checklists = obterDadosLocalStorage();
-    const novoArray = checklists.filter(checklist => checklist.id !== id);
-    
-    salvarDadosLocalStorage(novoArray);
-    
+    const response = await fetch(`${URL}endpoint/checklists/excluir.php`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${getAuthToken()}`,
+      },
+      body: JSON.stringify({ id })
+    });
+    const data = await response.json();
+    if (!data?.success) return false;
     return true;
   } catch (error) {
-    console.error('Erro ao deletar checklist:', error);
-    throw error;
+    console.error('Erro ao excluir checklist:', error);
+    return false;
   }
 };
 
@@ -218,20 +146,23 @@ export const deleteChecklist = async (id) => {
  */
 export const getChecklistPorId = async (id) => {
   try {
-    // Simular delay da API
-    await new Promise(resolve => setTimeout(resolve, 200));
-    
-    const checklists = obterDadosLocalStorage();
-    const checklist = checklists.find(c => c.id === id);
-    
-    if (!checklist) {
-      throw new Error('Checklist não encontrado');
+    const response = await fetch(`${URL}endpoint/checklists/obter.php`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${getAuthToken()}`,
+      },
+      body: JSON.stringify({ id })
+    });
+    const data = await response.json();
+    if (!data?.success) {
+      console.error('Erro ao buscar checklist:', data?.message);
+      return null;
     }
-    
-    return checklist;
+    return mapChecklistFromApi(data.data);
   } catch (error) {
     console.error('Erro ao buscar checklist:', error);
-    throw error;
+    return null;
   }
 };
 
@@ -243,31 +174,17 @@ export const getChecklistPorId = async (id) => {
  */
 export const addChecklistItem = async (checklistId, texto) => {
   try {
-    // Simular delay da API
-    await new Promise(resolve => setTimeout(resolve, 300));
-    
-    const checklists = obterDadosLocalStorage();
-    const checklistIndex = checklists.findIndex(c => c.id === checklistId);
-    
-    if (checklistIndex === -1) {
-      throw new Error('Checklist não encontrado');
-    }
-    
-    const agora = new Date();
-    const novoItem = {
-      id: gerarId(),
-      texto,
-      concluido: false,
-      dataCriacao: agora.toISOString(),
-      dataFinalizacao: null,
-      timestampCriacao: formatarTimestamp(agora),
-      timestampFinalizacao: null
-    };
-    
-    checklists[checklistIndex].itens.push(novoItem);
-    salvarDadosLocalStorage(checklists);
-    
-    return novoItem;
+    const response = await fetch(`${URL}endpoint/checklists/item/adicionar.php`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${getAuthToken()}`,
+      },
+      body: JSON.stringify({ checklistId, texto })
+    });
+    const data = await response.json();
+    if (!data?.success) throw new Error(data?.message || 'Erro ao adicionar item');
+    return mapItemFromApi(data.data);
   } catch (error) {
     console.error('Erro ao adicionar item:', error);
     throw error;
@@ -283,26 +200,17 @@ export const addChecklistItem = async (checklistId, texto) => {
  */
 export const updateChecklistItem = async (checklistId, itemId, texto) => {
   try {
-    // Simular delay da API
-    await new Promise(resolve => setTimeout(resolve, 300));
-    
-    const checklists = obterDadosLocalStorage();
-    const checklistIndex = checklists.findIndex(c => c.id === checklistId);
-    
-    if (checklistIndex === -1) {
-      throw new Error('Checklist não encontrado');
-    }
-    
-    const itemIndex = checklists[checklistIndex].itens.findIndex(i => i.id === itemId);
-    
-    if (itemIndex === -1) {
-      throw new Error('Item não encontrado');
-    }
-    
-    checklists[checklistIndex].itens[itemIndex].texto = texto;
-    salvarDadosLocalStorage(checklists);
-    
-    return checklists[checklistIndex].itens[itemIndex];
+    const response = await fetch(`${URL}endpoint/checklists/item/atualizar.php`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${getAuthToken()}`,
+      },
+      body: JSON.stringify({ checklistId, itemId, texto })
+    });
+    const data = await response.json();
+    if (!data?.success) throw new Error(data?.message || 'Erro ao atualizar item');
+    return mapItemFromApi(data.data);
   } catch (error) {
     console.error('Erro ao atualizar item:', error);
     throw error;
@@ -317,27 +225,20 @@ export const updateChecklistItem = async (checklistId, itemId, texto) => {
  */
 export const deleteChecklistItem = async (checklistId, itemId) => {
   try {
-    // Simular delay da API
-    await new Promise(resolve => setTimeout(resolve, 300));
-    
-    const checklists = obterDadosLocalStorage();
-    const checklistIndex = checklists.findIndex(c => c.id === checklistId);
-    
-    if (checklistIndex === -1) {
-      throw new Error('Checklist não encontrado');
-    }
-    
-    checklists[checklistIndex].itens = checklists[checklistIndex].itens.filter(i => i.id !== itemId);
-    
-    // Verificar se todos os itens restantes estão concluídos
-    verificarChecklistCompleto(checklists[checklistIndex]);
-    
-    salvarDadosLocalStorage(checklists);
-    
+    const response = await fetch(`${URL}endpoint/checklists/item/excluir.php`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${getAuthToken()}`,
+      },
+      body: JSON.stringify({ checklistId, itemId })
+    });
+    const data = await response.json();
+    if (!data?.success) return false;
     return true;
   } catch (error) {
-    console.error('Erro ao deletar item:', error);
-    throw error;
+    console.error('Erro ao excluir item:', error);
+    return false;
   }
 };
 
@@ -349,70 +250,24 @@ export const deleteChecklistItem = async (checklistId, itemId) => {
  */
 export const toggleChecklistItem = async (checklistId, itemId) => {
   try {
-    // Simular delay da API
-    await new Promise(resolve => setTimeout(resolve, 300));
-    
-    const checklists = obterDadosLocalStorage();
-    const checklistIndex = checklists.findIndex(c => c.id === checklistId);
-    
-    if (checklistIndex === -1) {
-      throw new Error('Checklist não encontrado');
-    }
-    
-    const itemIndex = checklists[checklistIndex].itens.findIndex(i => i.id === itemId);
-    
-    if (itemIndex === -1) {
-      throw new Error('Item não encontrado');
-    }
-    
-    const item = checklists[checklistIndex].itens[itemIndex];
-    const agora = new Date();
-    
-    // Toggle do status
-    item.concluido = !item.concluido;
-    
-    if (item.concluido) {
-      // Marcar como concluído
-      item.dataFinalizacao = agora.toISOString();
-      item.timestampFinalizacao = formatarTimestamp(agora);
-    } else {
-      // Desmarcar
-      item.dataFinalizacao = null;
-      item.timestampFinalizacao = null;
-    }
-    
-    // Verificar se todos os itens estão concluídos para finalizar o checklist
-    verificarChecklistCompleto(checklists[checklistIndex]);
-    
-    salvarDadosLocalStorage(checklists);
-    
-    return item;
+    const response = await fetch(`${URL}endpoint/checklists/item/toggle.php`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${getAuthToken()}`,
+      },
+      body: JSON.stringify({ checklistId, itemId })
+    });
+    const data = await response.json();
+    if (!data?.success) throw new Error(data?.message || 'Erro ao alternar item');
+    return mapItemFromApi(data.data);
   } catch (error) {
-    console.error('Erro ao toggle item:', error);
+    console.error('Erro ao alternar item:', error);
     throw error;
   }
 };
 
-/**
- * Verifica se todos os itens do checklist estão concluídos e atualiza o status
- * @param {Object} checklist - Checklist a ser verificado
- */
-const verificarChecklistCompleto = (checklist) => {
-  const agora = new Date();
-  const todosItensCompletos = checklist.itens.length > 0 && checklist.itens.every(item => item.concluido);
-  
-  if (todosItensCompletos && !checklist.concluido) {
-    // Marcar checklist como concluído
-    checklist.concluido = true;
-    checklist.dataFinalizacao = agora.toISOString();
-    checklist.timestampFinalizacao = formatarTimestamp(agora);
-  } else if (!todosItensCompletos && checklist.concluido) {
-    // Desmarcar checklist como concluído
-    checklist.concluido = false;
-    checklist.dataFinalizacao = null;
-    checklist.timestampFinalizacao = null;
-  }
-};
+// (Lógica de completar checklist no cliente removida; backend define estados)
 
 /**
  * Marca ou desmarca todos os itens de um checklist
@@ -422,55 +277,52 @@ const verificarChecklistCompleto = (checklist) => {
  */
 export const marcarTodosItens = async (checklistId, concluido = true) => {
   try {
-    await new Promise(resolve => setTimeout(resolve, 300));
-    const checklists = obterDadosLocalStorage();
-    const checklistIndex = checklists.findIndex(c => c.id === checklistId);
-    if (checklistIndex === -1) {
-      throw new Error('Checklist não encontrado');
-    }
-
-    const agora = new Date();
-    const checklist = checklists[checklistIndex];
-
-    checklist.itens = (checklist.itens || []).map((item) => {
-      if (concluido) {
-        return {
-          ...item,
-          concluido: true,
-          dataFinalizacao: item.dataFinalizacao || agora.toISOString(),
-          timestampFinalizacao: item.timestampFinalizacao || formatarTimestamp(agora),
-        };
-      }
-      return {
-        ...item,
-        concluido: false,
-        dataFinalizacao: null,
-        timestampFinalizacao: null,
-      };
+    const response = await fetch(`${URL}endpoint/checklists/item/marcar-todos.php`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${getAuthToken()}`,
+      },
+      body: JSON.stringify({ checklistId, concluido })
     });
-
-    // Atualiza status do checklist conforme itens
-    verificarChecklistCompleto(checklist);
-
-    // Se todos marcados como concluído e havia itens, garante timestamp de finalização
-    if (concluido && checklist.itens.length > 0) {
-      checklist.concluido = true;
-      checklist.dataFinalizacao = checklist.dataFinalizacao || agora.toISOString();
-      checklist.timestampFinalizacao = checklist.timestampFinalizacao || formatarTimestamp(agora);
-    }
-
-    // Se desmarcado, limpa finalização do checklist
-    if (!concluido) {
-      checklist.concluido = false;
-      checklist.dataFinalizacao = null;
-      checklist.timestampFinalizacao = null;
-    }
-
-    checklists[checklistIndex] = checklist;
-    salvarDadosLocalStorage(checklists);
-    return checklist;
+    const data = await response.json();
+    if (!data?.success) throw new Error(data?.message || 'Erro ao marcar todos os itens');
+    return mapChecklistFromApi(data.data);
   } catch (error) {
     console.error('Erro ao marcar todos os itens:', error);
     throw error;
   }
+};
+
+// Helpers para mapear resposta da API
+const mapItemFromApi = (item) => {
+  const dataCriacao = item.dataCriacao || item.data || item.createdAt || null;
+  const dataFinalizacao = item.dataFinalizacao || item.finalizadoEm || item.finishedAt || null;
+  return {
+    id: item.id,
+    texto: item.texto,
+    concluido: !!item.concluido,
+    dataCriacao,
+    dataFinalizacao,
+    timestampCriacao: dataCriacao ? formatarTimestamp(new Date(dataCriacao)) : null,
+    timestampFinalizacao: dataFinalizacao ? formatarTimestamp(new Date(dataFinalizacao)) : null,
+  };
+};
+
+const mapChecklistFromApi = (c) => {
+  const dataCriacao = c.dataCriacao || c.data || c.createdAt || null;
+  const dataFinalizacao = c.dataFinalizacao || c.finalizadoEm || c.finishedAt || null;
+  const itens = Array.isArray(c.itens) ? c.itens.map(mapItemFromApi) : [];
+  const concluido = typeof c.concluido === 'boolean' ? c.concluido : (itens.length > 0 && itens.every(i => i.concluido));
+  return {
+    id: c.id,
+    titulo: c.titulo,
+    categoria: c.categoria,
+    dataCriacao,
+    dataFinalizacao,
+    timestampCriacao: dataCriacao ? formatarTimestamp(new Date(dataCriacao)) : null,
+    timestampFinalizacao: dataFinalizacao ? formatarTimestamp(new Date(dataFinalizacao)) : null,
+    itens,
+    concluido,
+  };
 };
