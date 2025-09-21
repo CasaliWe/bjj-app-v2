@@ -53,64 +53,126 @@ const ChecklistPagination = ({ paginacao, onPageChange }) => {
   const pageNumbers = getPageNumbers();
 
   return (
-    <div className="flex items-center justify-between mt-8 pt-6 border-t">
-      {/* Informações dos resultados */}
-      <div className="text-sm text-gray-600">
-        Mostrando {Math.min((currentPage - 1) * 12 + 1, totalItems)} - {Math.min(currentPage * 12, totalItems)} de {totalItems} checklists
+    <div className="mt-8 pt-6 border-t">
+      {/* Layout Desktop */}
+      <div className="hidden sm:flex items-center justify-between">
+        {/* Informações dos resultados */}
+        <div className="text-sm text-gray-600">
+          Mostrando {Math.min((currentPage - 1) * 12 + 1, totalItems)} - {Math.min(currentPage * 12, totalItems)} de {totalItems} checklists
+        </div>
+
+        {/* Controles de navegação */}
+        <div className="flex items-center gap-2">
+          {/* Botão Anterior */}
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => onPageChange(currentPage - 1)}
+            disabled={currentPage === 1}
+            className="gap-1"
+          >
+            <ChevronLeft className="h-4 w-4" />
+            Anterior
+          </Button>
+
+          {/* Números das páginas */}
+          <div className="flex items-center gap-1">
+            {pageNumbers.map((page, index) => (
+              <React.Fragment key={index}>
+                {page === '...' ? (
+                  <span className="px-2 py-1 text-gray-500">...</span>
+                ) : (
+                  <Button
+                    variant={page === currentPage ? "default" : "outline"}
+                    size="sm"
+                    onClick={() => onPageChange(page)}
+                    className="w-10 h-10 p-0"
+                  >
+                    {page}
+                  </Button>
+                )}
+              </React.Fragment>
+            ))}
+          </div>
+
+          {/* Botão Próximo */}
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => onPageChange(currentPage + 1)}
+            disabled={currentPage === totalPages}
+            className="gap-1"
+          >
+            Próximo
+            <ChevronRight className="h-4 w-4" />
+          </Button>
+        </div>
       </div>
 
-      {/* Controles de navegação */}
-      <div className="flex items-center gap-2">
-        {/* Botão Anterior */}
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => onPageChange(currentPage - 1)}
-          disabled={currentPage === 1}
-          className="gap-1"
-        >
-          <ChevronLeft className="h-4 w-4" />
-          Anterior
-        </Button>
-
-        {/* Números das páginas */}
-        <div className="hidden sm:flex items-center gap-1">
-          {pageNumbers.map((page, index) => (
-            <React.Fragment key={index}>
-              {page === '...' ? (
-                <span className="px-2 py-1 text-gray-500">...</span>
-              ) : (
-                <Button
-                  variant={page === currentPage ? "default" : "outline"}
-                  size="sm"
-                  onClick={() => onPageChange(page)}
-                  className="w-10 h-10 p-0"
-                >
-                  {page}
-                </Button>
-              )}
-            </React.Fragment>
-          ))}
+      {/* Layout Mobile - Organizado verticalmente */}
+      <div className="sm:hidden space-y-4">
+        {/* Informações dos resultados - Centralizadas */}
+        <div className="text-center">
+          <div className="text-sm text-gray-600 mb-1">
+            Página {currentPage} de {totalPages}
+          </div>
+          <div className="text-xs text-gray-500">
+            {totalItems} checklists no total
+          </div>
         </div>
 
-        {/* Indicador de página atual (mobile) */}
-        <div className="sm:hidden flex items-center gap-2">
-          <span className="text-sm text-gray-600">
-            {currentPage} de {totalPages}
-          </span>
+        {/* Controles de navegação - Centralizados e maiores */}
+        <div className="flex items-center justify-center gap-4">
+          {/* Botão Anterior */}
+          <Button
+            variant="outline"
+            size="default"
+            onClick={() => onPageChange(currentPage - 1)}
+            disabled={currentPage === 1}
+            className="gap-2 min-w-[100px]"
+          >
+            <ChevronLeft className="h-4 w-4" />
+            Anterior
+          </Button>
+
+          {/* Botão Próximo */}
+          <Button
+            variant="outline"
+            size="default"
+            onClick={() => onPageChange(currentPage + 1)}
+            disabled={currentPage === totalPages}
+            className="gap-2 min-w-[100px]"
+          >
+            Próximo
+            <ChevronRight className="h-4 w-4" />
+          </Button>
         </div>
 
-        {/* Botão Próximo */}
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => onPageChange(currentPage + 1)}
-          disabled={currentPage === totalPages}
-          className="gap-1"
-        >
-          Próximo
-          <ChevronRight className="h-4 w-4" />
-        </Button>
+        {/* Navegação rápida para primeira/última página (se necessário) */}
+        {totalPages > 3 && (currentPage > 2 || currentPage < totalPages - 1) && (
+          <div className="flex items-center justify-center gap-2">
+            {currentPage > 2 && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => onPageChange(1)}
+                className="text-xs"
+              >
+                Primeira
+              </Button>
+            )}
+            {currentPage < totalPages - 1 && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => onPageChange(totalPages)}
+                className="text-xs"
+              >
+                Última
+              </Button>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );

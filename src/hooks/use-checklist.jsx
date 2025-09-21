@@ -8,9 +8,10 @@ import {
   addChecklistItem,
   updateChecklistItem,
   deleteChecklistItem,
-  toggleChecklistItem
+  toggleChecklistItem,
+  marcarTodosItens,
+  finalizarChecklist
 } from '../services/checklist/checklistService.jsx';
-import { marcarTodosItens } from '../services/checklist/checklistService.jsx';
 import { useExp } from '@/components/exp/Exp';
 import { useToast } from '@/hooks/use-toast';
 
@@ -343,6 +344,17 @@ export const useChecklist = () => {
       
       // Fazer a atualização no backend
       const itemAtualizado = await toggleChecklistItem(checklistId, itemId);
+      
+      // Após toggle, solicitar atualização do status do checklist
+      try {
+        await finalizarChecklist(checklistId);
+        // Recarregar para garantir que o estado esteja sincronizado
+        await buscarChecklists();
+      } catch (finalizarError) {
+        console.warn('Erro ao atualizar status do checklist:', finalizarError);
+        // Não falhamos aqui, pois o item foi atualizado com sucesso
+        await buscarChecklists();
+      }
       
       return itemAtualizado;
     } catch (error) {

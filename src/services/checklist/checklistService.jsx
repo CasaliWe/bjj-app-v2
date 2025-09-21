@@ -294,6 +294,30 @@ export const marcarTodosItens = async (checklistId, concluido = true) => {
   }
 };
 
+/**
+ * Atualiza o status de conclusão do checklist baseado nos itens
+ * @param {string} checklistId
+ * @returns {Promise<Object|null>} checklist atualizado
+ */
+export const finalizarChecklist = async (checklistId) => {
+  try {
+    const response = await fetch(`${URL}endpoint/checklists/finalizar.php`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${getAuthToken()}`,
+      },
+      body: JSON.stringify({ checklistId })
+    });
+    const data = await response.json();
+    if (!data?.success) throw new Error(data?.message || 'Erro ao finalizar checklist');
+    return mapChecklistFromApi(data.data);
+  } catch (error) {
+    console.error('Erro ao finalizar checklist:', error);
+    throw error;
+  }
+};
+
 // Helpers para mapear resposta da API
 const mapItemFromApi = (item) => {
   const dataCriacao = item.dataCriacao || item.data || item.createdAt || null;

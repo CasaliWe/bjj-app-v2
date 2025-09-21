@@ -155,6 +155,18 @@ Este documento descreve os endpoints para gerenciar Checklists e seus itens, seg
 { "success": true, "message": "Itens atualizados", "data": { "id": 10, "titulo": "...", "categoria": "treino", "data": "2025-09-10T14:30:00", "finalizadoEm": "2025-09-10T15:00:00", "itens": [ { "id": 99, "texto": "...", "concluido": true, "data": "...", "finalizadoEm": "..." } ] } }
 ```
 
+## Atualizar Status de Conclusão do Checklist
+- Endpoint: `PUT endpoint/checklists/finalizar.php`
+- Body:
+```json
+{ "checklistId": 10 }
+```
+- Descrição: Atualiza automaticamente o `finalizado_em` do checklist baseado no status dos itens (se todos concluídos, marca como finalizado; se algum não concluído, remove a data de finalização)
+- Response:
+```json
+{ "success": true, "message": "Status do checklist atualizado", "data": { "id": 10, "titulo": "...", "categoria": "treino", "data": "2025-09-10T14:30:00", "finalizadoEm": "2025-09-10T15:00:00" } }
+```
+
 ---
 
 ## SQL Sugerido
@@ -191,5 +203,9 @@ CREATE TABLE checklist_itens (
 
 Observações:
 - O backend deve inferir `usuario_id` a partir do token e restringir operações ao dono.
+- **IMPORTANTE**: Após qualquer alteração em itens (`toggle`, `marcar-todos`, `adicionar`, `excluir`), o backend deve verificar automaticamente se todos os itens do checklist estão concluídos:
+  - Se SIM: atualizar `finalizado_em` do checklist com CURRENT_TIMESTAMP
+  - Se NÃO: definir `finalizado_em` como NULL
 - Ao marcar todos como concluído, preencher `finalizado_em` no checklist e nos itens que mudarem para concluídos.
+- O endpoint `/finalizar.php` serve para forçar a verificação/atualização manual caso necessário.
 - Retornar sempre o modelo mínimo acima; o frontend mapeia chaves similares (`data`/`dataCriacao`, `finalizadoEm`/`dataFinalizacao`).
