@@ -76,7 +76,7 @@ const PublicProfile = ({ profile }) => {
           <div className="w-28 h-28 md:w-36 md:h-36 rounded-full bg-bjj-gold/10 flex items-center justify-center flex-shrink-0 overflow-hidden border-2 border-yellow-500">
             {profile?.imagem ? (
               <img 
-                src={`${import.meta.env.VITE_API_URL}admin/assets/imagens/arquivos/perfil/${profile.imagem}`}
+                src={profile.tipo_acesso === 'Google' ? profile.imagem : `${import.meta.env.VITE_API_URL}admin/assets/imagens/arquivos/perfil/${profile.imagem}`}
                 alt={`Foto de ${profile.nome}`} 
                 className="w-full h-full object-cover"
               />

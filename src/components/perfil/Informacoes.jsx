@@ -202,7 +202,7 @@ export function Informacoes({profileData, setProfileData}) {
                 <div className="w-32 h-32 rounded-full bg-bjj-gold/10 flex items-center justify-center flex-shrink-0 relative group overflow-hidden">
                   {profileData.imagem ? (
                       <img 
-                      src={`${import.meta.env.VITE_API_URL}admin/assets/imagens/arquivos/perfil/${profileData.imagem}`}
+                      src={profileData.tipo_acesso === 'Google' ? profileData.imagem : `${import.meta.env.VITE_API_URL}admin/assets/imagens/arquivos/perfil/${profileData.imagem}`}
                       alt="Foto de perfil" 
                       className="w-full h-full object-cover"
                       />
@@ -244,7 +244,7 @@ export function Informacoes({profileData, setProfileData}) {
                             />
                             ) : profileData.imagem ? (
                             <img 
-                                src={`${import.meta.env.VITE_API_URL}admin/assets/imagens/arquivos/perfil/${profileData.imagem}`} 
+                                src={profileData.tipo_acesso === 'Google' ? profileData.imagem : `${import.meta.env.VITE_API_URL}admin/assets/imagens/arquivos/perfil/${profileData.imagem}`} 
                                 alt="Foto atual" 
                                 className="w-full h-full object-cover"
                             />

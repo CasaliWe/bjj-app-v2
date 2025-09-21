@@ -62,7 +62,9 @@ const UserProfile = () => {
     academia: '',
     cidade: '',
     estado: '',
-    pais: ''
+    pais: '',
+    imagem: '',
+    tipo_acesso: ''
   });
   
   // Estado para controlar a tab ativa
@@ -90,7 +92,8 @@ const UserProfile = () => {
         academia: user.academia || '',
         cidade: user.cidade || '',
         estado: user.estado || '',
-        pais: user.pais || ''
+        pais: user.pais || '',
+        tipo_acesso: user.tipo_acesso || '',
       });
     }
   }, [user]);
