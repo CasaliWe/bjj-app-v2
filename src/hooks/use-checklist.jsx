@@ -31,11 +31,33 @@ export const useChecklist = () => {
   const [modalAberto, setModalAberto] = useState(false);
   const [modoEdicao, setModoEdicao] = useState(false);
   
+  // Controle de XP: Set para armazenar IDs dos checklists que já deram XP na sessão
+  const [checklistsComXp, setChecklistsComXp] = useState(new Set());
+  
   // Hook para mostrar experiência
   const { mostrarExp } = useExp();
   
   // Hook para toast
   const { toast } = useToast();
+
+  // Função para verificar e conceder XP por conclusão de checklist
+  const verificarEConcederXP = useCallback((checklist) => {
+    // Verificar se a lista foi concluída, tem mais de 5 itens e ainda não deu XP
+    const listaConcluida = checklist.concluido && checklist.itens.length > 5;
+    const jaGanhouXP = checklistsComXp.has(checklist.id);
+    
+    if (listaConcluida && !jaGanhouXP) {
+      // Marcar que este checklist já deu XP
+      setChecklistsComXp(prev => new Set([...prev, checklist.id]));
+      
+      // Dar 25 XP
+      mostrarExp(25, `Parabéns! Você completou uma lista com ${checklist.itens.length} itens e ganhou 25 XP!`);
+      
+      return true;
+    }
+    
+    return false;
+  }, [checklistsComXp, mostrarExp]);
 
   // Helper local para timestamp no padrão "10 de jun às 14:30hrs"
   const formatarTimestampLocal = (data = new Date()) => {
@@ -318,9 +340,15 @@ export const useChecklist = () => {
   // Marcar/desmarcar item como concluído
   const toggleItem = useCallback(async (checklistId, itemId) => {
     try {
+      let checklistAnterior = null;
+      
       // Update otimista: atualizar o estado local primeiro
       setChecklists(prevChecklists => prevChecklists.map(checklist => {
         if (checklist.id !== checklistId) return checklist;
+        
+        // Guardar estado anterior para comparação
+        checklistAnterior = { ...checklist };
+        
         const agora = new Date();
         const itensAtualizados = checklist.itens.map(item => {
           if (item.id !== itemId) return item;
@@ -333,13 +361,25 @@ export const useChecklist = () => {
           };
         });
         const todosConcluidos = itensAtualizados.length > 0 && itensAtualizados.every(i => i.concluido);
-        return {
+        
+        const checklistAtualizado = {
           ...checklist,
           itens: itensAtualizados,
           concluido: todosConcluidos,
           dataFinalizacao: todosConcluidos ? (checklist.dataFinalizacao || agora.toISOString()) : null,
           timestampFinalizacao: todosConcluidos ? (checklist.timestampFinalizacao || formatarTimestampLocal(agora)) : null,
         };
+        
+        // Verificar se acabou de completar a lista (transição de incompleto para completo)
+        const acabouDeCompletar = !checklistAnterior.concluido && checklistAtualizado.concluido;
+        if (acabouDeCompletar) {
+          // Usar setTimeout para dar XP após o state update
+          setTimeout(() => {
+            verificarEConcederXP(checklistAtualizado);
+          }, 100);
+        }
+        
+        return checklistAtualizado;
       }));
       
       // Fazer a atualização no backend
@@ -365,25 +405,42 @@ export const useChecklist = () => {
       
       throw error;
     }
-  }, [buscarChecklists]);
+  }, [buscarChecklists, verificarEConcederXP]);
 
   // Marcar ou desmarcar todos os itens de um checklist
   const marcarTodos = useCallback(async (checklistId, concluido = true) => {
     try {
+      let checklistAnterior = null;
+      
       // Update otimista: atualizar itens localmente
       setChecklists(prevChecklists => 
         prevChecklists.map(checklist => {
           if (checklist.id === checklistId) {
+            // Guardar estado anterior
+            checklistAnterior = { ...checklist };
+            
             const itens = (checklist.itens || []).map(item => ({
               ...item,
               concluido: !!concluido,
             }));
             const todosConcluidos = itens.length > 0 && itens.every(i => i.concluido);
-            return {
+            
+            const checklistAtualizado = {
               ...checklist,
               itens,
               concluido: todosConcluidos,
             };
+            
+            // Verificar se acabou de completar a lista (só quando marcando como concluído)
+            const acabouDeCompletar = concluido && !checklistAnterior.concluido && checklistAtualizado.concluido;
+            if (acabouDeCompletar) {
+              // Usar setTimeout para dar XP após o state update
+              setTimeout(() => {
+                verificarEConcederXP(checklistAtualizado);
+              }, 100);
+            }
+            
+            return checklistAtualizado;
           }
           return checklist;
         })
@@ -407,7 +464,7 @@ export const useChecklist = () => {
       await buscarChecklists();
       throw error;
     }
-  }, [buscarChecklists]);
+  }, [buscarChecklists, verificarEConcederXP, toast]);
 
   // Alterar a página atual (paginação)
   const mudarPagina = useCallback((novaPagina) => {
