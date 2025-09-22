@@ -64,11 +64,33 @@ const TecnicaCard = ({
             onClick={() => window.location.href = `/usuario?bjj_id=${tecnica.autor.bjj_id}`}
             title="Ver perfil do usuário"
           >
-            <img 
-              src={tecnica.autor.imagem} 
-              alt={tecnica.autor.nome}
-              className="h-6 w-6 rounded-full object-cover" 
-            />
+            <div className="h-6 w-6 rounded-full bg-bjj-gold/10 flex items-center justify-center overflow-hidden">
+              {tecnica.autor.imagem ? (
+                <img 
+                  src={tecnica.autor.tipo_acesso === 'Google' ? tecnica.autor.imagem : tecnica.autor.imagem.startsWith('http') ? tecnica.autor.imagem : `${import.meta.env.VITE_API_URL}admin/assets/imagens/arquivos/perfil/${tecnica.autor.imagem}`} 
+                  alt={tecnica.autor.nome}
+                  className="h-full w-full rounded-full object-cover"
+                  {...(tecnica.autor.tipo_acesso === 'Google' && {
+                      referrerPolicy: "no-referrer",
+                      crossOrigin: "anonymous"
+                  })}
+                  onError={(e) => {
+                      e.target.style.display = 'none';
+                      const parent = e.target.parentElement;
+                      const fallback = parent.querySelector('.author-fallback');
+                      if (fallback) {
+                          fallback.style.display = 'flex';
+                      }
+                  }}
+                />
+              ) : null}
+              <div 
+                className={`author-fallback w-full h-full bg-bjj-gold/10 rounded-full flex items-center justify-center text-bjj-gold text-xs font-bold ${tecnica.autor.imagem ? 'hidden' : ''}`}
+                style={{ display: tecnica.autor.imagem ? 'none' : 'flex' }}
+              >
+                {tecnica.autor.nome ? tecnica.autor.nome.charAt(0).toUpperCase() : 'U'}
+              </div>
+            </div>
             <div className="flex items-center gap-1.5">
               <span className="text-xs font-medium">{tecnica.autor.nome}</span>
               <Badge variant="outline" className="text-[10px] px-1.5 py-0 h-4">

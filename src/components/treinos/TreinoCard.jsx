@@ -94,7 +94,14 @@ const TreinoCard = ({ treino, onEditar, onExcluir, onAlterarVisibilidade, isComu
                 title="Ver perfil do usuário"
               >
                 <Avatar className="h-8 w-8 md:h-10 md:w-10">
-                  <AvatarImage src={treino.usuario.imagem} alt={treino.usuario.nome} />
+                  <AvatarImage 
+                    src={treino.usuario.tipo_acesso === 'Google' ? treino.usuario.imagem : treino.usuario.imagem ? `${import.meta.env.VITE_API_URL}admin/assets/imagens/arquivos/perfil/${treino.usuario.imagem}` : null} 
+                    alt={treino.usuario.nome}
+                    {...(treino.usuario.tipo_acesso === 'Google' && {
+                        referrerPolicy: "no-referrer",
+                        crossOrigin: "anonymous"
+                    })}
+                  />
                   <AvatarFallback>{getIniciais(treino.usuario.nome)}</AvatarFallback>
                 </Avatar>
                 <div>

@@ -90,14 +90,23 @@ const CompeticaoDetalhes = ({ isOpen, onClose, competicao, isComunidade = false 
             >
               <Avatar>
                 <AvatarImage 
-                  src={competicao.usuario.foto} 
+                  src={competicao.usuario.tipo_acesso === 'Google' ? competicao.usuario.foto : competicao.usuario.foto ? (competicao.usuario.foto.startsWith('http') ? competicao.usuario.foto : `${import.meta.env.VITE_API_URL}admin/assets/imagens/arquivos/perfil/${competicao.usuario.foto}`) : null} 
                   alt={competicao.usuario.nome}
+                  {...(competicao.usuario.tipo_acesso === 'Google' && {
+                      referrerPolicy: "no-referrer",
+                      crossOrigin: "anonymous"
+                  })}
                   onError={(e) => {
                     console.error("Erro ao carregar imagem de usuário:", e);
-                    e.target.src = "/user.jpeg";
+                    e.target.style.display = 'none';
+                    const parent = e.target.parentElement;
+                    const fallback = parent.querySelector('[data-radix-avatar-fallback]');
+                    if (fallback) {
+                        fallback.style.display = 'flex';
+                    }
                   }}
                 />
-                <AvatarFallback>{competicao.usuario.nome.charAt(0)}</AvatarFallback>
+                <AvatarFallback>{competicao.usuario.nome?.charAt(0)?.toUpperCase() || 'U'}</AvatarFallback>
               </Avatar>
               <div className="flex flex-col">
                 <span className="font-medium">{competicao.usuario.nome}</span>

@@ -64,7 +64,8 @@ const UserProfile = () => {
     estado: '',
     pais: '',
     imagem: '',
-    tipo_acesso: ''
+    tipo_acesso: '',
+    perfilPublico: 'Fechado' // Adicionado
   });
   
   // Estado para controlar a tab ativa
@@ -94,6 +95,7 @@ const UserProfile = () => {
         estado: user.estado || '',
         pais: user.pais || '',
         tipo_acesso: user.tipo_acesso || '',
+        perfilPublico: user.perfilPublico || user.perfil_publico || 'Fechado', // Adicionado
       });
     }
   }, [user]);

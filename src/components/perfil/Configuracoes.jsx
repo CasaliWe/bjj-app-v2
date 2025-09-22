@@ -41,8 +41,11 @@ export function Configuracoes({profileData, setProfileData}) {
   const [visibilitySuccess, setVisibilitySuccess] = useState(false);
 
   // GERENCIAR VISIBILIDADE DO PERFIL
-  const handleOpenVisibilityModal = (isAberto) => {
-    setNewVisibility(isAberto);
+  const handleOpenVisibilityModal = () => {
+    // Pega o valor atual e inverte para o oposto
+    const currentVisibility = profileData.perfilPublico;
+    const newVisibilityValue = currentVisibility === 'Aberto' ? 'Fechado' : 'Aberto';
+    setNewVisibility(newVisibilityValue);
     setIsVisibilityModalOpen(true);
   };
 
@@ -61,7 +64,7 @@ export function Configuracoes({profileData, setProfileData}) {
           "Authorization": `Bearer ${getAuthToken()}`
         },
         body: JSON.stringify({
-          perfilPublico: newVisibility ? 'Aberto' : 'Fechado'
+          perfilPublico: newVisibility
         })
       });
       const data = await response.json();
@@ -69,7 +72,7 @@ export function Configuracoes({profileData, setProfileData}) {
         // Atualiza o estado com a nova visibilidade
         setProfileData(prev => ({
           ...prev,
-          perfilPublico: newVisibility ? 'Aberto' : 'Fechado'
+          perfilPublico: newVisibility
         }));
 
         setIsUpdatingVisibility(false);
@@ -129,7 +132,7 @@ export function Configuracoes({profileData, setProfileData}) {
                 <Button 
                   variant="outline"
                   size="sm"
-                  onClick={() => handleOpenVisibilityModal(profileData.perfilPublico === 'Fechado')}
+                  onClick={() => handleOpenVisibilityModal()}
                   className="border-border/40 h-8"
                 >
                   {profileData.perfilPublico === 'Aberto' ? "Tornar Fechado" : "Tornar Aberto"}
@@ -151,7 +154,7 @@ export function Configuracoes({profileData, setProfileData}) {
             <DialogContent className="bg-card/95 backdrop-blur-sm border-border/50 sm:max-w-md">
               <DialogHeader>
                 <DialogTitle className="text-xl font-semibold flex items-center gap-2">
-                  {newVisibility ? (
+                  {newVisibility === 'Aberto' ? (
                     <Eye className="h-5 w-5 text-bjj-gold" />
                   ) : (
                     <EyeOff className="h-5 w-5 text-bjj-gold" />
@@ -159,13 +162,13 @@ export function Configuracoes({profileData, setProfileData}) {
                   Alterar Visibilidade do Perfil
                 </DialogTitle>
                 <DialogDescription>
-                  Você está prestes a tornar seu perfil {newVisibility ? "aberto" : "fechado"}.
+                  Você está prestes a tornar seu perfil {newVisibility === 'Aberto' ? "aberto" : "fechado"}.
                 </DialogDescription>
               </DialogHeader>
               
               <div className="py-4">
                 <div className="p-3 rounded-lg border border-border/50 bg-card/30">
-                  {newVisibility ? (
+                  {newVisibility === 'Aberto' ? (
                     <p className="text-sm">
                       Com um perfil <span className="font-bold text-green-400">aberto</span>, todos os usuários da plataforma poderão visualizar suas informações, incluindo academia, faixa, estatísticas e outros dados de perfil.
                     </p>
@@ -190,7 +193,7 @@ export function Configuracoes({profileData, setProfileData}) {
                   type="button"
                   onClick={handleUpdateProfileVisibility}
                   disabled={isUpdatingVisibility}
-                  className={`${newVisibility ? "bg-green-600 hover:bg-green-700" : "bg-slate-600 hover:bg-slate-700"} text-white`}
+                  className={`${newVisibility === 'Aberto' ? "bg-green-600 hover:bg-green-700" : "bg-slate-600 hover:bg-slate-700"} text-white`}
                 >
                   {isUpdatingVisibility ? (
                     <>

@@ -203,12 +203,37 @@ export function Informacoes({profileData, setProfileData}) {
                   {profileData.imagem ? (
                       <img 
                       src={profileData.tipo_acesso === 'Google' ? profileData.imagem : `${import.meta.env.VITE_API_URL}admin/assets/imagens/arquivos/perfil/${profileData.imagem}`}
-                      alt="Foto de perfil" 
+                      alt={`Foto de perfil de ${profileData.nome}`}
                       className="w-full h-full object-cover"
+                      {...(profileData.tipo_acesso === 'Google' && {
+                          referrerPolicy: "no-referrer",
+                          crossOrigin: "anonymous"
+                      })}
+                      onError={(e) => {
+                          console.log('Erro ao carregar imagem:', e.target.src);
+                          console.log('Tipo de acesso:', profileData.tipo_acesso);
+                          console.log('URL da imagem:', profileData.imagem);
+                          e.target.style.display = 'none';
+                          const parent = e.target.parentElement;
+                          const fallbackIcon = parent.querySelector('.fallback-icon');
+                          if (fallbackIcon) {
+                              fallbackIcon.style.display = 'block';
+                          }
+                      }}
+                      onLoad={(e) => {
+                          console.log('Imagem carregada com sucesso:', e.target.src);
+                          const parent = e.target.parentElement;
+                          const fallbackIcon = parent.querySelector('.fallback-icon');
+                          if (fallbackIcon) {
+                              fallbackIcon.style.display = 'none';
+                          }
+                      }}
                       />
-                  ) : (
-                      <User className="w-16 h-16 text-bjj-gold" />
-                  )}
+                  ) : null}
+                  <User 
+                      className={`w-16 h-16 text-bjj-gold fallback-icon ${profileData.imagem ? 'hidden' : ''}`} 
+                      style={{ display: profileData.imagem ? 'none' : 'block' }}
+                  />
                   <div 
                       className="absolute inset-0 bg-black/50 rounded-full opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity cursor-pointer"
                       onClick={handleOpenImageModal}
@@ -245,11 +270,38 @@ export function Informacoes({profileData, setProfileData}) {
                             ) : profileData.imagem ? (
                             <img 
                                 src={profileData.tipo_acesso === 'Google' ? profileData.imagem : `${import.meta.env.VITE_API_URL}admin/assets/imagens/arquivos/perfil/${profileData.imagem}`} 
-                                alt="Foto atual" 
+                                alt={`Foto atual de ${profileData.nome}`}
                                 className="w-full h-full object-cover"
+                                {...(profileData.tipo_acesso === 'Google' && {
+                                    referrerPolicy: "no-referrer",
+                                    crossOrigin: "anonymous"
+                                })}
+                                onError={(e) => {
+                                    console.log('Erro ao carregar imagem no modal:', e.target.src);
+                                    console.log('Tipo de acesso:', profileData.tipo_acesso);
+                                    console.log('URL da imagem:', profileData.imagem);
+                                    e.target.style.display = 'none';
+                                    const parent = e.target.parentElement;
+                                    const fallbackIcon = parent.querySelector('.fallback-icon-modal');
+                                    if (fallbackIcon) {
+                                        fallbackIcon.style.display = 'block';
+                                    }
+                                }}
+                                onLoad={(e) => {
+                                    console.log('Imagem do modal carregada com sucesso:', e.target.src);
+                                    const parent = e.target.parentElement;
+                                    const fallbackIcon = parent.querySelector('.fallback-icon-modal');
+                                    if (fallbackIcon) {
+                                        fallbackIcon.style.display = 'none';
+                                    }
+                                }}
                             />
-                            ) : (
-                            <User className="w-20 h-20 text-bjj-gold" />
+                            ) : null}
+                            {!previewImage && (
+                                <User 
+                                    className={`w-20 h-20 text-bjj-gold fallback-icon-modal ${profileData.imagem ? 'hidden' : ''}`} 
+                                    style={{ display: profileData.imagem ? 'none' : 'block' }}
+                                />
                             )}
                         </div>
                         

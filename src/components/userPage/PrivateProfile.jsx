@@ -67,12 +67,34 @@ const PrivateProfile = ({ profile }) => {
                 src={profile.tipo_acesso === 'Google' ? profile.imagem : `${import.meta.env.VITE_API_URL}admin/assets/imagens/arquivos/perfil/${profile.imagem}`}
                 alt={`Foto de ${profile.nome}`} 
                 className="w-full h-full object-cover"
+                {...(profile.tipo_acesso === 'Google' && {
+                    referrerPolicy: "no-referrer",
+                    crossOrigin: "anonymous"
+                })}
+                onError={(e) => {
+                    console.log('Erro ao carregar imagem do perfil privado:', e.target.src);
+                    console.log('Tipo de acesso:', profile.tipo_acesso);
+                    console.log('URL da imagem:', profile.imagem);
+                    e.target.style.display = 'none';
+                    const parent = e.target.parentElement;
+                    const fallbackDiv = parent.querySelector('.fallback-initials');
+                    if (fallbackDiv) {
+                        fallbackDiv.style.display = 'flex';
+                    }
+                }}
+                onLoad={(e) => {
+                    console.log('Imagem do perfil privado carregada com sucesso:', e.target.src);
+                    const parent = e.target.parentElement;
+                    const fallbackDiv = parent.querySelector('.fallback-initials');
+                    if (fallbackDiv) {
+                        fallbackDiv.style.display = 'none';
+                    }
+                }}
               />
-            ) : (
-              <div className="w-full h-full flex items-center justify-center bg-bjj-gold/10 text-bjj-gold text-4xl font-bold">
-                {getInitials()}
-              </div>
-            )}
+            ) : null}
+            <div className={`w-full h-full flex items-center justify-center bg-bjj-gold/10 text-bjj-gold text-4xl font-bold fallback-initials ${profile?.imagem ? 'hidden' : ''}`} style={{ display: profile?.imagem ? 'none' : 'flex' }}>
+              {getInitials()}
+            </div>
           </div>
           
           {/* Badge de experiência - Fora do container da imagem */}

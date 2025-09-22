@@ -34,12 +34,37 @@ export function MeusDados({user, treinosDados}) {
                             {user.imagem ? (
                                 <img 
                                 src={user.tipo_acesso === 'Google' ? user.imagem : `${import.meta.env.VITE_API_URL}admin/assets/imagens/arquivos/perfil/${user.imagem}`} 
-                                alt="Foto de perfil" 
+                                alt={`Foto de perfil de ${user.nome}`}
                                 className="w-full h-full object-cover"
+                                {...(user.tipo_acesso === 'Google' && {
+                                    referrerPolicy: "no-referrer",
+                                    crossOrigin: "anonymous"
+                                })}
+                                onError={(e) => {
+                                    console.log('Erro ao carregar imagem:', e.target.src);
+                                    console.log('Tipo de acesso:', user.tipo_acesso);
+                                    console.log('URL da imagem:', user.imagem);
+                                    e.target.style.display = 'none';
+                                    const parent = e.target.parentElement;
+                                    const fallbackIcon = parent.querySelector('.fallback-icon');
+                                    if (fallbackIcon) {
+                                        fallbackIcon.style.display = 'block';
+                                    }
+                                }}
+                                onLoad={(e) => {
+                                    console.log('Imagem carregada com sucesso:', e.target.src);
+                                    const parent = e.target.parentElement;
+                                    const fallbackIcon = parent.querySelector('.fallback-icon');
+                                    if (fallbackIcon) {
+                                        fallbackIcon.style.display = 'none';
+                                    }
+                                }}
                                 />
-                            ) : (
-                                <User className="w-16 h-16 text-bjj-gold" />
-                            )}
+                            ) : null}
+                            <User 
+                                className={`w-16 h-16 text-bjj-gold fallback-icon ${user.imagem ? 'hidden' : ''}`} 
+                                style={{ display: user.imagem ? 'none' : 'block' }}
+                            />
                         </div>
                         <p className="text-[10px] font-light mb-2">ID: {user.bjj_id}</p>
                         <h3 className="font-semibold text-lg mb-0">{user.nome}</h3>
