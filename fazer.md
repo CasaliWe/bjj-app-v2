@@ -1,6 +1,7 @@
 ### FALTANDO FAZER:
 - bug tornar perfil publico;
 - bug tecnicas página usuário mostrando video que n existe;
+- perfil sem foto buga na pesquisa de user;
 - Modal aviso sistema;
 - FAZER IA SENSEI;
 
