@@ -40,25 +40,6 @@ export function MeusDados({user, treinosDados}) {
                                     referrerPolicy: "no-referrer",
                                     crossOrigin: "anonymous"
                                 })}
-                                onError={(e) => {
-                                    console.log('Erro ao carregar imagem:', e.target.src);
-                                    console.log('Tipo de acesso:', user.tipo_acesso);
-                                    console.log('URL da imagem:', user.imagem);
-                                    e.target.style.display = 'none';
-                                    const parent = e.target.parentElement;
-                                    const fallbackIcon = parent.querySelector('.fallback-icon');
-                                    if (fallbackIcon) {
-                                        fallbackIcon.style.display = 'block';
-                                    }
-                                }}
-                                onLoad={(e) => {
-                                    console.log('Imagem carregada com sucesso:', e.target.src);
-                                    const parent = e.target.parentElement;
-                                    const fallbackIcon = parent.querySelector('.fallback-icon');
-                                    if (fallbackIcon) {
-                                        fallbackIcon.style.display = 'none';
-                                    }
-                                }}
                                 />
                             ) : null}
                             <User 

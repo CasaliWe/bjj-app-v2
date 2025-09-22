@@ -103,7 +103,6 @@ const AboutUs = () => {
         });
         
         const result = await response.json();
-        console.log("Resposta da API de contatos:", result);
         
         if (result.success && result.data) {
           setContactData({
