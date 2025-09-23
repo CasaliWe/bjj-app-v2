@@ -1,5 +1,3 @@
-- Toaster da página checklist não sai também;
-- Modal criar | editar checklist botões grudados;
 - modal competição criar | adicionar, mobile botões;
 - ícone pwa;
 - modal abrir foto;

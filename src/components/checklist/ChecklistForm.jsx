@@ -160,7 +160,7 @@ const ChecklistForm = ({ isOpen, onClose, onSave, checklistAtual }) => {
             )}
           </div>
 
-          <DialogFooter className="flex-col sm:flex-row gap-2 sm:gap-0">
+          <DialogFooter className="flex-col sm:flex-row gap-3">
             <Button type="submit" className="w-full sm:w-auto order-1 sm:order-2">
               {checklistAtual ? 'Salvar Alterações' : 'Criar Checklist'}
             </Button>

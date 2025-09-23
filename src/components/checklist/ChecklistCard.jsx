@@ -12,7 +12,8 @@ import {
   Check, 
   X,
   Calendar,
-  Clock
+  Clock,
+  Loader2
 } from 'lucide-react';
 import {
   DropdownMenu,
@@ -46,6 +47,7 @@ const ChecklistCard = ({
 }) => {
   const [novoItem, setNovoItem] = useState('');
   const [adicionandoItem, setAdicionandoItem] = useState(false);
+  const [salvandoNovoItem, setSalvandoNovoItem] = useState(false);
   const [editandoItem, setEditandoItem] = useState(null);
   const [textoEdicao, setTextoEdicao] = useState('');
 
@@ -61,11 +63,14 @@ const ChecklistCard = ({
   const handleAdicionarItem = async () => {
     if (novoItem.trim()) {
       try {
+        setSalvandoNovoItem(true);
         await onAddItem(checklist.id, novoItem.trim());
         setNovoItem('');
         setAdicionandoItem(false);
       } catch (error) {
         console.error('Erro ao adicionar item:', error);
+      } finally {
+        setSalvandoNovoItem(false);
       }
     }
   };
@@ -195,13 +200,23 @@ const ChecklistCard = ({
               placeholder="Digite o item..."
               className="h-9 text-sm"
               onKeyDown={(e) => {
-                if (e.key === 'Enter') handleAdicionarItem();
+                if (e.key === 'Enter' && !salvandoNovoItem) handleAdicionarItem();
                 if (e.key === 'Escape') cancelarAdicao();
               }}
               autoFocus
             />
-            <Button size="sm" variant="ghost" onClick={handleAdicionarItem} className="h-9 w-9 p-0">
-              <Check className="h-4 w-4" />
+            <Button
+              size="sm"
+              variant="ghost"
+              onClick={handleAdicionarItem}
+              className="h-9 w-9 p-0"
+              disabled={salvandoNovoItem}
+            >
+              {salvandoNovoItem ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                <Check className="h-4 w-4" />
+              )}
             </Button>
             <Button size="sm" variant="ghost" onClick={cancelarAdicao} className="h-9 w-9 p-0">
               <X className="h-4 w-4" />
