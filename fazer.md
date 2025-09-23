@@ -1,6 +1,4 @@
 ### FALTANDO FAZER:
-- ícone pwa;
-- modal abrir foto;
 - listar user na pagina pesquisar;
 - Modal aviso sistema (n está vindo da api);
 - FAZER IA SENSEI;
