@@ -460,7 +460,7 @@ const CompeticaoForm = ({ isOpen, onClose, onSave, competicaoAtual = null }) => 
           <Button variant="outline" onClick={onClose}>
             <X className="h-4 w-4 mr-2" /> Cancelar
           </Button>
-          <Button onClick={handleSave}>
+          <Button className='mb-3' onClick={handleSave}>
             <Plus className="h-4 w-4 mr-2" /> 
             {competicaoAtual ? 'Atualizar Competição' : 'Adicionar Competição'}
           </Button>

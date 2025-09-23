@@ -1,4 +1,3 @@
-- modal competição criar | adicionar, mobile botões;
 - ícone pwa;
 - modal abrir foto;
 - upload vídeo mp4 apenas, n ficou bom;
