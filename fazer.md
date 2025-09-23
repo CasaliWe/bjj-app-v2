@@ -2,7 +2,6 @@
 - modal abrir foto;
 - upload vídeo mp4 apenas, n ficou bom;
 - posição não está funcionando quando adiciono no "ou";
-- botao posição add fica com loading estranho;
 - listar user na pagina pesquisar;
 - colocar ffmpeg;
 

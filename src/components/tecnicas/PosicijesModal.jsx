@@ -11,7 +11,7 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
-import { Plus, Trash2, Target } from "lucide-react";
+import { Plus, Trash2, Target, Loader2 } from "lucide-react";
 import LoadingSpinner from "@/components/ui/LoadingSpinner";
 
 /**
@@ -132,7 +132,7 @@ const PosicijesModal = ({
               className="px-3"
             >
               {adicionando ? (
-                <LoadingSpinner size="sm" />
+                <Loader2 size="sm" />
               ) : (
                 <>
                   <Plus className="h-4 w-4 mr-2" />
