@@ -54,6 +54,8 @@ const Tecnicas = () => {
     carregando, 
     carregandoComunidade,
     erro, 
+    uploadPercent,
+    uploadPhase,
     adicionarTecnica, 
     editarTecnica, 
     excluirTecnica, 
@@ -306,6 +308,8 @@ const Tecnicas = () => {
         }}
         onSave={handleSalvarTecnica}
         posicoesCadastradas={posicoesCadastradas}
+        uploadPercent={uploadPercent}
+        uploadPhase={uploadPhase}
       />
 
       {/* Modal de técnicas destacadas */}

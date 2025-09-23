@@ -31,6 +31,8 @@ export const useTecnicas = () => {
   const [carregando, setCarregando] = useState(true);
   const [carregandoComunidade, setCarregandoComunidade] = useState(false);
   const [erro, setErro] = useState(null);
+  const [uploadPercent, setUploadPercent] = useState(null);
+  const [uploadPhase, setUploadPhase] = useState(null); // 'upload' | 'waiting' | null
   
   // Hook para mostrar experiência
   const { mostrarExp } = useExp();
@@ -149,16 +151,17 @@ export const useTecnicas = () => {
       delete tecnicaFinal.videoError;
       delete tecnicaFinal.videoPoster;
       
-      // Verificar se o vídeo é válido
+      // Verificar se o vídeo é válido (não usar fallback global)
       if (tecnicaFinal.videoFile && !(tecnicaFinal.videoFile instanceof File)) {
-        if (window._ultimoArquivoVideo instanceof File) {
-          tecnicaFinal.videoFile = window._ultimoArquivoVideo;
-        } else {
-          throw new Error("Arquivo de vídeo inválido. Por favor, selecione o arquivo novamente.");
-        }
+        throw new Error("Arquivo de vídeo inválido. Por favor, selecione o arquivo novamente.");
       }
       
-      const tecnicaSalva = await tecnicasService.saveTecnica(tecnicaFinal);
+      const tecnicaSalva = await tecnicasService.saveTecnica(tecnicaFinal, {
+        onUploadProgress: ({ percent, phase }) => {
+          setUploadPercent(percent);
+          setUploadPhase(phase);
+        }
+      });
       
       // Recarregar a primeira página com os filtros atuais para mostrar a nova técnica
       await carregarTecnicas(filtrosAtuais, 1);
@@ -170,6 +173,9 @@ export const useTecnicas = () => {
     } catch (error) {
       console.error("Erro ao adicionar técnica:", error);
       throw error;
+    } finally {
+      setUploadPercent(null);
+      setUploadPhase(null);
     }
   }, [posicoesCadastradas, mostrarExp, carregarTecnicas, filtrosAtuais]);
 
@@ -208,12 +214,8 @@ export const useTecnicas = () => {
         
         // Garantir que o arquivo é válido
         if (!(tecnicaFinal.videoFile instanceof File)) {
-          if (window._ultimoArquivoVideo instanceof File) {
-            tecnicaFinal.videoFile = window._ultimoArquivoVideo;
-          } else {
-            // Se não temos um arquivo válido, remova o videoFile para não tentar enviar
-            tecnicaFinal.videoFile = null;
-          }
+          // Se não temos um arquivo válido, remova o videoFile para não tentar enviar
+          tecnicaFinal.videoFile = null;
         }
       } else {
         // Remova o videoFile se não temos um novo arquivo para enviar
@@ -221,7 +223,12 @@ export const useTecnicas = () => {
         tecnicaFinal.videoFile = null;
       }
       
-      const tecnicaSalva = await tecnicasService.saveTecnica(tecnicaFinal);
+      const tecnicaSalva = await tecnicasService.saveTecnica(tecnicaFinal, {
+        onUploadProgress: ({ percent, phase }) => {
+          setUploadPercent(percent);
+          setUploadPhase(phase);
+        }
+      });
       
       // Recarregar a página atual para mostrar as mudanças
       await carregarTecnicas(filtrosAtuais, paginacao.paginaAtual);
@@ -230,6 +237,9 @@ export const useTecnicas = () => {
     } catch (error) {
       console.error("Erro ao editar técnica:", error);
       throw error;
+    } finally {
+      setUploadPercent(null);
+      setUploadPhase(null);
     }
   }, [posicoesCadastradas, mostrarExp, carregarTecnicas, filtrosAtuais, paginacao.paginaAtual]);
 
@@ -349,6 +359,8 @@ export const useTecnicas = () => {
     carregando,
     carregandoComunidade,
     erro,
+    uploadPercent,
+    uploadPhase,
     carregarTecnicas,
     carregarTecnicasComunidade,
     adicionarTecnica,

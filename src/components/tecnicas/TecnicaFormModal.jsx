@@ -8,6 +8,7 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import { Loader2 } from "lucide-react";
 import TecnicaForm from "./TecnicaForm";
 
 /**
@@ -25,7 +26,9 @@ const TecnicaFormModal = ({
   onClose, 
   tecnica, 
   onSave,
-  posicoesCadastradas
+  posicoesCadastradas,
+  uploadPercent,
+  uploadPhase
 }) => {
   const [formData, setFormData] = useState({
     ...tecnica,
@@ -117,14 +120,9 @@ const TecnicaFormModal = ({
       let dadosParaSalvar = {...formData};
       
       if (formData.videoFile && !(formData.videoFile instanceof File)) {
-        // Tente recuperar o arquivo da variável global de backup
-        if (window._ultimoArquivoVideo instanceof File) {
-          dadosParaSalvar.videoFile = window._ultimoArquivoVideo;
-        } else {
-          setErro("Erro no arquivo de vídeo. Por favor, selecione o arquivo novamente.");
-          setLoading(false);
-          return;
-        }
+        setErro("Erro no arquivo de vídeo. Por favor, selecione o arquivo novamente.");
+        setLoading(false);
+        return;
       }
       
       await onSave(dadosParaSalvar);
@@ -191,7 +189,24 @@ const TecnicaFormModal = ({
         />
 
         {/* Feedback visual */}
-        {loading && (
+        {(uploadPhase === 'upload' && typeof uploadPercent === 'number') && (
+          <div className="my-2">
+            <div className="flex items-center justify-between mb-1 text-sm">
+              <span className="text-blue-600">Enviando vídeo...</span>
+              <span className="text-blue-600">{uploadPercent}%</span>
+            </div>
+            <div className="w-full h-2 bg-muted rounded">
+              <div className="h-2 bg-blue-600 rounded transition-all" style={{ width: `${uploadPercent}%` }}></div>
+            </div>
+          </div>
+        )}
+        {uploadPhase === 'waiting' && (
+          <div className="flex items-center justify-center gap-2 text-blue-600 my-2">
+            <Loader2 className="h-4 w-4 animate-spin" />
+            <span>Processando vídeo no servidor... isso pode levar alguns segundos.</span>
+          </div>
+        )}
+        {loading && (uploadPercent == null) && (
           <div className="text-center text-blue-600 my-2">Salvando técnica...</div>
         )}
         {erro && (
@@ -202,11 +217,11 @@ const TecnicaFormModal = ({
         )}
         
         <DialogFooter className="flex flex-col-reverse sm:flex-row gap-3 mt-4">
-          <Button className="w-full sm:w-auto" variant="outline" onClick={onClose} disabled={loading}>
+          <Button className="w-full sm:w-auto" variant="outline" onClick={onClose} disabled={loading || uploadPhase === 'upload' || uploadPhase === 'waiting'}>
             Cancelar
           </Button>
-          <Button className="w-full sm:w-auto" onClick={handleSave} disabled={loading}>
-            {loading ? "Salvando..." : (tecnica.id ? "Salvar alterações" : "Adicionar técnica")}
+          <Button className="w-full sm:w-auto" onClick={handleSave} disabled={loading || uploadPhase === 'upload' || uploadPhase === 'waiting'}>
+            {uploadPhase === 'upload' ? 'Enviando vídeo...' : uploadPhase === 'waiting' ? 'Processando...' : (loading ? "Salvando..." : (tecnica.id ? "Salvar alterações" : "Adicionar técnica"))}
           </Button>
         </DialogFooter>
       </DialogContent>

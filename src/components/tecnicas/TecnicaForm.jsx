@@ -529,6 +529,7 @@ const TecnicaForm = ({
                 handleChange("videoHeight", null);
                 handleChange("videoDuration", null);
                 handleChange("videoNome", null);
+                try { window._ultimoArquivoVideo = null; } catch (_) {}
                 
                 // Limpar o input file
                 const fileInput = document.getElementById('video-curto');

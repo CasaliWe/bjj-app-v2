@@ -150,7 +150,7 @@ export const getPosicoes = async () => {
  * @param {Object} tecnica - Dados da técnica a ser salva
  * @returns {Promise<Object>} Promessa que resolve para a técnica salva
  */
-export const saveTecnica = async (tecnica) => {
+export const saveTecnica = async (tecnica, opts = {}) => {
   try {
     // Determinar se é uma criação ou atualização
     const isUpdate = !!tecnica.id;
@@ -186,10 +186,7 @@ export const saveTecnica = async (tecnica) => {
     formData.append('observacoes', JSON.stringify(tecnica.observacoes || []));
     
     // Gerenciar upload de arquivo de vídeo
-    const videoFile = tecnica.videoFile instanceof File 
-      ? tecnica.videoFile 
-      : window._ultimoArquivoVideo;
-      
+    const videoFile = tecnica.videoFile;
     if (videoFile instanceof File) {
       // Adicionar o arquivo ao FormData
       formData.append('videoFile', videoFile);
@@ -205,42 +202,82 @@ export const saveTecnica = async (tecnica) => {
     const endpoint = isUpdate ? 'atualizar.php' : 'criar.php';
     const url = `${BASE_URL}endpoint/tecnicas/${endpoint}`;
     
-    // Fazer a requisição com timeout mais longo para uploads
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 60000); // 60 segundos
-    
-    try {
-      const response = await fetch(url, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${getAuthToken()}`
-          // Não definir Content-Type, o navegador configura automaticamente para multipart/form-data
-        },
-        body: formData,
-        signal: controller.signal
-      });
-      
-      clearTimeout(timeoutId);
-      
-      // Obter o texto da resposta
-      const responseText = await response.text();
-      
-      // Tentar converter a resposta para JSON
-      let data;
-      try {
-        data = JSON.parse(responseText);
-      } catch (e) {
-        throw new Error(`Resposta inválida da API: ${responseText.substring(0, 200)}...`);
-      }
-      
-      if (!response.ok) {
-        throw new Error(data.message || `Erro ao ${isUpdate ? 'atualizar' : 'criar'} técnica: ${response.status}`);
-      }
-      
-      return data.data || data;
-    } catch (fetchError) {
-      throw fetchError;
+    // Fazer a requisição com suporte a progresso via XMLHttpRequest
+    const xhr = new XMLHttpRequest();
+    xhr.open('POST', url);
+  xhr.responseType = 'text';
+  xhr.timeout = 0; // 0 = sem timeout; espera até o servidor responder
+    // Autorização
+    xhr.setRequestHeader('Authorization', `Bearer ${getAuthToken()}`);
+
+    const { onUploadProgress } = opts || {};
+
+    if (xhr.upload && typeof onUploadProgress === 'function') {
+      xhr.upload.onprogress = (event) => {
+        if (event.lengthComputable) {
+          const percent = Math.round((event.loaded / event.total) * 100);
+          try { onUploadProgress({ loaded: event.loaded, total: event.total, percent, phase: 'upload' }); } catch (_) {}
+        }
+      };
+      xhr.upload.onload = () => {
+        // Upload concluído, aguardando resposta do servidor
+        try { onUploadProgress({ loaded: 1, total: 1, percent: 100, phase: 'waiting' }); } catch (_) {}
+      };
     }
+
+    // Helper para extrair JSON mesmo quando houver HTML no retorno
+    const extractJsonFromText = (text) => {
+      try { return JSON.parse(text); } catch (_) {}
+      const first = text.indexOf('{');
+      const last = text.lastIndexOf('}');
+      if (first !== -1 && last !== -1 && last > first) {
+        const slice = text.slice(first, last + 1);
+        try { return JSON.parse(slice); } catch (_) {}
+      }
+      return null;
+    };
+
+    const result = await new Promise((resolve, reject) => {
+      xhr.onreadystatechange = () => {
+        if (xhr.readyState === 4) {
+          const status = xhr.status;
+          const responseText = xhr.responseText || '';
+          const data = extractJsonFromText(responseText);
+          if (status >= 200 && status < 300) {
+            // Mesmo em 2xx, algumas APIs retornam { success: false, message: '...' }
+            if (data && data.success === false) {
+              return reject(new Error(data.message || 'Erro ao salvar técnica'));
+            }
+            return resolve((data && data.data) ? data.data : (data || {}));
+          }
+          if (status === 0) {
+            // Geralmente indica timeout do navegador, conexão interrompida ou navegação
+            return reject(new Error('Conexão interrompida ou cancelada antes da resposta do servidor.'));
+          }
+          // Status de erro: tentar usar message da API se disponível
+          if (data && data.message) {
+            return reject(new Error(data.message));
+          }
+          // Se não há JSON, mapear mensagem de limite de tamanho se presente
+          if (responseText && responseText.includes('exceeds the limit')) {
+            const m = /exceeds the limit of (\d+) bytes/i.exec(responseText);
+            if (m && m[1]) {
+              const bytes = Number(m[1]);
+              const mb = Math.round(bytes / 1024 / 1024);
+              return reject(new Error(`O arquivo de vídeo excede o limite do servidor (${mb}MB). Reduza o tamanho ou comprima o vídeo.`));
+            }
+            return reject(new Error('O arquivo de vídeo excede o limite configurado no servidor.'));
+          }
+          return reject(new Error(`Erro ao ${isUpdate ? 'atualizar' : 'criar'} técnica: ${status}`));
+        }
+      };
+      xhr.onerror = () => reject(new Error('Erro de rede ao enviar técnica'));
+      xhr.onabort = () => reject(new Error('Envio de técnica cancelado.'));
+      xhr.ontimeout = () => reject(new Error('Tempo esgotado ao enviar técnica'));
+      xhr.send(formData);
+    });
+
+    return result;
   } catch (error) {
     console.error("Erro ao salvar técnica:", error);
     throw error;

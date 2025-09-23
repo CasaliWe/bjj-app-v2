@@ -1,14 +1,11 @@
+### FALTANDO FAZER:
 - ícone pwa;
 - modal abrir foto;
 - listar user na pagina pesquisar;
-- temporizador;
-
-
-
-### FALTANDO FAZER:
-- Modal aviso sistema;
+- Modal aviso sistema (n está vindo da api);
 - FAZER IA SENSEI;
-- FAZER MONSTAR TREINAMENTO;
+- FAZER MONTAR TREINAMENTO;
+- FAZER CRONÔMETRO;
 
 
 ### Organização:
@@ -46,37 +43,3 @@
 - /sobre-nos;
 - /contato;
 
-
-
-
-*** funcionalidades futuras ***
-- voz bruce buffer;
-- metricas semanais e mensais via agente wpp;
-- fazer smooth comp;
-- fazer modulos de técnicas;
-- puxar coisas da ibjjf;
-- fazer a ia ter como fase oq foi adicionado pelo user;
-- ia sensei;
-- preparação para exame de faixa | desafio;
-- mandar no wpp a tec do dia para o user abrir o app;
-- luta da semana incorporada do yt diretamente dentro do app;
-- timer específico para cada treino;
-- lembrete de treinar via wpp;
-- rever técnica daquelas que já adicionou wpp;
-- desafio da semana, forum postar video somando 1 mes ganha 1 mensalidade grátis;
-- notícias;
-- dojo;
-- drills;
-
-
-*** fora do app ***
-- criar conta email para centralizar tudo;
-- criar conta google cloud para pegar a key;
-- criar conta cloud flare para pegar key;
-- criar notion para organizar tudo;
-- configurar asaas key, url, webhook;
-- criar wpp;
-- criar instagram, tik tok, youtube;
-- posts divulgação;
-- vídeo divulgação;
-- todo mês funcionalidades novas;
