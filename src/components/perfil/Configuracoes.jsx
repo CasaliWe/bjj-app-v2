@@ -28,7 +28,7 @@ import {
 
 import Assinatura from "./Assinatura";
 
-import { getAuthToken } from '@/services/cookies/cookies';
+import { getAuthToken, removeAuthToken } from '@/services/cookies/cookies';
 
 
 
@@ -39,6 +39,11 @@ export function Configuracoes({profileData, setProfileData}) {
   const [newVisibility, setNewVisibility] = useState(null);
   const [isUpdatingVisibility, setIsUpdatingVisibility] = useState(false);
   const [visibilitySuccess, setVisibilitySuccess] = useState(false);
+
+  // Estados para deletar conta
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [deleteError, setDeleteError] = useState(null);
 
   // GERENCIAR VISIBILIDADE DO PERFIL
   const handleOpenVisibilityModal = () => {
@@ -309,6 +314,103 @@ export function Configuracoes({profileData, setProfileData}) {
             </CardContent>
           </Card>
           {/* Seção de Suporte */}
+
+          {/* Deletar Conta */}
+          <Card className="bg-card/50 border-red-500/20">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-base flex items-center gap-2">
+                <div className="w-5 h-5 rounded-full flex items-center justify-center bg-red-500/20">
+                  <div className="w-2 h-2 rounded-full bg-red-400"></div>
+                </div>
+                Deletar Conta
+              </CardTitle>
+              <CardDescription>
+                Esta ação é permanente. Todos os seus dados serão removidos.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-3">
+                <p className="text-sm text-muted-foreground">
+                  Ao deletar sua conta, suas informações, treinos, técnicas e outras atividades relacionadas serão removidas
+                  de forma permanente e não poderão ser recuperadas.
+                </p>
+                <Button 
+                  variant="destructive" 
+                  className="w-full"
+                  onClick={() => setIsDeleteModalOpen(true)}
+                >
+                  Deletar minha conta
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+          {/* Deletar Conta */}
+
+          {/* Modal confirmação deletar conta */}
+          <Dialog open={isDeleteModalOpen} onOpenChange={setIsDeleteModalOpen}>
+            <DialogContent className="bg-card/95 backdrop-blur-sm border-border/50 sm:max-w-md">
+              <DialogHeader>
+                <DialogTitle className="text-xl font-semibold">
+                  Confirmar exclusão de conta
+                </DialogTitle>
+                <DialogDescription>
+                  Tem certeza que deseja deletar sua conta? Esta ação não poderá ser desfeita.
+                </DialogDescription>
+              </DialogHeader>
+
+              {deleteError && (
+                <div className="text-sm text-red-400 bg-red-900/20 border border-red-800 px-3 py-2 rounded">
+                  {deleteError}
+                </div>
+              )}
+
+              <DialogFooter className="sm:justify-between flex flex-col-reverse sm:flex-row gap-2">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => setIsDeleteModalOpen(false)}
+                  className="border-border/40"
+                  disabled={isDeleting}
+                >
+                  Cancelar
+                </Button>
+                <Button
+                  type="button"
+                  variant="destructive"
+                  onClick={async () => {
+                    setDeleteError(null);
+                    setIsDeleting(true);
+                    try {
+                      const response = await fetch(`${import.meta.env.VITE_API_URL}endpoint/user/deletar-conta.php`, {
+                        method: 'GET',
+                        headers: {
+                          'Content-Type': 'application/json',
+                          'Authorization': `Bearer ${getAuthToken()}`
+                        }
+                      });
+                      const data = await response.json();
+                      if (data?.success) {
+                        // remove token e redireciona para login
+                        removeAuthToken();
+                        window.location.href = '/login';
+                      } else {
+                        setDeleteError(data?.message || 'Não foi possível deletar a conta.');
+                      }
+                    } catch (err) {
+                      console.error('Erro ao deletar conta:', err);
+                      setDeleteError('Erro ao deletar a conta. Tente novamente.');
+                    } finally {
+                      setIsDeleting(false);
+                    }
+                  }}
+                  disabled={isDeleting}
+                >
+                  {isDeleting ? 'Deletando...' : 'Confirmar exclusão'}
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+          {/* Modal confirmação deletar conta */}
         </div>
       </div>
     </TabsContent>
