@@ -266,7 +266,7 @@ const TecnicaForm = ({
       {/* Vídeo curto */}
       <div className="grid gap-2">
         <Label htmlFor="video-curto">
-          Vídeo Curto (Opcional, máx. 25MB, até 15s)
+          Vídeo Curto (Opcional, máx. 130MB, até 15s)
         </Label>
         <div className="space-y-2">
           {/* Mostrar vídeo existente se estiver editando e tiver um vídeo */}
@@ -329,7 +329,7 @@ const TecnicaForm = ({
             <p className="font-medium text-blue-800 dark:text-blue-300">Instruções para o upload de vídeo:</p>
             <ol className="list-decimal ml-4 text-blue-700 dark:text-blue-300 mt-1">
               <li>Formato: arquivo de vídeo (qualquer)</li>
-              <li>Tamanho máximo: 25MB</li>
+              <li>Tamanho máximo: 130MB</li>
               <li>Duração máxima: 15 segundos</li>
               <li>O upload só ocorre quando você salva a técnica</li>
             </ol>
@@ -374,9 +374,9 @@ const TecnicaForm = ({
                   // Desabilitar a opção de manter o vídeo existente
                   setManterVideoExistente(false);
                   
-                  // Verificar tamanho do arquivo (25MB = 25 * 1024 * 1024 bytes)
-                  if (file.size > 25 * 1024 * 1024) {
-                    handleChange("videoError", "O arquivo é muito grande. O tamanho máximo é 25MB.");
+                  // Verificar tamanho do arquivo (130MB = 130 * 1024 * 1024 bytes)
+                  if (file.size > 130 * 1024 * 1024) {
+                    handleChange("videoError", "O arquivo é muito grande. O tamanho máximo é 130MB.");
                     // Limpar seleção por exceder tamanho
                     try { if (previewURL) URL.revokeObjectURL(previewURL); } catch (_) {}
                     setVideoFile(null);
