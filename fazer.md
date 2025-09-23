@@ -1,8 +1,7 @@
 - ícone pwa;
 - modal abrir foto;
-- upload vídeo mp4 apenas, n ficou bom;
 - listar user na pagina pesquisar;
-- colocar ffmpeg;
+- temporizador;
 
 
 

@@ -266,7 +266,7 @@ const TecnicaForm = ({
       {/* Vídeo curto */}
       <div className="grid gap-2">
         <Label htmlFor="video-curto">
-          Vídeo Curto (Opcional, máx. 20MB - MP4)
+          Vídeo Curto (Opcional, máx. 25MB, até 15s)
         </Label>
         <div className="space-y-2">
           {/* Mostrar vídeo existente se estiver editando e tiver um vídeo */}
@@ -328,9 +328,9 @@ const TecnicaForm = ({
           <div className="p-2 bg-blue-50 dark:bg-blue-900/30 rounded border border-blue-200 dark:border-blue-800 text-sm mb-2">
             <p className="font-medium text-blue-800 dark:text-blue-300">Instruções para o upload de vídeo:</p>
             <ol className="list-decimal ml-4 text-blue-700 dark:text-blue-300 mt-1">
-              <li>O arquivo deve estar no formato MP4</li>
-              <li>Tamanho máximo: 20MB</li>
-              <li>Duração recomendada: até 7 segundos</li>
+              <li>Formato: arquivo de vídeo (qualquer)</li>
+              <li>Tamanho máximo: 25MB</li>
+              <li>Duração máxima: 15 segundos</li>
               <li>O upload só ocorre quando você salva a técnica</li>
             </ol>
           </div>
@@ -340,7 +340,7 @@ const TecnicaForm = ({
               type="file"
               id="video-curto"
               name="videoFile"
-              accept="video/mp4"
+              accept="video/*"
               className="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-white dark:text-gray-400 focus:outline-none dark:bg-gray-800 dark:border-gray-600 dark:placeholder-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-l-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 dark:file:bg-blue-900 dark:file:text-blue-200"
               onChange={(e) => {
                 try {
@@ -374,15 +374,36 @@ const TecnicaForm = ({
                   // Desabilitar a opção de manter o vídeo existente
                   setManterVideoExistente(false);
                   
-                  // Verificar tamanho do arquivo (20MB = 20 * 1024 * 1024 bytes)
-                  if (file.size > 20 * 1024 * 1024) {
-                    handleChange("videoError", "O arquivo é muito grande. O tamanho máximo é 20MB.");
+                  // Verificar tamanho do arquivo (25MB = 25 * 1024 * 1024 bytes)
+                  if (file.size > 25 * 1024 * 1024) {
+                    handleChange("videoError", "O arquivo é muito grande. O tamanho máximo é 25MB.");
+                    // Limpar seleção por exceder tamanho
+                    try { if (previewURL) URL.revokeObjectURL(previewURL); } catch (_) {}
+                    setVideoFile(null);
+                    setVideoPreview("");
+                    handleChange("videoFile", null);
+                    handleChange("videoNome", null);
+                    handleChange("videoWidth", null);
+                    handleChange("videoHeight", null);
+                    handleChange("videoDuration", null);
+                    // Resetar input file
+                    fileInput.value = '';
                     return;
                   }
                   
-                  // Verificar tipo do arquivo
-                  if (!file.type.startsWith('video/mp4')) {
-                    handleChange("videoError", "Apenas arquivos MP4 são suportados.");
+                  // Verificar se é um arquivo de vídeo (qualquer formato)
+                  if (file.type && !file.type.startsWith('video/')) {
+                    handleChange("videoError", "Selecione um arquivo de vídeo válido.");
+                    // Limpar seleção inválida
+                    setVideoFile(null);
+                    setVideoPreview("");
+                    handleChange("videoFile", null);
+                    handleChange("videoNome", null);
+                    handleChange("videoWidth", null);
+                    handleChange("videoHeight", null);
+                    handleChange("videoDuration", null);
+                    // Resetar input
+                    fileInput.value = '';
                     return;
                   }
                   
@@ -404,9 +425,19 @@ const TecnicaForm = ({
                     handleChange("videoHeight", height);
                     handleChange("videoDuration", duracao);
                     
-                    // Verificar duração (aviso, mas não impede o upload)
-                    if (duracao > 7) {
-                      handleChange("videoError", `Atenção: O vídeo tem ${duracao.toFixed(1)}s. Vídeos mais curtos são recomendados.`);
+                    // Verificar duração (bloquear > 15s: limpa input e mantém aviso)
+                    if (duracao > 15) {
+                      handleChange("videoError", "O vídeo deve ter no máximo 15 segundos.");
+                      // Limpar seleção
+                      setVideoFile(null);
+                      setVideoPreview("");
+                      handleChange("videoFile", null);
+                      handleChange("videoNome", null);
+                      handleChange("videoWidth", null);
+                      handleChange("videoHeight", null);
+                      handleChange("videoDuration", null);
+                      // Resetar input file
+                      fileInput.value = '';
                     } else {
                       handleChange("videoError", null);
                     }
@@ -438,7 +469,7 @@ const TecnicaForm = ({
               {tecnica.videoDuration && (
                 <p className="text-blue-600 mt-1">
                   <span className="font-medium">Duração:</span> {tecnica.videoDuration.toFixed(1)}s 
-                  {tecnica.videoDuration <= 7 ? 
+                  {tecnica.videoDuration <= 15 ? 
                     <span className="text-green-500 ml-1">✓</span> : 
                     <span className="text-amber-500 ml-1">⚠️</span>}
                 </p>
