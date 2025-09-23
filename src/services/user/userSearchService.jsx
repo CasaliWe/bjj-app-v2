@@ -17,11 +17,11 @@ import { getAuthToken } from '@/services/cookies/cookies';
  */
 export const searchUsers = async (query, searchBy = 'nome') => {
   try {
-    if (!query || query.trim() === '') {
-      return { usuarios: [] };
-    }
-
-    const url = `${BASE_URL}endpoint/user/pesquisar-usuario.php?query=${encodeURIComponent(query)}&search_by=${searchBy}`;
+    // Quando não houver query, a API retorna todos os usuários se nenhum parâmetro for enviado
+    const hasQuery = !!(query && query.trim() !== '');
+    const url = hasQuery
+      ? `${BASE_URL}endpoint/user/pesquisar-usuario.php?query=${encodeURIComponent(query)}&search_by=${searchBy}`
+      : `${BASE_URL}endpoint/user/pesquisar-usuario.php`;
     
     const response = await fetch(url, {
       method: 'GET',

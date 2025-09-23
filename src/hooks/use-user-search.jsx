@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { searchUsers } from '@/services/user/userSearchService';
 
 /**
@@ -20,13 +20,6 @@ export const useUserSearch = () => {
    * @param {string} type - Tipo de pesquisa ('nome' ou 'bjj_id')
    */
   const performSearch = useCallback(async (query, type = searchBy) => {
-    if (!query || query.trim() === '') {
-      setSearchResults([]);
-      setSearchError(null);
-      setHasSearched(true);
-      return;
-    }
-
     setIsSearching(true);
     setSearchError(null);
     setHasSearched(true);
@@ -42,6 +35,12 @@ export const useUserSearch = () => {
       setIsSearching(false);
     }
   }, [searchBy]);
+
+  // Busca inicial: lista todos os usuários ao entrar na página
+  useEffect(() => {
+    performSearch('', searchBy);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   /**
    * Manipula a mudança do termo de pesquisa

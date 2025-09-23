@@ -80,7 +80,7 @@ const SearchForm = ({
               
               <Button 
                 type="submit" 
-                disabled={isSearching || !searchQuery.trim()}
+                disabled={isSearching}
                 className="bg-bjj-gold hover:bg-bjj-gold/90 text-black"
               >
                 {isSearching ? (

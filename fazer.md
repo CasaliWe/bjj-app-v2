@@ -1,5 +1,4 @@
 ### FALTANDO FAZER:
-- listar user na pagina pesquisar;
 - Modal aviso sistema (n está vindo da api);
 - FAZER IA SENSEI;
 - FAZER MONTAR TREINAMENTO;

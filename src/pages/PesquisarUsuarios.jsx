@@ -79,18 +79,6 @@ const PesquisarUsuarios = () => {
                 </Card>
               )}
 
-              {!hasSearched && (
-                <div className="text-center py-12">
-                  <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-muted mb-4">
-                    <Search className="h-10 w-10 text-muted-foreground" />
-                  </div>
-                  <h2 className="text-xl font-semibold mb-2">Pesquise por usuários</h2>
-                  <p className="text-muted-foreground max-w-md mx-auto">
-                    Digite um nome ou um BJJ ID no campo acima para encontrar outros praticantes de Jiu-Jitsu na plataforma.
-                  </p>
-                </div>
-              )}
-
               {hasSearched && (
                 <UserResults 
                   usuarios={searchResults} 
