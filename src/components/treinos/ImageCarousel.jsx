@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import ImageSheet from "@/components/ui/ImageSheet";
 
 /**
  * Componente de carrossel para exibir múltiplas imagens
@@ -9,6 +10,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
  */
 const ImageCarousel = ({ images }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [sheetOpen, setSheetOpen] = useState(false);
 
   useEffect(() => {
     if (images.length <= 1) return;
@@ -29,13 +31,17 @@ const ImageCarousel = ({ images }) => {
   // Se houver apenas uma imagem, exibe-a sem controles de navegação
   if (images.length === 1) {
     return (
-      <div className="relative w-full rounded-lg overflow-hidden aspect-video bg-muted">
-        <img 
-          src={images[0].url} 
-          alt="Foto do treino" 
-          className="w-full h-full object-cover"
-        />
-      </div>
+      <>
+        <div className="relative w-full rounded-lg overflow-hidden aspect-video bg-muted">
+          <img 
+            src={images[0].url} 
+            alt="Foto do treino" 
+            className="w-full h-full object-cover cursor-pointer"
+            onClick={() => setSheetOpen(true)}
+          />
+        </div>
+        <ImageSheet open={sheetOpen} onOpenChange={setSheetOpen} src={images[0].url} alt="Foto do treino" side="right" />
+      </>
     );
   }
 
@@ -52,7 +58,8 @@ const ImageCarousel = ({ images }) => {
           <img 
             src={image.url} 
             alt={`Foto do treino ${index + 1}`} 
-            className="w-full h-full object-cover"
+            className="w-full h-full object-cover cursor-pointer"
+            onClick={() => setSheetOpen(true)}
           />
         </div>
       ))}
@@ -95,6 +102,15 @@ const ImageCarousel = ({ images }) => {
           </button>
         </>
       )}
+
+      {/* Sheet da imagem atual */}
+      <ImageSheet
+        open={sheetOpen}
+        onOpenChange={setSheetOpen}
+        src={images[currentIndex]?.url}
+        alt={`Foto do treino ${currentIndex + 1}`}
+        side="right"
+      />
     </div>
   );
 };

@@ -11,6 +11,7 @@ import {
   DialogTitle,
   DialogFooter,
 } from '../ui/dialog';
+import ImageSheet from '@/components/ui/ImageSheet';
 
 /**
  * Componente para exibir detalhes de uma competição
@@ -22,6 +23,7 @@ import {
  */
 const CompeticaoDetalhes = ({ isOpen, onClose, competicao, isComunidade = false }) => {
   const [imagemAtual, setImagemAtual] = useState(0);
+  const [sheetOpen, setSheetOpen] = useState(false);
   const navigate = useNavigate();
 
   // Redefinir o índice da imagem atual quando a competição mudar ou quando o array de imagens mudar
@@ -124,7 +126,8 @@ const CompeticaoDetalhes = ({ isOpen, onClose, competicao, isComunidade = false 
                 <img
                   src={competicao.imagens[imagemAtual].url}
                   alt={`Competição ${competicao.nomeEvento || competicao.nome}`}
-                  className="w-full h-64 object-cover"
+                  className="w-full h-64 object-cover cursor-pointer"
+                  onClick={() => setSheetOpen(true)}
                   onError={(e) => {
                     console.error("Erro ao carregar imagem:", e);
                     e.target.src = `${import.meta.env.VITE_API_URL || ''}/imagens/placeholder.jpg`;
@@ -163,6 +166,14 @@ const CompeticaoDetalhes = ({ isOpen, onClose, competicao, isComunidade = false 
                   </div>
                 </>
               )}
+              {/* Sheet de pré-visualização por cima do Dialog */}
+              <ImageSheet
+                open={sheetOpen}
+                onOpenChange={setSheetOpen}
+                src={competicao.imagens[imagemAtual]?.url}
+                alt={`Competição ${competicao.nomeEvento || competicao.nome}`}
+                side="right"
+              />
             </div>
           ) : (
             <div className="w-full h-32 bg-muted rounded-lg flex items-center justify-center">

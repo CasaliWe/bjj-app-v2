@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useRef, useState } from 'react';
 import { Trophy, Medal, Calendar, MapPin } from 'lucide-react';
 import { Card, CardContent } from '../ui/card';
 import { Badge } from '../ui/badge';
+import ImageSheet from "../ui/ImageSheet";
 
 /**
  * Componente para exibir uma competição em formato de card na página de perfil
@@ -11,6 +12,17 @@ import { Badge } from '../ui/badge';
 const UserPageCompeticaoCard = ({ 
   competicao
 }) => {  
+  const [sheetOpen, setSheetOpen] = useState(false);
+  const ignoreNextClickRef = useRef(false);
+
+  const handleOpenImage = () => {
+    // Evita reabertura imediata após fechar o Sheet
+    if (ignoreNextClickRef.current) {
+      ignoreNextClickRef.current = false;
+      return;
+    }
+    setSheetOpen(true);
+  };
   // Formatação da data
   const formatarData = (dataString) => {
     if (!dataString) return 'Data não informada';
@@ -42,7 +54,7 @@ const UserPageCompeticaoCard = ({
       <CardContent className="p-0">
         {/* Imagem da competição se disponível */}
         {competicao.imagens && competicao.imagens.length > 0 && (
-          <div className="w-full h-40 relative">
+          <div className="w-full h-40 relative cursor-pointer" onClick={handleOpenImage}>
             <img 
               src={competicao.imagens[0]} 
               alt={competicao.nome || "Competição"}
@@ -70,6 +82,23 @@ const UserPageCompeticaoCard = ({
                 </div>
               </div>
             </div>
+            {/* Sheet de visualização da imagem */}
+            <ImageSheet 
+              open={sheetOpen}
+              onOpenChange={(open) => {
+                setSheetOpen(open);
+                if (!open) {
+                  // Sinaliza para ignorar o próximo clique "vazado" após o fechamento
+                  ignoreNextClickRef.current = true;
+                  setTimeout(() => {
+                    ignoreNextClickRef.current = false;
+                  }, 200);
+                }
+              }}
+              src={competicao.imagens[0]}
+              alt={competicao.nome || "Competição"}
+              side="right"
+            />
           </div>
         )}
         

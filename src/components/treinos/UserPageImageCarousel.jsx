@@ -1,5 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
+import ImageSheet from "../ui/ImageSheet";
 
 /**
  * Componente de carrossel otimizado para exibição em perfil de usuário
@@ -10,6 +11,8 @@ import { ChevronLeft, ChevronRight, X } from "lucide-react";
 const UserPageImageCarousel = ({ images }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [sheetOpen, setSheetOpen] = useState(false);
+  const ignoreNextClickRef = useRef(false);
 
   useEffect(() => {
     if (images.length <= 1) return;
@@ -63,6 +66,13 @@ const UserPageImageCarousel = ({ images }) => {
   const toggleFullscreen = () => {
     setIsFullscreen(!isFullscreen);
   };
+  const openSheet = () => {
+    if (ignoreNextClickRef.current) {
+      ignoreNextClickRef.current = false;
+      return;
+    }
+    setSheetOpen(true);
+  };
   
   // Se houver apenas uma imagem, exibe-a sem controles de navegação
   if (images.length === 1) {
@@ -94,7 +104,7 @@ const UserPageImageCarousel = ({ images }) => {
     return (
       <div 
         className="relative w-full rounded-lg overflow-hidden aspect-video bg-muted cursor-pointer"
-        onClick={toggleFullscreen}
+        onClick={openSheet}
       >
         <img 
           src={imageUrl} 
@@ -104,6 +114,20 @@ const UserPageImageCarousel = ({ images }) => {
             console.error("Erro ao carregar imagem:", imageUrl);
             e.target.src = "/placeholder-image.jpg"; // Imagem de fallback
           }}
+        />
+        <ImageSheet 
+          open={sheetOpen}
+          onOpenChange={(open) => {
+            setSheetOpen(open);
+            if (!open) {
+              ignoreNextClickRef.current = true;
+              setTimeout(() => {
+                ignoreNextClickRef.current = false;
+              }, 200);
+            }
+          }}
+          src={imageUrl}
+          alt="Foto do treino"
         />
       </div>
     );
@@ -177,7 +201,7 @@ const UserPageImageCarousel = ({ images }) => {
             className={`absolute inset-0 transition-opacity duration-1000 ${
               index === currentIndex ? "opacity-100" : "opacity-0"
             }`}
-            onClick={toggleFullscreen}
+            onClick={openSheet}
           >
             <img 
               src={imageUrl} 
@@ -237,6 +261,20 @@ const UserPageImageCarousel = ({ images }) => {
           >
             <ChevronRight className="h-5 w-5 text-white" />
           </button>
+          <ImageSheet 
+            open={sheetOpen}
+            onOpenChange={(open) => {
+              setSheetOpen(open);
+              if (!open) {
+                ignoreNextClickRef.current = true;
+                setTimeout(() => {
+                  ignoreNextClickRef.current = false;
+                }, 200);
+              }
+            }}
+            src={getImageUrl(images[currentIndex])}
+            alt={`Foto do treino ${currentIndex + 1}`}
+          />
         </>
       )}
     </div>
