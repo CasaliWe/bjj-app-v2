@@ -1,3 +1,16 @@
+- Toaster da página checklist não sai também;
+- Modal criar | editar checklist botões grudados;
+- modal competição criar | adicionar, mobile botões;
+- ícone pwa;
+- modal abrir foto;
+- upload vídeo mp4 apenas, n ficou bom;
+- posição não está funcionando quando adiciono no "ou";
+- colocar posições no plano de jogo;
+- listar user na pagina pesquisar;
+- colocar ffmpeg;
+
+
+
 ### FALTANDO FAZER:
 - Modal aviso sistema;
 - FAZER IA SENSEI;
