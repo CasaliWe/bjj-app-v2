@@ -1,4 +1,5 @@
 ### FALTANDO FAZER:
+- Verificar demais abas;
 - Modal aviso sistema (n está vindo da api);
 - FAZER IA SENSEI;
 - FAZER MONTAR TREINAMENTO;
