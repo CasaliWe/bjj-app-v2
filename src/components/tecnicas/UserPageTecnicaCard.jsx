@@ -30,9 +30,6 @@ import UserPageVideoPlayer from "./UserPageVideoPlayer";
  * @param {Object} props.userContacts - Dados de contato do usuário (opcional)
  */
 const UserPageTecnicaCard = ({ tecnica, userContacts }) => {
-  // Log para debug dos dados recebidos
-  console.log('Dados da técnica recebidos:', tecnica);
-  console.log('Dados de contato recebidos:', userContacts);
 
   // Função para verificar se a técnica tem vídeo próprio (mp4)
   const hasEmbeddedVideo = () => {

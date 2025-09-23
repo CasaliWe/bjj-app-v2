@@ -10,10 +10,7 @@ import { Badge } from '../ui/badge';
  */
 const UserPageCompeticaoCard = ({ 
   competicao
-}) => {
-  // Log para debug dos dados recebidos
-  console.log('Dados recebidos no componente UserPageCompeticaoCard:', competicao);
-  
+}) => {  
   // Formatação da data
   const formatarData = (dataString) => {
     if (!dataString) return 'Data não informada';

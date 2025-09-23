@@ -23,8 +23,6 @@ const UserTechniques = ({
   error,
   onPageChange
 }) => {
-  // Log para depuração
-  console.log('Técnicas recebidas:', techniques);
   
   // Renderização condicional para estado de carregamento
   if (isLoading) {
