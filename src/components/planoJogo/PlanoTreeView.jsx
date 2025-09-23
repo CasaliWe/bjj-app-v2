@@ -4,7 +4,6 @@ import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { usePlanoJogo } from "@/hooks/use-plano-jogo";
 import { cn } from "@/lib/utils";
-import { useToast } from "@/hooks/use-toast";
 import NodeFormModal from "./NodeFormModal";
 import TecnicaSelector from "./TecnicaSelector";
 import TecnicaDetailsModal from "./modals/TecnicaDetailsModal";
@@ -19,7 +18,6 @@ export default function PlanoTreeView({ plano, onBack }) {
   const [detalhesOpen, setDetalhesOpen] = useState(false);
   const [detalhesTecnica, setDetalhesTecnica] = useState({ tecnicaId: null, tecnicaInline: null });
   const [processing, setProcessing] = useState({}); // { [nodeId_action]: true }
-  const { toast } = useToast();
   
   // Evita recarregamentos redundantes; as ações já atualizam o estado via hook
   useEffect(() => {
@@ -49,8 +47,10 @@ export default function PlanoTreeView({ plano, onBack }) {
     setSeletorTecnicaOpen(true);
   };
 
-  const handleNodeCreate = (node, parentId) => {
-    const novoNode = adicionarNode(plano.id, node, parentId);
+  const handleNodeCreate = async (node, parentId) => {
+    const processKey = parentId ? parentId + '_add' : 'root_add';
+    setProcessing(prev => ({ ...prev, [processKey]: true }));
+    const novoNode = await adicionarNode(plano.id, node, parentId);
     if (novoNode) {
       setFormNodeOpen(false);
       // Expandir o nó pai automaticamente
@@ -64,6 +64,7 @@ export default function PlanoTreeView({ plano, onBack }) {
       // Indicar que uma ação foi realizada
       setActionPerformed(true);
     }
+    setProcessing(prev => ({ ...prev, [processKey]: false }));
   };
 
   const handleAddRespostaCerto = async (parentId) => {
@@ -112,18 +113,13 @@ export default function PlanoTreeView({ plano, onBack }) {
     setProcessing(prev => ({ ...prev, [nodeId + '_delete']: true }));
     const planoAtualizado = await removerNode(plano.id, nodeId);
     if (planoAtualizado) {
-      toast({
-        title: "Item removido",
-        description: "O item foi removido do plano de jogo.",
-      });
-      
       // Indicar que uma ação foi realizada
       setActionPerformed(true);
     }
     setProcessing(prev => ({ ...prev, [nodeId + '_delete']: false }));
   };
 
-  const handleTecnicaSelected = (tecnica) => {
+  const handleTecnicaSelected = async (tecnica) => {
     const newNode = {
       nome: tecnica.nome,
       descricao: tecnica.descricao || "",
@@ -139,8 +135,8 @@ export default function PlanoTreeView({ plano, onBack }) {
       video: tecnica.video
     };
     
-    handleNodeCreate(newNode, nodeParaAdicionar);
     setSeletorTecnicaOpen(false);
+    await handleNodeCreate(newNode, nodeParaAdicionar);
     
     // Indicar que uma ação foi realizada
     setActionPerformed(true);
@@ -279,9 +275,14 @@ export default function PlanoTreeView({ plano, onBack }) {
                     size="icon" 
                     className="h-6 w-6 sm:h-6 sm:w-6 text-muted-foreground hover:text-foreground hover:bg-muted"
                     onClick={() => handleAddNode(node.id)}
+                    disabled={!!processing[node.id + '_add']}
                     title="Adicionar técnica"
                   >
-                    <Plus className="h-3 w-3" />
+                    {processing[node.id + '_add'] ? (
+                      <Loader2 className="h-3 w-3 animate-spin" />
+                    ) : (
+                      <Plus className="h-3 w-3" />
+                    )}
                   </Button>
                   
                   <Button 
@@ -332,9 +333,14 @@ export default function PlanoTreeView({ plano, onBack }) {
             onClick={() => handleAddNode(null)} 
             variant="outline" 
             size="sm"
+            disabled={!!processing['root_add']}
             className="whitespace-nowrap px-2"
           >
-            <Plus className="h-4 w-4 sm:mr-2" />
+            {processing['root_add'] ? (
+              <Loader2 className="h-4 w-4 sm:mr-2 animate-spin" />
+            ) : (
+              <Plus className="h-4 w-4 sm:mr-2" />
+            )}
             <span className="hidden sm:inline">Adicionar Técnica Raiz</span>
           </Button>
         </div>
@@ -358,8 +364,13 @@ export default function PlanoTreeView({ plano, onBack }) {
           size="icon" 
           className="h-12 w-12 rounded-full shadow-lg"
           onClick={() => handleAddNode(null)}
+          disabled={!!processing['root_add']}
         >
-          <Plus className="h-6 w-6" />
+          {processing['root_add'] ? (
+            <Loader2 className="h-6 w-6 animate-spin" />
+          ) : (
+            <Plus className="h-6 w-6" />
+          )}
         </Button>
       </div>
       

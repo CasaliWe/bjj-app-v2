@@ -1,7 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import * as planoJogoService from "@/services/planoJogo/planoJogoService.jsx";
 import { useTecnicas } from "@/hooks/use-tecnicas.js";
-import { useToast } from "@/hooks/use-toast";
 
 /**
  * Hook personalizado para gerenciar planos de jogo
@@ -19,9 +18,6 @@ export const usePlanoJogo = () => {
   
   // Hook para obter técnicas para serem usadas no plano
   const { tecnicas, carregarTecnicas } = useTecnicas();
-  
-  // Hook para mostrar mensagens toast
-  const { toast } = useToast();
 
   // Carregar todos os planos
   const carregarPlanos = useCallback(async () => {
@@ -94,11 +90,6 @@ export const usePlanoJogo = () => {
       // Validar dados mínimos
       if (!dados.nome) {
         setErro("O nome do plano é obrigatório");
-        toast({
-          title: "Erro",
-          description: "O nome do plano é obrigatório",
-          variant: "destructive"
-        });
         return null;
       }
 
@@ -106,25 +97,13 @@ export const usePlanoJogo = () => {
     const novosPlanos = await planoJogoService.getPlanos();
     setPlanos([...(Array.isArray(novosPlanos) ? novosPlanos : [])]);
       
-      toast({
-        title: "Sucesso",
-        description: "Plano de jogo criado com sucesso",
-      });
-      
       return novoPlano;
     } catch (error) {
       console.error("Erro ao criar plano:", error);
       setErro("Erro ao criar plano de jogo");
-      
-      toast({
-        title: "Erro",
-        description: "Não foi possível criar o plano de jogo",
-        variant: "destructive"
-      });
-      
       return null;
     }
-  }, [toast]);
+  }, []);
 
   // Atualizar um plano existente
   const atualizarPlano = useCallback(async (id, dados) => {
@@ -140,36 +119,17 @@ export const usePlanoJogo = () => {
           setPlanoAtual({...planoAtualizado}); // Cria um novo objeto para forçar a re-renderização
         }
         
-        toast({
-          title: "Sucesso",
-          description: "Plano de jogo atualizado com sucesso",
-        });
-        
         return planoAtualizado;
       } else {
         setErro("Plano não encontrado");
-        
-        toast({
-          title: "Erro",
-          description: "Plano não encontrado",
-          variant: "destructive"
-        });
-        
         return null;
       }
     } catch (error) {
       console.error("Erro ao atualizar plano:", error);
       setErro("Erro ao atualizar plano de jogo");
-      
-      toast({
-        title: "Erro",
-        description: "Não foi possível atualizar o plano de jogo",
-        variant: "destructive"
-      });
-      
       return null;
     }
-  }, [planoAtual, toast]);
+  }, [planoAtual]);
 
   // Excluir um plano
   const excluirPlano = useCallback(async (id) => {
@@ -185,36 +145,17 @@ export const usePlanoJogo = () => {
           setPlanoAtual(null);
         }
         
-        toast({
-          title: "Sucesso",
-          description: "Plano de jogo excluído com sucesso",
-        });
-        
         return true;
       } else {
         setErro("Plano não encontrado");
-        
-        toast({
-          title: "Erro",
-          description: "Plano não encontrado",
-          variant: "destructive"
-        });
-        
         return false;
       }
     } catch (error) {
       console.error("Erro ao excluir plano:", error);
       setErro("Erro ao excluir plano de jogo");
-      
-      toast({
-        title: "Erro",
-        description: "Não foi possível excluir o plano de jogo",
-        variant: "destructive"
-      });
-      
       return false;
     }
-  }, [planoAtual, toast]);
+  }, [planoAtual]);
 
   // Adicionar um nó (técnica) ao plano de jogo
   const adicionarNode = useCallback(async (planoId, node, parentId = null) => {
@@ -222,13 +163,6 @@ export const usePlanoJogo = () => {
       // Validar dados mínimos
       if (!node.nome) {
         setErro("O nome do nó é obrigatório");
-        
-        toast({
-          title: "Erro",
-          description: "O nome do nó é obrigatório",
-          variant: "destructive"
-        });
-        
         return null;
       }
 
@@ -239,36 +173,17 @@ export const usePlanoJogo = () => {
         setPlanos([...(Array.isArray(novosPlanos) ? novosPlanos : [])]);
         if (planoAtual && planoAtual.id === planoId) setPlanoAtual({ ...planoAtualizado });
         
-        toast({
-          title: "Sucesso",
-          description: "Técnica adicionada com sucesso ao plano",
-        });
-        
         return planoAtualizado;
       } else {
         setErro("Plano não encontrado");
-        
-        toast({
-          title: "Erro",
-          description: "Plano não encontrado",
-          variant: "destructive"
-        });
-        
         return null;
       }
     } catch (error) {
       console.error("Erro ao adicionar técnica ao plano:", error);
       setErro("Erro ao adicionar técnica ao plano de jogo");
-      
-      toast({
-        title: "Erro",
-        description: "Não foi possível adicionar a técnica ao plano",
-        variant: "destructive"
-      });
-      
       return null;
     }
-  }, [planoAtual, toast]);
+  }, [planoAtual]);
 
   // Remover um nó (técnica) do plano de jogo
   const removerNode = useCallback(async (planoId, nodeId) => {
@@ -280,36 +195,17 @@ export const usePlanoJogo = () => {
         setPlanos([...(Array.isArray(novosPlanos) ? novosPlanos : [])]);
         if (planoAtual && planoAtual.id === planoId) setPlanoAtual({ ...planoAtualizado });
         
-        toast({
-          title: "Sucesso",
-          description: "Técnica removida com sucesso do plano",
-        });
-        
         return planoAtualizado;
       } else {
         setErro("Plano ou técnica não encontrada");
-        
-        toast({
-          title: "Erro",
-          description: "Plano ou técnica não encontrada",
-          variant: "destructive"
-        });
-        
         return null;
       }
     } catch (error) {
       console.error("Erro ao remover técnica do plano:", error);
       setErro("Erro ao remover técnica do plano de jogo");
-      
-      toast({
-        title: "Erro",
-        description: "Não foi possível remover a técnica do plano",
-        variant: "destructive"
-      });
-      
       return null;
     }
-  }, [planoAtual, toast]);
+  }, [planoAtual]);
 
   // Adicionar uma resposta "deu certo" a um nó
   const adicionarRespostaCerto = useCallback((planoId, nodeId, resposta) => {

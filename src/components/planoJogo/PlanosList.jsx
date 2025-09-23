@@ -8,7 +8,6 @@ import { formatDistanceToNow } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { usePlanoJogo } from "@/hooks/use-plano-jogo";
 import PlanoFormModal from "./PlanoFormModal";
-import { useToast } from "@/hooks/use-toast";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import LoadingSpinner from "@/components/ui/LoadingSpinner";
 
@@ -16,7 +15,6 @@ export default function PlanosList({ onSelectPlano }) {
   const { planos, criarPlano, excluirPlano, carregando } = usePlanoJogo();
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [planoParaEditar, setPlanoParaEditar] = useState(null);
-  const { toast } = useToast();
 
   const handleCreate = (dados) => {
     const novoPlano = criarPlano(dados);
@@ -26,7 +24,6 @@ export default function PlanosList({ onSelectPlano }) {
   };
 
   const handleDelete = (id) => {
-    // O hook `usePlanoJogo` já emite o toast apropriado.
     excluirPlano(id);
   };
 

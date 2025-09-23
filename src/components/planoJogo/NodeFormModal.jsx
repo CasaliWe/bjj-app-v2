@@ -4,7 +4,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { useToast } from "@/hooks/use-toast";
 
 export default function NodeFormModal({ isOpen, onClose, onSubmit }) {
   const [formData, setFormData] = useState({
@@ -13,7 +12,6 @@ export default function NodeFormModal({ isOpen, onClose, onSubmit }) {
     tipo: "tecnica"
   });
   const [errors, setErrors] = useState({});
-  const { toast } = useToast();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
