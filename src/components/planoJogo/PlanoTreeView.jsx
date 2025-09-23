@@ -48,6 +48,8 @@ export default function PlanoTreeView({ plano, onBack }) {
   };
 
   const handleNodeCreate = async (node, parentId) => {
+    // Debug leve: inspecionar node
+    try { console.debug('Adicionando node ao plano:', { parentId, node }); } catch {}
     const processKey = parentId ? parentId + '_add' : 'root_add';
     setProcessing(prev => ({ ...prev, [processKey]: true }));
     const novoNode = await adicionarNode(plano.id, node, parentId);
