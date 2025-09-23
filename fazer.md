@@ -1,7 +1,6 @@
 - ícone pwa;
 - modal abrir foto;
 - upload vídeo mp4 apenas, n ficou bom;
-- posição não está funcionando quando adiciono no "ou";
 - listar user na pagina pesquisar;
 - colocar ffmpeg;
 
