@@ -1,11 +1,10 @@
 ### FALTANDO FAZER:
 - Modal aviso sistema (n está vindo da api);
 - Quantia de dias grátis vir da a api (n está vindo da api);
-- Fazer preset no plano de jogo;
 - FEED DINÂMICO;
 - FAZER MONTAR TREINAMENTO;
 - FAZER CRONÔMETRO;
-- TREINAMENTO MUSUCLAÇÃO;
+- TREINAMENTO MUSCULAÇÃO;
 - INDICAÇÃO DE VÍDEO;
 - AULAS EM FORMATO DE GIF;
 
@@ -21,7 +20,7 @@
 - Modal avisos do sistema, importado apenas na dashboard;
 - Todos os form publicos precisam ter o turnstile;
 - Modal pwa instalar em tudo;
-- Deps: cloudflare (VITE_CLOUDFLARE_TURNSTILE) e google auth (VITE_GOOGLE_CLIENT_ID);
+- Deps: cloudflare (VITE_CLOUDFLARE_TURNSTILE), google auth (VITE_GOOGLE_CLIENT_ID) e ia (VITE_IA_URL);
 - Precisa importar o titlePage em todas as páginas para definir o titulo da página;
 
 ### Páginas atualmente dentro do app:
