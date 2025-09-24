@@ -15,6 +15,7 @@
 
 ### Documentação:
 - Sempre ao fazer o build precisa atualizar a .env antes;
+- As atualizações do front end sempre podem ser salvar e subir diretamente após build;
 - Todas as páginas após logado deve ter o hook que busca os dados do user, assim aparece o plus ao lado da logo;
 - Todas as páginas após logado tem o modal upgrade (quando o plano está grátis);
 - Modal de adicionar exp sempre ao criar algo, está presente atualmente nas páginas: tecnicas, treinos, competições, observações, checklist 2x;
