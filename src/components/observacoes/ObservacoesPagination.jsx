@@ -2,7 +2,6 @@ import React from 'react';
 import {
   Pagination,
   PaginationContent,
-  PaginationEllipsis,
   PaginationItem,
   PaginationLink,
   PaginationNext,
@@ -45,40 +44,22 @@ const ObservacoesPagination = ({ paginacao, onPageChange }) => {
       );
     };
 
-    // Lógica para determinar quais páginas mostrar
-    // Sempre mostra a primeira, a última e algumas ao redor da atual
-    
-    // Primeira página
-    addPageItem(1, currentPage === 1);
-    
-    // Elipse antes se necessário
-    if (currentPage > 3) {
-      items.push(
-        <PaginationItem key="ellipsis-1">
-          <PaginationEllipsis />
-        </PaginationItem>
-      );
+    // Lógica para mostrar apenas dois números entre as setas
+    const pages = [];
+    if (totalPages === 1) {
+      pages.push(1);
+    } else if (currentPage === 1) {
+      pages.push(1, 2);
+    } else if (currentPage === totalPages) {
+      pages.push(totalPages - 1, totalPages);
+    } else {
+      pages.push(currentPage, Math.min(totalPages, currentPage + 1));
     }
     
-    // Páginas ao redor da atual
-    for (let i = Math.max(2, currentPage - 1); i <= Math.min(totalPages - 1, currentPage + 1); i++) {
-      if (i <= 1 || i >= totalPages) continue; // Evita duplicar primeira/última página
-      addPageItem(i, i === currentPage);
-    }
-    
-    // Elipse depois se necessário
-    if (currentPage < totalPages - 2) {
-      items.push(
-        <PaginationItem key="ellipsis-2">
-          <PaginationEllipsis />
-        </PaginationItem>
-      );
-    }
-    
-    // Última página (apenas se não for a primeira)
-    if (totalPages > 1) {
-      addPageItem(totalPages, currentPage === totalPages);
-    }
+    const uniquePages = Array.from(new Set(pages));
+    uniquePages.forEach(pageNum => {
+      addPageItem(pageNum, pageNum === currentPage);
+    });
     
     return items;
   };

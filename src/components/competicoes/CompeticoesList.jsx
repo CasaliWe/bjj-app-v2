@@ -81,9 +81,20 @@ const CompeticoesList = ({
           </Button>
           
           <div className="flex items-center gap-1">
-            {[...Array(paginacao.totalPages)].map((_, index) => {
-              const pageNumber = index + 1;
-              return (
+            {/* Apenas dois números entre as setas */}
+            {(() => {
+              const pages = [];
+              if (paginacao.totalPages === 1) {
+                pages.push(1);
+              } else if (paginacao.currentPage === 1) {
+                pages.push(1, 2);
+              } else if (paginacao.currentPage === paginacao.totalPages) {
+                pages.push(paginacao.totalPages - 1, paginacao.totalPages);
+              } else {
+                pages.push(paginacao.currentPage, Math.min(paginacao.totalPages, paginacao.currentPage + 1));
+              }
+              const uniquePages = Array.from(new Set(pages));
+              return uniquePages.map((pageNumber) => (
                 <Button
                   key={pageNumber}
                   variant={pageNumber === paginacao.currentPage ? "default" : "outline"}
@@ -92,8 +103,8 @@ const CompeticoesList = ({
                 >
                   {pageNumber}
                 </Button>
-              );
-            })}
+              ));
+            })()}
           </div>
           
           <Button

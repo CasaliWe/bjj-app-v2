@@ -80,16 +80,21 @@ const ModalComunidade = ({
                   Anterior
                 </Button>
                 
-                <div className="flex items-center gap-1 overflow-x-auto max-w-[200px] md:max-w-none">
-                  {Array.from({ length: paginacao.totalPages }, (_, i) => i + 1).map((page) => {
-                    // Em telas pequenas, mostrar apenas páginas próximas da atual
-                    const currentPage = paginacao.currentPage;
-                    const shouldShowOnMobile = 
-                      page === 1 || 
-                      page === paginacao.totalPages || 
-                      (page >= currentPage - 1 && page <= currentPage + 1);
-                    
-                    return shouldShowOnMobile ? (
+                <div className="flex items-center gap-1">
+                  {/* Apenas dois números entre as setas */}
+                  {(() => {
+                    const pages = [];
+                    if (paginacao.totalPages === 1) {
+                      pages.push(1);
+                    } else if (paginacao.currentPage === 1) {
+                      pages.push(1, 2);
+                    } else if (paginacao.currentPage === paginacao.totalPages) {
+                      pages.push(paginacao.totalPages - 1, paginacao.totalPages);
+                    } else {
+                      pages.push(paginacao.currentPage, Math.min(paginacao.totalPages, paginacao.currentPage + 1));
+                    }
+                    const uniquePages = Array.from(new Set(pages));
+                    return uniquePages.map((page) => (
                       <Button
                         key={page}
                         variant={page === paginacao.currentPage ? "default" : "outline"}
@@ -99,14 +104,8 @@ const ModalComunidade = ({
                       >
                         {page}
                       </Button>
-                    ) : (
-                      <span key={page} className="md:hidden">
-                        {page === currentPage - 2 || page === currentPage + 2 ? (
-                          <span className="text-muted-foreground px-1">...</span>
-                        ) : null}
-                      </span>
-                    );
-                  })}
+                    ));
+                  })()}
                 </div>
                 
                 <Button
