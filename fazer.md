@@ -3,7 +3,6 @@
 - Quantia de dias grátis vir da a api (n está vindo da api);
 - Fazer preset no plano de jogo;
 - FEED DINÂMICO;
-- FAZER IA SENSEI;
 - FAZER MONTAR TREINAMENTO;
 - FAZER CRONÔMETRO;
 - TREINAMENTO MUSUCLAÇÃO;
