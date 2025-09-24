@@ -154,10 +154,10 @@ const TecnicaForm = ({
       
       {/* Nome da Finalização */}
       <div className="grid gap-2">
-        <Label htmlFor="nome-tecnica">Nome da Finalização</Label>
+        <Label htmlFor="nome-tecnica">Finalização, Defesa ou Transição</Label>
         <Input
           id="nome-tecnica"
-          placeholder="Ex: Armlock da Guarda"
+          placeholder="Ex: Kimura, Pegada de costas, Defesa de queda..."
           value={tecnica.nome}
           onChange={(e) => handleChange("nome", e.target.value)}
           required

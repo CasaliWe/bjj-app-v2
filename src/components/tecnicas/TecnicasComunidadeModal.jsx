@@ -131,9 +131,20 @@ const TecnicasComunidadeModal = ({
                   </Button>
                   
                   <div className="flex items-center gap-1">
-                    {[...Array(paginacao.totalPaginas)].map((_, index) => {
-                      const pageNumber = index + 1;
-                      return (
+                    {/* Apenas dois números entre as setas */}
+                    {(() => {
+                      const pages = [];
+                      if (paginacao.totalPaginas === 1) {
+                        pages.push(1);
+                      } else if (paginacao.paginaAtual === 1) {
+                        pages.push(1, 2);
+                      } else if (paginacao.paginaAtual === paginacao.totalPaginas) {
+                        pages.push(paginacao.totalPaginas - 1, paginacao.totalPaginas);
+                      } else {
+                        pages.push(paginacao.paginaAtual, Math.min(paginacao.totalPaginas, paginacao.paginaAtual + 1));
+                      }
+                      const uniquePages = Array.from(new Set(pages));
+                      return uniquePages.map((pageNumber) => (
                         <Button
                           key={pageNumber}
                           variant={pageNumber === paginacao.paginaAtual ? "default" : "outline"}
@@ -143,8 +154,8 @@ const TecnicasComunidadeModal = ({
                         >
                           {pageNumber}
                         </Button>
-                      );
-                    })}
+                      ));
+                    })()}
                   </div>
                   
                   <Button

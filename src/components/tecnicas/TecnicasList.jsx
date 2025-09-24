@@ -79,23 +79,20 @@ const TecnicasList = ({
           </Button>
           
           <div className="flex items-center gap-1">
-            {Array.from({ length: paginacao.totalPaginas }, (_, index) => {
-              const pageNumber = index + 1;
-              
-              // Em telas pequenas, mostrar apenas páginas próximas da atual
-              const shouldShow = 
-                pageNumber === 1 || 
-                pageNumber === paginacao.totalPaginas || 
-                (pageNumber >= paginacao.paginaAtual - 1 && pageNumber <= paginacao.paginaAtual + 1);
-              
-              if (!shouldShow) {
-                if (pageNumber === 2 || pageNumber === paginacao.totalPaginas - 1) {
-                  return <span key={pageNumber} className="mx-1">...</span>;
-                }
-                return null;
+            {/* Apenas dois números entre as setas */}
+            {(() => {
+              const pages = [];
+              if (paginacao.totalPaginas === 1) {
+                pages.push(1);
+              } else if (paginacao.paginaAtual === 1) {
+                pages.push(1, 2);
+              } else if (paginacao.paginaAtual === paginacao.totalPaginas) {
+                pages.push(paginacao.totalPaginas - 1, paginacao.totalPaginas);
+              } else {
+                pages.push(paginacao.paginaAtual, Math.min(paginacao.totalPaginas, paginacao.paginaAtual + 1));
               }
-              
-              return (
+              const uniquePages = Array.from(new Set(pages));
+              return uniquePages.map((pageNumber) => (
                 <Button
                   key={pageNumber}
                   variant={pageNumber === paginacao.paginaAtual ? "default" : "outline"}
@@ -104,8 +101,8 @@ const TecnicasList = ({
                 >
                   {pageNumber}
                 </Button>
-              );
-            })}
+              ));
+            })()}
           </div>
           
           <Button

@@ -1,8 +1,6 @@
 ### FALTANDO FAZER:
-- Verificar demais abas quando tiver muitos itens;
 - Modal aviso sistema (n está vindo da api);
 - Quantia de dias grátis vir da a api (n está vindo da api);
-- Colocar mais de uma posição na tecnica e ajustar o nome de finalização para fin ou tec;
 - Fazer preset no plano de jogo;
 - FEED DINÂMICO;
 - FAZER IA SENSEI;
