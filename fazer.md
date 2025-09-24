@@ -1,12 +1,20 @@
 ### FALTANDO FAZER:
-- Verificar demais abas;
+- Verificar demais abas quando tiver muitos itens;
 - Modal aviso sistema (n está vindo da api);
+- Quantia de dias grátis vir da a api (n está vindo da api);
+- Colocar mais de uma posição na tecnica e ajustar o nome de finalização para fin ou tec;
+- Fazer preset no plano de jogo;
+- FEED DINÂMICO;
 - FAZER IA SENSEI;
 - FAZER MONTAR TREINAMENTO;
 - FAZER CRONÔMETRO;
+- TREINAMENTO MUSUCLAÇÃO;
+- INDICAÇÃO DE VÍDEO;
+- AULAS EM FORMATO DE GIF;
 
 
-### Organização:
+### Documentação:
+- Sempre ao fazer o build precisa atualizar a .env antes;
 - Todas as páginas após logado deve ter o hook que busca os dados do user, assim aparece o plus ao lado da logo;
 - Todas as páginas após logado tem o modal upgrade (quando o plano está grátis);
 - Modal de adicionar exp sempre ao criar algo, está presente atualmente nas páginas: tecnicas, treinos, competições, observações, checklist 2x;
