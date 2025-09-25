@@ -1,7 +1,7 @@
 import { 
   Home, Book, Calendar, Award, Target, FileText, Bot, 
   Gamepad2, Video, Newspaper, LineChart, Clock, CheckSquare,
-  ShoppingBag, Dumbbell, Layers, LogOut, Search, Users
+  ShoppingBag, Dumbbell, Layers, LogOut, Search, Users, Timer
 } from "lucide-react";
 import {
   Sidebar,
@@ -58,6 +58,12 @@ const menuItems = [  {
     url: "/pesquisar-usuarios",
     icon: Users,
     description: "Encontre outros praticantes"
+  },
+  {
+    title: "Montar treino",
+    url: "/treinos-cronometrados",
+    icon: Timer,
+    description: "Por tempo ou repetições"
   },
   {
     title: "Plano de Jogo",

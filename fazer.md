@@ -1,12 +1,6 @@
 ### FALTANDO FAZER:
 - Modal aviso sistema (n está vindo da api);
-- Quantia de dias grátis vir da a api (n está vindo da api);
-- FEED DINÂMICO;
-- FAZER MONTAR TREINAMENTO;
-- FAZER CRONÔMETRO;
-- TREINAMENTO MUSCULAÇÃO;
-- INDICAÇÃO DE VÍDEO;
-- AULAS EM FORMATO DE GIF;
+- limitar mensagens ia;
 
 
 ### Documentação:
@@ -35,6 +29,7 @@
 - /perfil;
 - /checklist;
 - /ia-sensei;
+- /treinos-cronometrados;
 
 ### Páginas atualmente fora do app:
 - /login;

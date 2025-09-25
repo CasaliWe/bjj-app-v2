@@ -45,6 +45,7 @@ import DojoMarket from "./pages/DojoMarket";
 import Drills from "./pages/Drills";
 import Alongamentos from "./pages/Alongamentos";
 import PesquisarUsuarios from "./pages/PesquisarUsuarios";
+import TreinosCronometrados from "./pages/TreinosCronometrados";
 
 
 const queryClient = new QueryClient();
@@ -184,6 +185,7 @@ const App = () => (
               <Route path="/pesquisar-usuarios" element={<PrivateRoute><PesquisarUsuarios /></PrivateRoute>} />
               <Route path="/plano-de-jogo" element={<PrivateRoute><PlanoDeJogo /></PrivateRoute>} />
               <Route path="/checklist" element={<PrivateRoute><Checklist /></PrivateRoute>} />
+              <Route path="/treinos-cronometrados" element={<PrivateRoute><TreinosCronometrados /></PrivateRoute>} />
               <Route path="/usuario" element={<PrivateRoute><UserPage /></PrivateRoute>} />
               <Route path="/ia-sensei" element={<PrivateRoute><IASensei /></PrivateRoute>} />
             

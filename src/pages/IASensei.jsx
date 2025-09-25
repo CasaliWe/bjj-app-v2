@@ -35,7 +35,6 @@ const IASensei = () => {
             <div className="flex items-center gap-3">
               <SidebarTrigger />
               <h1 className="text-xl font-semibold flex items-center gap-2">
-                <Bot className="h-5 w-5 text-primary" />
                 I.A Sensei
               </h1>
             </div>
