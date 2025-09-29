@@ -1,6 +1,5 @@
 ### FALTANDO FAZER:
 - Modal aviso sistema (n está vindo da api);
-- limitar mensagens ia;
 
 
 ### Documentação:
