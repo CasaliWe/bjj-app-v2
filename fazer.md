@@ -1,5 +1,6 @@
 ### FALTANDO FAZER:
 - Modal aviso sistema (n está vindo da api);
+- Colocar pagamento real;
 
 
 ### Documentação:
