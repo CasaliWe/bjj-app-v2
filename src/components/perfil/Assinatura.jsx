@@ -47,7 +47,7 @@ const Assinatura = () => {
             plansObj[plan.id] = {
               months: plan.months,
               basePrice: parseFloat(plan.basePrice),
-              discount: parseFloat(plan.discount),
+              discount: plan.discount,
               totalPrice: parseFloat(plan.totalPrice),
               label: plan.label
             };
@@ -397,9 +397,14 @@ const Assinatura = () => {
                         ) : (
                           <>
                             <p className="font-medium">R$ {plan.totalPrice.toFixed(2)}</p>
-                            {plan.discount > 0 && (
+                            {Number(plan.discount) > 0 && (
                               <p className="text-xs text-green-600">
-                                {(plan.discount * 100).toFixed(0)}% de desconto
+                                {(() => {
+                                  const n = Number(plan.discount);
+                                  if (Number.isNaN(n) || n <= 0) return '0';
+                                  // Se vier como fração (0.1), multiplica por 100; se vier inteiro (10), mantém
+                                  return (n <= 1 ? n * 100 : n).toFixed(0);
+                                })()}% de desconto
                               </p>
                             )}
                           </>
@@ -435,9 +440,14 @@ const Assinatura = () => {
                 <p className="text-sm font-medium text-gray-800">
                   {plans[selectedPlan]?.label} - Total: R$ {plans[selectedPlan]?.totalPrice.toFixed(2)}
                 </p>
-                {plans[selectedPlan]?.discount > 0 && (
+                {Number(plans[selectedPlan]?.discount) > 0 && (
                   <p className="text-xs text-green-600 font-medium">
-                    Economia de {(plans[selectedPlan]?.discount * 100).toFixed(0)}% aplicada
+                    {(() => {
+                      const d = Number(plans[selectedPlan]?.discount);
+                      if (Number.isNaN(d) || d <= 0) return null;
+                      const percent = (d <= 1 ? d * 100 : d).toFixed(0);
+                      return `Economia de ${percent}% aplicada`;
+                    })()}
                   </p>
                 )}
               </div>
