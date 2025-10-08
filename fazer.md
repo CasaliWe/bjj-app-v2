@@ -10,6 +10,7 @@
 - Modal pwa instalar em tudo;
 - Deps: cloudflare (VITE_CLOUDFLARE_TURNSTILE), google auth (VITE_GOOGLE_CLIENT_ID) e ia (VITE_IA_URL);
 - Precisa importar o titlePage em todas as páginas para definir o titulo da página;
+- Precisa ajusta o G-tag do analytics na App.jsx e no index.html;
 
 ### Páginas atualmente dentro do app:
 - /app;

@@ -2,7 +2,7 @@
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { PWAInstallPrompt } from "@/components/PWAInstallPrompt";
 import TitleUpdater from "@/components/TitleUpdater";
 import { getAuthToken, removeAuthToken } from "./services/cookies/cookies";
@@ -164,9 +164,25 @@ const AuthRedirectRoute = ({ children }) => {
   return children;
 };
 
+// Componente simples para rastrear rotas
+const Analytics = () => {
+  const location = useLocation();
+  
+  useEffect(() => {
+    if (window.gtag) {
+      window.gtag('config', 'G-LMH8216L45', {
+        page_path: location.pathname,
+      });
+    }
+  }, [location]);
+  
+  return null;
+};
+
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <BrowserRouter>
+      <Analytics />
       <UserProvider>
         <Exp>
           <TooltipProvider>
