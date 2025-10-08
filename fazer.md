@@ -1,9 +1,3 @@
-### FALTANDO FAZER:
-- Colocar analytics;
-- ranking;
-- curso;
-
-
 ### Documentação:
 - Sempre ao fazer o build precisa atualizar a .env antes;
 - As atualizações do front end sempre podem ser salvar e subir diretamente após build;
