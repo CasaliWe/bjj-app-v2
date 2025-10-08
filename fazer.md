@@ -2,10 +2,8 @@
 - Modal aviso sistema (n está vindo da api);
 - Colocar pagamento real;
 - Colocar analytics;
-- limite ia;
 - ranking;
 - curso;
-- bug login pwa;
 
 
 ### Documentação:
