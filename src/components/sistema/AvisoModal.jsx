@@ -33,7 +33,7 @@ const AvisoModal = () => {
           'logo-x.png',
           'logo-y.png',
         ],
-        ativo: false // Altere para true para exibir o modal
+        ativo: true // Altere para true para exibir o modal
       };
       
       setAviso(mockData);
@@ -84,7 +84,7 @@ const AvisoModal = () => {
       onOpenChange={() => {/* Previne fechamento pelo X ou Escape */}}
       className="relative"
     >
-      <DialogContent className="sm:max-w-[500px] max-h-[90vh] p-0 gap-0 overflow-hidden w-[calc(100%-24px)] sm:w-auto mx-auto">
+      <DialogContent className="sm:max-w-[500px] max-h-[90vh] p-0 gap-0 overflow-hidden w-[calc(100%-24px)] sm:w-auto mx-auto [&>button]:hidden">
         <ScrollArea className="max-h-[90vh]">
           <div className="p-6">
             <DialogHeader>

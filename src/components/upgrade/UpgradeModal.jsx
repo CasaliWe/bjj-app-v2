@@ -59,7 +59,7 @@ const UpgradeModal = () => {
   
   return (
     <Dialog open={isOpen} onOpenChange={() => {}} modal={true}>
-      <DialogContent className="sm:max-w-md border border-amber-500/30 bg-gradient-to-b from-background to-background/95" onEscapeKeyDown={(e) => e.preventDefault()} onPointerDownOutside={(e) => e.preventDefault()}>
+      <DialogContent className="sm:max-w-md border border-amber-500/30 bg-gradient-to-b from-background to-background/95 [&>button]:hidden" onEscapeKeyDown={(e) => e.preventDefault()} onPointerDownOutside={(e) => e.preventDefault()}>
         <DialogHeader>
           <DialogTitle className="text-center flex flex-col items-center gap-2">
             <div className="w-12 h-12 rounded-full bg-amber-500/20 flex items-center justify-center">

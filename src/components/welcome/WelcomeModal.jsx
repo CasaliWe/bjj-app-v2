@@ -381,7 +381,7 @@ const WelcomeModal = ({ forceShow = false }) => {
       className="welcome-modal-dialog relative"
     >
       <DialogContent 
-        className="sm:max-w-xl md:max-w-2xl border border-bjj-gold/30 bg-gradient-to-b from-background to-background/95 max-h-[90vh] overflow-hidden flex flex-col min-h-[550px] welcome-modal-content w-[calc(100%-24px)] sm:w-auto mx-auto px-4 sm:px-6"
+        className="sm:max-w-xl md:max-w-2xl border border-bjj-gold/30 bg-gradient-to-b from-background to-background/95 max-h-[90vh] overflow-hidden flex flex-col min-h-[550px] welcome-modal-content w-[calc(100%-24px)] sm:w-auto mx-auto px-4 sm:px-6 [&>button]:hidden"
       >
         <DialogHeader className="flex-shrink-0 pb-2">
           <DialogTitle className="text-center flex flex-col items-center gap-2">
