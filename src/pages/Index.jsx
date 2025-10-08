@@ -23,9 +23,6 @@ import ObjetivosModal from "@/components/inicio/ObjetivosModal";
 // welcome component
 import WelcomeModal from "@/components/welcome/WelcomeModal";
 
-// Sistema components
-import AvisoModal from "@/components/sistema/AvisoModal";
-
 // hooks
 import { useGetUser } from "@/hooks/use-getUser";
 
@@ -126,9 +123,6 @@ const Index = () => {
     <SidebarProvider>
       <div className="min-h-screen flex w-full bg-background">
         <AppSidebar />
-        
-        {/* Componente de Avisos do Sistema */}
-        <AvisoModal />
 
         <main className="flex-1 flex flex-col pb-16 md:pb-0">         
           {/* Header */}

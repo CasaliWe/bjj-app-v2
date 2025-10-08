@@ -1,6 +1,4 @@
 ### FALTANDO FAZER:
-- Modal aviso sistema (n está vindo da api);
-- Colocar pagamento real;
 - Colocar analytics;
 - ranking;
 - curso;
@@ -14,7 +12,6 @@
 - Modal de adicionar exp sempre ao criar algo, está presente atualmente nas páginas: tecnicas, treinos, competições, observações, checklist 2x;
 - Sempre usar o loading padrão (component);
 - Modal welcome apenas na dashboard no primeiro acesso;
-- Modal avisos do sistema, importado apenas na dashboard;
 - Todos os form publicos precisam ter o turnstile;
 - Modal pwa instalar em tudo;
 - Deps: cloudflare (VITE_CLOUDFLARE_TURNSTILE), google auth (VITE_GOOGLE_CLIENT_ID) e ia (VITE_IA_URL);
