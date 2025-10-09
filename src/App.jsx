@@ -170,7 +170,10 @@ const Analytics = () => {
   
   useEffect(() => {
     if (window.gtag) {
-      window.gtag('config', 'G-LMH8216L45', {
+      // Envia evento de page_view para cada mudança de rota
+      window.gtag('event', 'page_view', {
+        page_title: document.title,
+        page_location: window.location.href,
         page_path: location.pathname,
       });
     }
