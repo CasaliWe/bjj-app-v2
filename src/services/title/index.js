@@ -47,6 +47,7 @@ export const setTitleByRoute = (path) => {
     "/sobre-nos": "Sobre Nós",
     "/contato": "Contato",
     "/ia-sensei": "IA Sensei",
+    "/aprender": "Aprender",
     "/tecnicas": "Técnicas",
     "/treinos": "Treinos",
     "/competicoes": "Competições",

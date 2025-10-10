@@ -1,7 +1,8 @@
 import { 
   Home, Book, Calendar, Award, Target, FileText, Bot, 
   Gamepad2, Video, Newspaper, LineChart, Clock, CheckSquare,
-  ShoppingBag, Dumbbell, Layers, LogOut, Search, Users, Timer
+  ShoppingBag, Dumbbell, Layers, LogOut, Search, Users, Timer,
+  GraduationCap
 } from "lucide-react";
 import {
   Sidebar,
@@ -52,6 +53,12 @@ const menuItems = [  {
     url: "/observacoes",
     icon: FileText,
     description: "Notas e observações"
+  },
+  {
+    title: "Aprender",
+    url: "/aprender",
+    icon: GraduationCap,
+    description: "Módulos de aprendizado"
   },
   {
     title: "Pesquisar Usuários",
