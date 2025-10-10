@@ -204,62 +204,36 @@ const TreinosCronometrados = () => {
                       />
                     </div>
 
-                    {/* Modo de execução */}
-                    <div>
-                      <Label>Modo de Execução</Label>
-                      <Select
-                        value={formulario.modo}
-                        onValueChange={(valor) => atualizarFormulario('modo', valor)}
-                      >
-                        <SelectTrigger className="mt-1">
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="tempo">Por Tempo</SelectItem>
-                          <SelectItem value="repeticoes">Por Repetições</SelectItem>
-                        </SelectContent>
-                      </Select>
+                    {/* Modo fixo apenas por tempo */}
+                    <div className="text-sm text-gray-600 mb-4">
+                      <strong>Modo:</strong> Por Tempo
                     </div>
 
-                    {/* Configurações baseadas no modo */}
-                    {formulario.modo === 'tempo' ? (
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                          <Label htmlFor="tempoExecucao">Tempo de Execução (segundos)</Label>
-                          <Input
-                            id="tempoExecucao"
-                            type="number"
-                            min="1"
-                            value={formulario.tempoExecucao}
-                            onChange={(e) => atualizarFormulario('tempoExecucao', parseInt(e.target.value) || 1)}
-                            className="mt-1"
-                          />
-                        </div>
-                        <div>
-                          <Label htmlFor="tempoDescanso">Tempo de Descanso (segundos)</Label>
-                          <Input
-                            id="tempoDescanso"
-                            type="number"
-                            min="0"
-                            value={formulario.tempoDescanso}
-                            onChange={(e) => atualizarFormulario('tempoDescanso', parseInt(e.target.value) || 0)}
-                            className="mt-1"
-                          />
-                        </div>
-                      </div>
-                    ) : (
+                    {/* Configurações de tempo */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
-                        <Label htmlFor="numeroRepeticoes">Número de Repetições</Label>
+                        <Label htmlFor="tempoExecucao">Tempo de Execução (segundos)</Label>
                         <Input
-                          id="numeroRepeticoes"
+                          id="tempoExecucao"
                           type="number"
                           min="1"
-                          value={formulario.numeroRepeticoes}
-                          onChange={(e) => atualizarFormulario('numeroRepeticoes', parseInt(e.target.value) || 1)}
+                          value={formulario.tempoExecucao}
+                          onChange={(e) => atualizarFormulario('tempoExecucao', parseInt(e.target.value) || 1)}
                           className="mt-1"
                         />
                       </div>
-                    )}
+                      <div>
+                        <Label htmlFor="tempoDescanso">Tempo de Descanso (segundos)</Label>
+                        <Input
+                          id="tempoDescanso"
+                          type="number"
+                          min="0"
+                          value={formulario.tempoDescanso}
+                          onChange={(e) => atualizarFormulario('tempoDescanso', parseInt(e.target.value) || 0)}
+                          className="mt-1"
+                        />
+                      </div>
+                    </div>
 
                     <Button onClick={handleAdicionarTecnica} className="w-full">
                       <Plus className="h-4 w-4 mr-2" />
@@ -407,14 +381,17 @@ const TreinosCronometrados = () => {
                                   <Play className="h-3.5 w-3.5 mr-1" />
                                   Executar
                                 </Button>
-                                <Button
-                                  variant="ghost"
-                                  size="icon"
-                                  className="h-8 w-8 text-destructive hover:text-destructive"
-                                  onClick={() => setModalExcluir(treino)}
-                                >
-                                  <Trash2 className="h-4 w-4" />
-                                </Button>
+                                {/* Só mostrar botão deletar para treinos customizados */}
+                                {!treino.padrao && (
+                                  <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    className="h-8 w-8 text-destructive hover:text-destructive"
+                                    onClick={() => setModalExcluir(treino)}
+                                  >
+                                    <Trash2 className="h-4 w-4" />
+                                  </Button>
+                                )}
                               </div>
                             </div>
                           );

@@ -18,23 +18,22 @@ export const useTreinosCronometrados = () => {
   // Estados do formulário
   const [formulario, setFormulario] = useState({
     nomeTecnica: '',
-    modo: 'tempo', // 'tempo' ou 'repeticoes'
+    modo: 'tempo', // Fixo apenas por tempo
     tempoExecucao: 60, // em segundos
-    tempoDescanso: 30, // em segundos
-    numeroRepeticoes: 10
+    tempoDescanso: 30 // em segundos
   });
 
   // Estados de execução
   const [tecnicaAtualIndex, setTecnicaAtualIndex] = useState(0);
   const [tempoRestante, setTempoRestante] = useState(0);
   const [faseAtual, setFaseAtual] = useState('parado'); // 'execucao', 'descanso', 'parado'
-  const [repeticoesFeitas, setRepeticoesFeitas] = useState(0);
   const [cronometroAtivo, setCronometroAtivo] = useState(false);
 
   // Refs de áudio
   const audioGongoRef = useRef(null);
   const audioRegressivoRef = useRef(null);
   const audioFinalRef = useRef(null);
+  const audioUnlockedRef = useRef(false);
 
   // Inicializar objetos de áudio uma vez após mount
   useEffect(() => {
@@ -46,6 +45,9 @@ export const useTreinosCronometrados = () => {
         if (ref.current) {
           ref.current.preload = 'auto';
           ref.current.volume = 1;
+          // Configurar para PWA/Mobile
+          ref.current.muted = false;
+          ref.current.setAttribute('playsinline', '');
         }
       });
     } catch (e) {
@@ -53,38 +55,220 @@ export const useTreinosCronometrados = () => {
     }
   }, []);
 
-  const playAudio = (ref) => {
+  // Função universal para desbloquear áudio (funciona em todos os dispositivos)
+  const unlockAudio = async () => {
+    if (audioUnlockedRef.current) return;
+    
+    try {
+      // Criar AudioContext se necessário (iOS/Safari exigem)
+      let audioContext;
+      try {
+        const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+        if (AudioContextClass) {
+          audioContext = new AudioContextClass();
+          if (audioContext.state === 'suspended') {
+            await audioContext.resume();
+          }
+        }
+      } catch (contextError) {
+        console.warn('AudioContext não disponível:', contextError);
+      }
+
+      // Desbloquear cada áudio individualmente
+      const audios = [audioGongoRef, audioRegressivoRef, audioFinalRef];
+      const unlockPromises = audios.map(async (ref) => {
+        if (!ref.current) return;
+        
+        try {
+          const audio = ref.current;
+          
+          // Configurações para máxima compatibilidade
+          audio.muted = false;
+          audio.volume = 0.01; // Volume mínimo ao invés de 0
+          audio.currentTime = 0;
+          
+          // Reproduzir por tempo mínimo necessário
+          const playPromise = audio.play();
+          if (playPromise) {
+            await playPromise;
+            // Aguardar um frame para garantir que o áudio "registrou"
+            await new Promise(resolve => setTimeout(resolve, 50));
+            audio.pause();
+            audio.currentTime = 0;
+            audio.volume = 1; // Restaurar volume
+          }
+        } catch (audioError) {
+          console.warn('Falha ao desbloquear áudio específico:', audioError);
+        }
+      });
+
+      await Promise.allSettled(unlockPromises);
+      audioUnlockedRef.current = true;
+      
+      console.log('✅ Sistema de áudio desbloqueado universalmente');
+      
+      // Cleanup do AudioContext se criado
+      if (audioContext && audioContext.close) {
+        setTimeout(() => audioContext.close(), 1000);
+      }
+      
+    } catch (e) {
+      console.warn('Falha no unlock universal de áudio:', e);
+      // Fallback: marcar como desbloqueado mesmo com erro
+      audioUnlockedRef.current = true;
+    }
+  };
+
+  const playAudio = async (ref) => {
     const el = ref?.current;
     if (!el) return;
-    try {
-      el.currentTime = 0;
-      const p = el.play();
-      if (p && typeof p.then === 'function') {
-        p.catch(() => {}); // Ignorar erros de autoplay bloqueado
+    
+    // Garantir que o áudio foi desbloqueado primeiro
+    if (!audioUnlockedRef.current) {
+      console.warn('Tentando reproduzir áudio antes do unlock - pode falhar');
+    }
+    
+    const attemptPlay = async (audio, retryCount = 0) => {
+      try {
+        // Reset e configuração
+        audio.currentTime = 0;
+        audio.muted = false;
+        audio.volume = 1;
+        
+        // Reprodução com Promise handling adequado
+        const playPromise = audio.play();
+        if (playPromise !== undefined) {
+          await playPromise;
+          return true;
+        }
+        return false;
+      } catch (error) {
+        if (retryCount < 2) {
+          // Retry com delay crescente
+          await new Promise(resolve => setTimeout(resolve, 100 * (retryCount + 1)));
+          return attemptPlay(audio, retryCount + 1);
+        }
+        throw error;
       }
-    } catch (e) {
-      // Silencia erros de reprodução
+    };
+    
+    try {
+      await attemptPlay(el);
+    } catch (finalError) {
+      console.warn('Falha definitiva na reprodução de áudio:', finalError);
+      
+      // Último recurso: tentar reprodução básica sem Promise
+      try {
+        el.currentTime = 0;
+        el.play();
+      } catch (lastResortError) {
+        console.error('Áudio completamente bloqueado:', lastResortError);
+      }
     }
   };
 
   const STORAGE_KEY = 'bjj-treinos-cronometrados';
 
+  // Treinos padrão por faixa (não podem ser deletados)
+  const treinosPorFaixa = [
+    {
+      id: 'faixa-branca',
+      nome: 'Treino Faixa Branca (5 min)',
+      tecnicas: [
+        {
+          id: 'roll-branca',
+          nome: 'Tempo de Rola',
+          modo: 'tempo',
+          tempoExecucao: 300, // 5 minutos
+          tempoDescanso: 0
+        }
+      ],
+      padrao: true
+    },
+    {
+      id: 'faixa-azul',
+      nome: 'Treino Faixa Azul (6 min)',
+      tecnicas: [
+        {
+          id: 'roll-azul',
+          nome: 'Tempo de Rola',
+          modo: 'tempo',
+          tempoExecucao: 360, // 6 minutos
+          tempoDescanso: 0
+        }
+      ],
+      padrao: true
+    },
+    {
+      id: 'faixa-roxa',
+      nome: 'Treino Faixa Roxa (7 min)',
+      tecnicas: [
+        {
+          id: 'roll-roxa',
+          nome: 'Tempo de Rola',
+          modo: 'tempo',
+          tempoExecucao: 420, // 7 minutos
+          tempoDescanso: 0
+        }
+      ],
+      padrao: true
+    },
+    {
+      id: 'faixa-marrom',
+      nome: 'Treino Faixa Marrom (8 min)',
+      tecnicas: [
+        {
+          id: 'roll-marrom',
+          nome: 'Tempo de Rola',
+          modo: 'tempo',
+          tempoExecucao: 480, // 8 minutos
+          tempoDescanso: 0
+        }
+      ],
+      padrao: true
+    },
+    {
+      id: 'faixa-preta',
+      nome: 'Treino Faixa Preta (10 min)',
+      tecnicas: [
+        {
+          id: 'roll-preta',
+          nome: 'Tempo de Rola',
+          modo: 'tempo',
+          tempoExecucao: 600, // 10 minutos
+          tempoDescanso: 0
+        }
+      ],
+      padrao: true
+    }
+  ];
+
   // Carregar treinos salvos do LocalStorage
   useEffect(() => {
     try {
       const treinosSalvosStorage = localStorage.getItem(STORAGE_KEY);
+      let treinosSalvosDoStorage = [];
+      
       if (treinosSalvosStorage) {
-        setTreinosSalvos(JSON.parse(treinosSalvosStorage));
+        treinosSalvosDoStorage = JSON.parse(treinosSalvosStorage);
       }
+      
+      // Combinar treinos padrão com treinos salvos
+      const todosOsTreinos = [...treinosPorFaixa, ...treinosSalvosDoStorage];
+      setTreinosSalvos(todosOsTreinos);
     } catch (error) {
       console.error('Erro ao carregar treinos do LocalStorage:', error);
+      // Se houver erro, carregar apenas os padrão
+      setTreinosSalvos(treinosPorFaixa);
     }
   }, []);
 
-  // Salvar treinos no LocalStorage sempre que houver mudanças
+  // Salvar treinos no LocalStorage sempre que houver mudanças (exceto os padrão)
   const salvarNoStorage = (treinos) => {
     try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(treinos));
+      // Filtrar apenas treinos customizados (não padrão)
+      const treinosCustomizados = treinos.filter(treino => !treino.padrao);
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(treinosCustomizados));
     } catch (error) {
       console.error('Erro ao salvar treinos no LocalStorage:', error);
     }
@@ -134,7 +318,6 @@ export const useTreinosCronometrados = () => {
                   setTecnicaAtualIndex(0);
                   setFaseAtual('parado');
                   setTempoRestante(0);
-                  setRepeticoesFeitas(0);
                 }
               }
             } else if (faseAtual === 'descanso') {
@@ -160,7 +343,6 @@ export const useTreinosCronometrados = () => {
                 setTecnicaAtualIndex(0);
                 setFaseAtual('parado');
                 setTempoRestante(0);
-                setRepeticoesFeitas(0);
               }
             }
             return 0;
@@ -187,8 +369,7 @@ export const useTreinosCronometrados = () => {
       nomeTecnica: '',
       modo: 'tempo',
       tempoExecucao: 60,
-      tempoDescanso: 30,
-      numeroRepeticoes: 10
+      tempoDescanso: 30
     });
   };
 
@@ -201,13 +382,9 @@ export const useTreinosCronometrados = () => {
     const novaTecnica = {
       id: Date.now(),
       nome: formulario.nomeTecnica.trim(),
-      modo: formulario.modo,
-      ...(formulario.modo === 'tempo' ? {
-        tempoExecucao: formulario.tempoExecucao,
-        tempoDescanso: formulario.tempoDescanso
-      } : {
-        numeroRepeticoes: formulario.numeroRepeticoes
-      })
+      modo: 'tempo',
+      tempoExecucao: formulario.tempoExecucao,
+      tempoDescanso: formulario.tempoDescanso
     };
 
     setTreinoAtual(prev => ({
@@ -254,11 +431,18 @@ export const useTreinosCronometrados = () => {
     return { sucesso: true };
   };
 
-  // Excluir treino salvo
+  // Excluir treino salvo (apenas treinos customizados)
   const excluirTreino = (id) => {
+    // Não permitir excluir treinos padrão
+    const treino = treinosSalvos.find(t => t.id === id);
+    if (treino?.padrao) {
+      return { sucesso: false, erro: 'Treinos padrão não podem ser excluídos' };
+    }
+    
     const treinosAtualizados = treinosSalvos.filter(t => t.id !== id);
     setTreinosSalvos(treinosAtualizados);
     salvarNoStorage(treinosAtualizados);
+    return { sucesso: true };
   };
 
   // Carregar treino para execução
@@ -267,31 +451,23 @@ export const useTreinosCronometrados = () => {
     setTecnicaAtualIndex(0);
     setFaseAtual('parado');
     setTempoRestante(0);
-    setRepeticoesFeitas(0);
     setCronometroAtivo(false);
   };
 
   // Iniciar execução da técnica atual
-  const iniciarTecnicaAtual = () => {
+  const iniciarTecnicaAtual = async () => {
     if (!executandoTreino) return;
+
+    // Desbloquear áudios no primeiro toque (PWA fix)
+    await unlockAudio();
 
     const tecnica = executandoTreino.tecnicas[tecnicaAtualIndex];
     if (!tecnica) return;
 
-    if (tecnica.modo === 'tempo') {
-      setFaseAtual('execucao');
-      setTempoRestante(tecnica.tempoExecucao);
-      setCronometroAtivo(true);
-      playAudio(audioGongoRef); // Gongo no início do round de execução
-    } else {
-      setFaseAtual('execucao');
-      setRepeticoesFeitas(0);
-    }
-  };
-
-  // Concluir repetições
-  const concluirRepeticoes = () => {
-    setFaseAtual('parado');
+    setFaseAtual('execucao');
+    setTempoRestante(tecnica.tempoExecucao);
+    setCronometroAtivo(true);
+    playAudio(audioGongoRef); // Gongo no início do round de execução
   };
 
   // Próxima técnica
@@ -302,7 +478,6 @@ export const useTreinosCronometrados = () => {
       setTecnicaAtualIndex(proximoIndex);
       setFaseAtual('parado');
       setTempoRestante(0);
-      setRepeticoesFeitas(0);
       setCronometroAtivo(false);
     } else {
       // Treino finalizado
@@ -318,7 +493,6 @@ export const useTreinosCronometrados = () => {
       setTecnicaAtualIndex(anteriorIndex);
       setFaseAtual('parado');
       setTempoRestante(0);
-      setRepeticoesFeitas(0);
       setCronometroAtivo(false);
     }
   };
@@ -329,12 +503,15 @@ export const useTreinosCronometrados = () => {
     setTecnicaAtualIndex(0);
     setFaseAtual('parado');
     setTempoRestante(0);
-    setRepeticoesFeitas(0);
     setCronometroAtivo(false);
   };
 
   // Pausar/retomar cronômetro
-  const pausarRetomar = () => {
+  const pausarRetomar = async () => {
+    // Aproveitar qualquer interação para unlock
+    if (!audioUnlockedRef.current) {
+      await unlockAudio();
+    }
     setCronometroAtivo(!cronometroAtivo);
   };
 
@@ -346,11 +523,7 @@ export const useTreinosCronometrados = () => {
   };
 
   const obterDescricaoTecnica = (tecnica) => {
-    if (tecnica.modo === 'tempo') {
-      return `${formatarTempo(tecnica.tempoExecucao)} ${tecnica.tempoDescanso > 0 ? `x ${formatarTempo(tecnica.tempoDescanso)}` : ''}`;
-    } else {
-      return `${tecnica.numeroRepeticoes} reps`;
-    }
+    return `${formatarTempo(tecnica.tempoExecucao)} ${tecnica.tempoDescanso > 0 ? `x ${formatarTempo(tecnica.tempoDescanso)}` : ''}`;
   };
 
   return {
@@ -363,7 +536,6 @@ export const useTreinosCronometrados = () => {
     tecnicaAtualIndex,
     tempoRestante,
     faseAtual,
-    repeticoesFeitas,
     cronometroAtivo,
 
     // Ações de formulário
@@ -379,7 +551,6 @@ export const useTreinosCronometrados = () => {
 
     // Ações de execução
     iniciarTecnicaAtual,
-    concluirRepeticoes,
     proximaTecnica,
     tecnicaAnterior,
     finalizarTreino,
@@ -387,6 +558,7 @@ export const useTreinosCronometrados = () => {
 
     // Utilitários
     formatarTempo,
-    obterDescricaoTecnica
+    obterDescricaoTecnica,
+    unlockAudio
   };
 };
