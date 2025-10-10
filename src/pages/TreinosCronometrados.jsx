@@ -25,6 +25,9 @@ import { useTreinosCronometrados } from '@/hooks/use-treinos-cronometrados';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useGetUser } from "@/hooks/use-getUser";
 
+// Wake Lock para manter tela ativa durante cronômetros
+import wakeLockManager from '@/lib/wake-lock';
+
 // Upgrade
 import UpgradeModal from "@/components/upgrade/UpgradeModal";
 
@@ -76,6 +79,28 @@ const TreinosCronometrados = () => {
   useEffect(() => {
     setPageTitle('Treinos Cronometrados');
     fetchUserData();
+  }, []);
+
+  // Controlar Wake Lock baseado no estado do cronômetro
+  useEffect(() => {
+    const gerenciarWakeLock = async () => {
+      // Ativar wake lock quando cronômetro estiver ativo durante execução ou descanso
+      if (cronometroAtivo && (faseAtual === 'execucao' || faseAtual === 'descanso')) {
+        await wakeLockManager.ativar();
+      } else {
+        // Desativar wake lock quando cronômetro parar ou não estiver em fase ativa
+        await wakeLockManager.desativar();
+      }
+    };
+
+    gerenciarWakeLock();
+  }, [cronometroAtivo, faseAtual]);
+
+  // Limpar wake lock quando componente for desmontado
+  useEffect(() => {
+    return () => {
+      wakeLockManager.desativar();
+    };
   }, []);
 
   // Manipuladores de eventos
