@@ -25,6 +25,7 @@
 - /checklist;
 - /ia-sensei;
 - /treinos-cronometrados;
+- /aprender;
 
 ### Páginas atualmente fora do app:
 - /login;
