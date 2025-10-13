@@ -47,6 +47,7 @@ import Alongamentos from "./pages/Alongamentos";
 import PesquisarUsuarios from "./pages/PesquisarUsuarios";
 import TreinosCronometrados from "./pages/TreinosCronometrados";
 import Aprender from "./pages/Aprender";
+import Eventos from "./pages/Eventos";
 
 
 const queryClient = new QueryClient();
@@ -207,6 +208,7 @@ const App = () => (
               <Route path="/checklist" element={<PrivateRoute><Checklist /></PrivateRoute>} />
               <Route path="/treinos-cronometrados" element={<PrivateRoute><TreinosCronometrados /></PrivateRoute>} />
               <Route path="/aprender" element={<PrivateRoute><Aprender /></PrivateRoute>} />
+              <Route path="/eventos" element={<PrivateRoute><Eventos /></PrivateRoute>} />
               <Route path="/usuario" element={<PrivateRoute><UserPage /></PrivateRoute>} />
               <Route path="/ia-sensei" element={<PrivateRoute><IASensei /></PrivateRoute>} />
             

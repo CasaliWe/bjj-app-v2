@@ -2,7 +2,7 @@ import {
   Home, Book, Calendar, Award, Target, FileText, Bot, 
   Gamepad2, Video, Newspaper, LineChart, Clock, CheckSquare,
   ShoppingBag, Dumbbell, Layers, LogOut, Search, Users, Timer,
-  GraduationCap
+  GraduationCap, Trophy
 } from "lucide-react";
 import {
   Sidebar,
@@ -59,6 +59,12 @@ const menuItems = [  {
     url: "/aprender",
     icon: GraduationCap,
     description: "Módulos de aprendizado"
+  },
+  {
+    title: "Eventos",
+    url: "/eventos",
+    icon: Trophy,
+    description: "Competições de grappling"
   },
   {
     title: "Pesquisar Usuários",
