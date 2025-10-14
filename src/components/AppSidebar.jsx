@@ -61,6 +61,12 @@ const menuItems = [  {
     description: "Módulos de aprendizado"
   },
   {
+    title: "Vídeos",
+    url: "/videos",
+    icon: Video,
+    description: "Biblioteca de vídeos do YouTube"
+  },
+  {
     title: "Eventos",
     url: "/eventos",
     icon: Trophy,

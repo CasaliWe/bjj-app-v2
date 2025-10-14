@@ -208,6 +208,7 @@ const App = () => (
               <Route path="/checklist" element={<PrivateRoute><Checklist /></PrivateRoute>} />
               <Route path="/treinos-cronometrados" element={<PrivateRoute><TreinosCronometrados /></PrivateRoute>} />
               <Route path="/aprender" element={<PrivateRoute><Aprender /></PrivateRoute>} />
+              <Route path="/videos" element={<PrivateRoute><Videos /></PrivateRoute>} />
               <Route path="/eventos" element={<PrivateRoute><Eventos /></PrivateRoute>} />
               <Route path="/usuario" element={<PrivateRoute><UserPage /></PrivateRoute>} />
               <Route path="/ia-sensei" element={<PrivateRoute><IASensei /></PrivateRoute>} />

@@ -94,4 +94,54 @@
   ::-webkit-scrollbar-thumb:hover {
     @apply bg-accent;
   }
+
+  /* Estilos para vídeos responsivos */
+  .video-responsive {
+    position: relative;
+    padding-bottom: 37.5%; /* 1920/720 = 2.67, então 100/2.67 = 37.5% */
+    height: 0;
+    overflow: hidden;
+  }
+
+  .video-responsive iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  /* Modal de vídeo mobile - fullscreen */
+  .video-modal-mobile {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 50;
+  }
+
+  /* Container do vídeo com espaço para menu mobile */
+  .video-container-mobile {
+    padding-bottom: 7rem; /* 112px - altura do menu mobile + margem extra */
+  }
+
+  @media (min-width: 768px) {
+    .video-container-mobile {
+      padding-bottom: 0;
+    }
+  }
+
+  /* Previne scroll no body quando modal está aberto */
+  .modal-open {
+    overflow: hidden;
+  }
+
+  /* Suporte para line-clamp */
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
 }
