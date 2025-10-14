@@ -10,19 +10,20 @@ import * as eventosService from "@/services/eventos/eventosService.jsx";
 export const useEventos = () => {
   const [eventosPorEstado, setEventosPorEstado] = useState({});
   const [estadoSelecionado, setEstadoSelecionado] = useState('todos');
+  const [tipoEvento, setTipoEvento] = useState('sou-competidor');
   const [carregando, setCarregando] = useState(true);
   const [erro, setErro] = useState(null);
   const [totalEstados, setTotalEstados] = useState(0);
   const [totalEventos, setTotalEventos] = useState(0);
   const [estadosDisponiveis, setEstadosDisponiveis] = useState([]);
 
-  // Carregar todos os eventos
-  const carregarEventos = useCallback(async () => {
+  // Carregar todos os eventos baseado no tipo
+  const carregarEventos = useCallback(async (tipo = tipoEvento) => {
     setCarregando(true);
     setErro(null);
     
     try {
-      const data = await eventosService.getEventos();
+      const data = await eventosService.getEventos(tipo);
       
       setEventosPorEstado(data.eventos_por_estado || {});
       setTotalEstados(data.total_estados || 0);
@@ -41,7 +42,7 @@ export const useEventos = () => {
     } finally {
       setCarregando(false);
     }
-  }, []);
+  }, [tipoEvento]);
 
   // Filtrar eventos por estado
   const eventosFiltrados = useCallback(() => {
@@ -110,6 +111,15 @@ export const useEventos = () => {
     return resultados;
   }, [eventosFiltrados]);
 
+  // Alterar tipo de evento
+  const alterarTipoEvento = useCallback(async (novoTipo) => {
+    if (novoTipo !== tipoEvento) {
+      setTipoEvento(novoTipo);
+      setEstadoSelecionado('todos'); // Reset do filtro de estado
+      await carregarEventos(novoTipo);
+    }
+  }, [tipoEvento, carregarEventos]);
+
   // Verificar se há eventos
   const temEventos = useCallback(() => {
     return totalEventos > 0;
@@ -124,6 +134,7 @@ export const useEventos = () => {
     // Estados
     eventosPorEstado: eventosFiltrados(),
     estadoSelecionado,
+    tipoEvento,
     carregando,
     erro,
     totalEstados,
@@ -133,6 +144,7 @@ export const useEventos = () => {
     // Funções
     carregarEventos,
     alterarEstadoSelecionado,
+    alterarTipoEvento,
     getEstatisticas,
     obterTodosEventos,
     buscarEventos,

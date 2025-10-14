@@ -26,6 +26,7 @@
 - /ia-sensei;
 - /treinos-cronometrados;
 - /aprender;
+- /eventos;
 
 ### Páginas atualmente fora do app:
 - /login;

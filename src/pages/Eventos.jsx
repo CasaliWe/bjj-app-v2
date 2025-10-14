@@ -21,6 +21,7 @@ import { useEventos } from "@/hooks/use-eventos";
 import EventoCard from "@/components/eventos/EventoCard";
 import EstatisticasEventos from "@/components/eventos/EstatisticasEventos";
 import EventosFilters from "@/components/eventos/EventosFilters";
+import TipoEventoSelector from "@/components/eventos/TipoEventoSelector";
 
 // Título da página
 import TitleUpdater from "@/components/TitleUpdater";
@@ -39,11 +40,13 @@ const Eventos = () => {
   const {
     eventosPorEstado,
     estadoSelecionado,
+    tipoEvento,
     carregando,
     erro,
     estadosDisponiveis,
     carregarEventos,
     alterarEstadoSelecionado,
+    alterarTipoEvento,
     getEstatisticas,
     buscarEventos,
     temEventos
@@ -103,6 +106,13 @@ const Eventos = () => {
             {/* Conteúdo principal */}
             <main className="flex-1 overflow-auto">
               <div className="p-4 max-w-7xl mx-auto pb-20 md:pb-4">
+                {/* Seletor de Tipo de Evento */}
+                <TipoEventoSelector
+                  tipoSelecionado={tipoEvento}
+                  onTipoChange={alterarTipoEvento}
+                  carregando={carregando}
+                />
+
                 {/* Estatísticas */}
                 <EstatisticasEventos 
                   estatisticas={estatisticas}
@@ -115,6 +125,7 @@ const Eventos = () => {
                   estadoSelecionado={estadoSelecionado}
                   onEstadoChange={alterarEstadoSelecionado}
                   carregando={carregando}
+                  tipoEvento={tipoEvento}
                 />
 
                 {/* Busca */}
@@ -177,8 +188,8 @@ const Eventos = () => {
                     </h3>
                     <p className="text-gray-400 mb-4">
                       {termoBusca
-                        ? "Tente ajustar o termo de busca ou selecionar outro estado."
-                        : "Selecione 'Todos os estados' ou outro estado para ver mais eventos."
+                        ? `Tente ajustar o termo de busca ou selecionar ${tipoEvento === 'ibjjf' ? 'outra cidade' : 'outro estado'}.`
+                        : `Selecione '${tipoEvento === 'ibjjf' ? 'Todas as cidades' : 'Todos os estados'}' ou ${tipoEvento === 'ibjjf' ? 'outra cidade' : 'outro estado'} para ver mais eventos.`
                       }
                     </p>
                     <div className="flex justify-center gap-2">
@@ -197,7 +208,7 @@ const Eventos = () => {
                           onClick={() => alterarEstadoSelecionado('todos')}
                           className="border-gray-600 text-gray-300 hover:bg-gray-800"
                         >
-                          Ver todos os estados
+                          Ver {tipoEvento === 'ibjjf' ? 'todas as cidades' : 'todos os estados'}
                         </Button>
                       )}
                       <Button 
@@ -227,6 +238,7 @@ const Eventos = () => {
                             <EventoCard
                               key={evento.id}
                               evento={evento}
+                              tipoEvento={tipoEvento}
                             />
                           ))}
                         </div>
@@ -240,7 +252,7 @@ const Eventos = () => {
                   <div className="text-center text-sm text-gray-500 mt-8 pt-4 border-t border-gray-700">
                     Exibindo {todosEventosFiltrados} de {estatisticas.total_eventos} eventos
                     {estadoSelecionado !== 'todos' && (
-                      <span className="text-yellow-400"> • Estado: {estadoSelecionado}</span>
+                      <span className="text-yellow-400"> • {tipoEvento === 'ibjjf' ? 'Cidade' : 'Estado'}: {estadoSelecionado}</span>
                     )}
                     {termoBusca && (
                       <span className="text-yellow-400"> • Busca: "{termoBusca}"</span>
