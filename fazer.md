@@ -27,6 +27,7 @@
 - /treinos-cronometrados;
 - /aprender;
 - /eventos;
+- /videos;
 
 ### Páginas atualmente fora do app:
 - /login;

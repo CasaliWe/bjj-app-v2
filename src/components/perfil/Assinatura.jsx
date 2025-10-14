@@ -325,7 +325,7 @@ const Assinatura = () => {
                   <span className="font-medium">Plano contratado:</span> {plans[selectedPlan]?.label}
                 </p>
                 <p className="text-sm font-medium text-green-600">
-                  Valor total: R$ {plans[selectedPlan]?.totalPrice.toFixed(2)}
+                  Valor total: R$ {plans[selectedPlan]?.totalPrice.toFixed(2).replace('.', ',')}
                 </p>
               </div>
               
@@ -393,10 +393,10 @@ const Assinatura = () => {
                       </div>
                       <div className="text-right">
                         {plan.months === 1 ? (
-                          <p className="font-medium">R$ {plan.totalPrice.toFixed(2)}</p>
+                          <p className="font-medium">R$ {plan.totalPrice.toFixed(2).replace('.', ',')}</p>
                         ) : (
                           <>
-                            <p className="font-medium">R$ {plan.totalPrice.toFixed(2)}</p>
+                            <p className="font-medium">R$ {plan.totalPrice.toFixed(2).replace('.', ',')}</p>
                             {Number(plan.discount) > 0 && (
                               <p className="text-xs text-green-600">
                                 {(() => {
@@ -438,7 +438,7 @@ const Assinatura = () => {
             <div className="flex flex-col items-center py-2">
               <div className="bg-white border border-gray-200 px-4 py-3 rounded-md mb-4 text-center shadow-sm">
                 <p className="text-sm font-medium text-gray-800">
-                  {plans[selectedPlan]?.label} - Total: R$ {plans[selectedPlan]?.totalPrice.toFixed(2)}
+                  {plans[selectedPlan]?.label} - Total: R$ {plans[selectedPlan]?.totalPrice.toFixed(2).replace('.', ',')}
                 </p>
                 {Number(plans[selectedPlan]?.discount) > 0 && (
                   <p className="text-xs text-green-600 font-medium">

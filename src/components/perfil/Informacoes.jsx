@@ -495,11 +495,29 @@ export function Informacoes({profileData, setProfileData}) {
                           <SelectValue placeholder="Selecione sua faixa" />
                       </SelectTrigger>
                       <SelectContent>
+                          {/* Faixas Infantis */}
+                          <SelectItem value="Branca Infantil">Branca Infantil</SelectItem>
+                          <SelectItem value="Cinza e Branca">Cinza e Branca</SelectItem>
+                          <SelectItem value="Cinza">Cinza</SelectItem>
+                          <SelectItem value="Cinza e Preta">Cinza e Preta</SelectItem>
+                          <SelectItem value="Amarela e Branca">Amarela e Branca</SelectItem>
+                          <SelectItem value="Amarela">Amarela</SelectItem>
+                          <SelectItem value="Amarela e Preta">Amarela e Preta</SelectItem>
+                          <SelectItem value="Laranja e Branca">Laranja e Branca</SelectItem>
+                          <SelectItem value="Laranja">Laranja</SelectItem>
+                          <SelectItem value="Laranja e Preta">Laranja e Preta</SelectItem>
+                          <SelectItem value="Verde e Branca">Verde e Branca</SelectItem>
+                          <SelectItem value="Verde">Verde</SelectItem>
+                          <SelectItem value="Verde e Preta">Verde e Preta</SelectItem>
+                          
+                          {/* Faixas Adultas */}
                           <SelectItem value="Branca">Branca</SelectItem>
                           <SelectItem value="Azul">Azul</SelectItem>
                           <SelectItem value="Roxa">Roxa</SelectItem>
                           <SelectItem value="Marrom">Marrom</SelectItem>
                           <SelectItem value="Preta">Preta</SelectItem>
+                          <SelectItem value="Coral">Coral</SelectItem>
+                          <SelectItem value="Vermelha">Vermelha</SelectItem>
                       </SelectContent>
                       </Select>
                   </div>
