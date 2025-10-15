@@ -2,7 +2,7 @@ import {
   Home, Book, Calendar, Award, Target, FileText, Bot, 
   Gamepad2, Video, Newspaper, LineChart, Clock, CheckSquare,
   ShoppingBag, Dumbbell, Layers, LogOut, Search, Users, Timer,
-  GraduationCap, Trophy
+  GraduationCap, Trophy, ChevronDown, ChevronRight, Activity
 } from "lucide-react";
 import {
   Sidebar,
@@ -15,6 +15,7 @@ import {
   SidebarMenuItem,
   SidebarHeader,
 } from "@/components/ui/sidebar";
+import { useState, useEffect } from "react";
 
 // logout 
 import {sair} from "@/services/auth/logout";
@@ -24,125 +25,114 @@ import { useUser } from "@/contexts/UserContext";
 
 
 
-const menuItems = [  {
-    title: "Início",
-    url: "/app",
-    icon: Home,
-    description: "Dashboard principal"
+const menuSections = [
+  {
+    title: "Dashboard",
+    items: [
+      {
+        title: "Início",
+        url: "/app",
+        icon: Home,
+        description: "Dashboard principal"
+      }
+    ]
   },
   {
-    title: "Técnicas",
-    url: "/tecnicas",
-    icon: Book,
-    description: "Biblioteca de técnicas"
-  },
-  {
-    title: "Treinos",
-    url: "/treinos",
-    icon: Calendar,
-    description: "Histórico de treinos"
-  },
-  {
-    title: "Competições",
-    url: "/competicoes",
-    icon: Award,
-    description: "Competições participadas"
-  },
-  {
-    title: "Observações Gerais",
-    url: "/observacoes",
-    icon: FileText,
-    description: "Notas e observações"
-  },
-  {
-    title: "Aprender",
-    url: "/aprender",
+    title: "Aprendizado",
     icon: GraduationCap,
-    description: "Módulos de aprendizado"
+    items: [
+      {
+        title: "Minhas Técnicas",
+        url: "/tecnicas",
+        icon: Book,
+        description: "Biblioteca de técnicas"
+      },
+      {
+        title: "Aprender Jiu Jitsu",
+        url: "/aprender",
+        icon: GraduationCap,
+        description: "Módulos de aprendizado"
+      },
+      {
+        title: "Vídeos Youtube",
+        url: "/videos",
+        icon: Video,
+        description: "Biblioteca de vídeos do YouTube"
+      }
+    ]
   },
   {
-    title: "Vídeos",
-    url: "/videos",
-    icon: Video,
-    description: "Biblioteca de vídeos do YouTube"
+    title: "Treinos & Competições",
+    icon: Activity,
+    items: [
+      {
+        title: "Meus Treinos",
+        url: "/treinos",
+        icon: Calendar,
+        description: "Histórico de treinos"
+      },
+      {
+        title: "Tempo de luta",
+        url: "/treinos-cronometrados",
+        icon: Timer,
+        description: "Cronômetro para rolas"
+      },
+      {
+        title: "Competições",
+        url: "/competicoes",
+        icon: Award,
+        description: "Competições que participei"
+      },
+      {
+        title: "Eventos",
+        url: "/eventos",
+        icon: Trophy,
+        description: "Próximos eventos de grappling"
+      }
+    ]
   },
   {
-    title: "Eventos",
-    url: "/eventos",
-    icon: Trophy,
-    description: "Competições de grappling"
+    title: "Planejamento",
+    icon: Target,
+    items: [
+      {
+        title: "Plano de Jogo",
+        url: "/plano-de-jogo",
+        icon: Gamepad2,
+        description: "Estratégia para a luta"
+      },
+      {
+        title: "Checklist",
+        url: "/checklist",
+        icon: CheckSquare,
+        description: "Organize seus objetivos"
+      },
+      {
+        title: "Observações",
+        url: "/observacoes",
+        icon: FileText,
+        description: "Detalhes importantes"
+      }
+    ]
   },
   {
-    title: "Pesquisar Usuários",
-    url: "/pesquisar-usuarios",
+    title: "Comunidade & IA",
     icon: Users,
-    description: "Encontre outros praticantes"
-  },
-  {
-    title: "Montar treino",
-    url: "/treinos-cronometrados",
-    icon: Timer,
-    description: "Por tempo ou repetições"
-  },
-  {
-    title: "Plano de Jogo",
-    url: "/plano-de-jogo",
-    icon: Gamepad2,
-    description: "Estratégia para a luta"
-  },
-  {
-    title: "Checklist",
-    url: "/checklist",
-    icon: CheckSquare,
-    description: "Organize seus objetivos"
-  },
-  {
-    title: "I.A Sensei",
-    url: "/ia-sensei",
-    icon: Bot,
-    description: "Chat com Inteligência Artificial"
+    items: [
+      {
+        title: "Pesquisar Usuários",
+        url: "/pesquisar-usuarios",
+        icon: Users,
+        description: "Encontre outros praticantes"
+      },
+      {
+        title: "I.A Sensei",
+        url: "/ia-sensei",
+        icon: Bot,
+        description: "Chat com Inteligência Artificial"
+      }
+    ]
   }
-  // {
-  //   title: "Objetivos",
-  //   url: "/objetivos",
-  //   icon: Target,
-  //   description: "Metas e progresso"
-  // }, 
-  // {
-  //   title: "Vídeos",
-  //   url: "/videos",
-  //   icon: Video,
-  //   description: "Vídeos sobre Jiu-Jitsu"
-  // },
-  // {
-  //   title: "Notícias",
-  //   url: "/noticias",
-  //   icon: Newspaper,
-  //   description: "Notícias de esportes de combate"
-  // },
-  // {
-  //   title: "Métricas",
-  //   url: "/metricas",
-  //   icon: LineChart,
-  //   description: "Estatísticas do usuário"
-  // },  {
-  //   title: "Dojo Market",
-  //   url: "/dojo-market",
-  //   icon: ShoppingBag,
-  //   description: "Compra e venda de equipamentos"
-  // },
-  // {
-  //   title: "Drills",
-  //   url: "/drills",
-  //   icon: Dumbbell,
-  //   description: "Vídeos ensinando drills"
-  // },
-  // {
-  //   title: "Alongamentos",
-  //   url: "/alongamentos",
-  //   icon: Layers,
-  //   description: "Vídeos de alongamentos"
-  // },
 ];
 
 export function AppSidebar() {
@@ -151,6 +141,45 @@ export function AppSidebar() {
   
   // Verificar se o usuário tem plano Plus
   const isPlus = user?.plano === 'Plus';
+  
+  // Função para encontrar qual seção contém a página ativa
+  const getActiveSectionTitle = () => {
+    const currentPath = window.location.pathname;
+    
+    for (const section of menuSections) {
+      const hasActiveItem = section.items.some(item => item.url === currentPath);
+      if (hasActiveItem) {
+        return section.title;
+      }
+    }
+    return "Dashboard"; // fallback
+  };
+  
+  // Estado para controlar quais seções estão expandidas
+  const [expandedSections, setExpandedSections] = useState(() => {
+    const activeSectionTitle = getActiveSectionTitle();
+    return menuSections.reduce((acc, section) => {
+      // Dashboard sempre aberto, e a seção ativa também
+      acc[section.title] = section.title === "Dashboard" || section.title === activeSectionTitle;
+      return acc;
+    }, {});
+  });
+
+  const toggleSection = (sectionTitle) => {
+    setExpandedSections(prev => ({
+      ...prev,
+      [sectionTitle]: !prev[sectionTitle]
+    }));
+  };
+
+  // Efeito para atualizar seções expandidas quando a rota mudar
+  useEffect(() => {
+    const activeSectionTitle = getActiveSectionTitle();
+    setExpandedSections(prev => ({
+      ...prev,
+      [activeSectionTitle]: true // Sempre manter a seção ativa aberta
+    }));
+  }, [window.location.pathname]);
 
   const logout = () => {
     sair();
@@ -185,40 +214,83 @@ export function AppSidebar() {
             NAVEGAÇÃO
           </SidebarGroupLabel>
           <SidebarGroupContent>
-            <SidebarMenu className="space-y-1">              
-              {menuItems.map((item) => {
-                const isActive = window.location.pathname === item.url;
-                return (
-                  <SidebarMenuItem key={item.title}>
-                    <SidebarMenuButton 
-                      asChild
-                      className={`h-12 px-3 rounded-lg transition-all duration-200 group ${
-                        isActive 
-                          ? "bg-sidebar-accent/50 border-l-2 border-bjj-gold" 
-                          : "hover:bg-sidebar-accent"
-                      }`}
-                    >
-                      <a href={item.url} className="flex items-center gap-3">
-                        <item.icon className={`w-5 h-5 transition-colors duration-200 ${
-                          isActive 
-                            ? "text-bjj-gold" 
-                            : "text-sidebar-foreground/70 group-hover:text-bjj-gold"
-                        }`} />
-                        <div className="flex flex-col">
-                          <span className="text-sidebar-foreground font-medium text-sm">
-                            {item.title}
+            <SidebarMenu className="space-y-3">              
+              {menuSections.map((section) => (
+                <div key={section.title} className="space-y-2">
+                  {/* Header da seção - só se não for Dashboard */}
+                  {section.title !== "Dashboard" ? (
+                    <SidebarMenuItem>
+                      <SidebarMenuButton 
+                        onClick={() => toggleSection(section.title)}
+                        className="h-12 px-4 py-3 rounded-lg transition-all duration-200 group hover:bg-sidebar-accent/30 cursor-pointer"
+                      >
+                        <div className="flex items-center gap-3 w-full">
+                          <section.icon className="w-4 h-4 flex-shrink-0 text-sidebar-foreground/60 group-hover:text-bjj-gold transition-colors duration-200" />
+                          <span className="text-sidebar-foreground/80 font-medium text-sm flex-1 leading-tight">
+                            {section.title}
                           </span>
-                          <span className="text-sidebar-foreground/50 text-xs">
-                            {item.description}
-                          </span>
+                          {expandedSections[section.title] ? (
+                            <ChevronDown className="w-4 h-4 flex-shrink-0 text-sidebar-foreground/60" />
+                          ) : (
+                            <ChevronRight className="w-4 h-4 flex-shrink-0 text-sidebar-foreground/60" />
+                          )}
                         </div>
-                      </a>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                );
-              })}
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  ) : null}
+                  
+                  {/* Items da seção */}
+                  {(expandedSections[section.title] || section.title === "Dashboard") && (
+                    <div className={section.title !== "Dashboard" ? "ml-2 space-y-2 py-2" : "space-y-2 py-1"}>
+                      {section.items.map((item) => {
+                        const isActive = window.location.pathname === item.url;
+                        return (
+                          <SidebarMenuItem key={item.title}>
+                            <SidebarMenuButton 
+                              asChild
+                              className={`min-h-14 px-4 py-3 rounded-lg transition-all duration-200 group ${
+                                isActive 
+                                  ? "bg-sidebar-accent/50 border-l-2 border-bjj-gold" 
+                                  : "hover:bg-sidebar-accent"
+                              }`}
+                            >
+                              <a href={item.url} className="flex items-center gap-3 w-full">
+                                <item.icon className={`w-4 h-4 flex-shrink-0 transition-colors duration-200 ${
+                                  isActive 
+                                    ? "text-bjj-gold" 
+                                    : "text-sidebar-foreground/70 group-hover:text-bjj-gold"
+                                }`} />
+                                <div className="flex flex-col min-w-0 flex-1 py-1">
+                                  <span className="text-sidebar-foreground font-medium text-sm leading-tight mb-1">
+                                    {item.title}
+                                  </span>
+                                  <span className="text-sidebar-foreground/50 text-xs leading-tight">
+                                    {item.description}
+                                  </span>
+                                </div>
+                              </a>
+                            </SidebarMenuButton>
+                          </SidebarMenuItem>
+                        );
+                      })}
+                    </div>
+                  )}
+                </div>
+              ))}
             </SidebarMenu>
-            <div className="mt-8 mb-6 text-red-500 flex justify-center"><button onClick={logout}>Sair</button> <LogOut className="ms-2 h-4 w-4 text-red-500"/></div>
+            
+            {/* Botão de logout */}
+            <div className="mt-8 mb-6 px-4">
+              <SidebarMenuButton 
+                onClick={logout}
+                className="h-11 w-full px-4 py-2 rounded-lg transition-all duration-200 group hover:bg-red-500/10 cursor-pointer"
+              >
+                <div className="flex items-center gap-3 text-red-500">
+                  <LogOut className="w-4 h-4 flex-shrink-0" />
+                  <span className="font-medium text-sm">Sair</span>
+                </div>
+              </SidebarMenuButton>
+            </div>
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>

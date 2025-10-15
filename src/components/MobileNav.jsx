@@ -1,10 +1,10 @@
 
-import { Home, Book, Calendar, User } from "lucide-react";
+import { Home, Trophy, CheckSquare, User } from "lucide-react";
 
 const menuItems = [
   { title: "Início", url: "/app", icon: Home },
-  { title: "Técnicas", url: "/tecnicas", icon: Book },
-  { title: "Treinos", url: "/treinos", icon: Calendar },
+  { title: "Eventos", url: "/eventos", icon: Trophy },
+  { title: "Checklist", url: "/checklist", icon: CheckSquare },
   { title: "Perfil", url: "/perfil", icon: User },
 ];
 
