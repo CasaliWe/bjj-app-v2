@@ -51,16 +51,10 @@ export const setTitleByRoute = (path) => {
     "/tecnicas": "Técnicas",
     "/treinos": "Treinos",
     "/competicoes": "Competições",
-    "/objetivos": "Objetivos",
     "/observacoes": "Observações",
     "/plano-de-jogo": "Plano de Jogo",
     "/videos": "Vídeos",
-    "/noticias": "Notícias",
     "/eventos": "Eventos",
-    "/metricas": "Métricas",
-    "/dojo-market": "Dojo Market",
-    "/drills": "Drills",
-    "/alongamentos": "Alongamentos",
     "/": "Bem-vindo"
   };
 

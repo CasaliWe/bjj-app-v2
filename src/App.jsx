@@ -34,16 +34,10 @@ import IASensei from "./pages/IASensei";
 import Tecnicas from "./pages/Tecnicas";
 import Treinos from "./pages/Treinos";
 import Competicoes from "./pages/Competicoes";
-import Objetivos from "./pages/Objetivos";
 import Observacoes from "./pages/Observacoes";
 import PlanoDeJogo from "./pages/PlanoDeJogo";
 import Checklist from "./pages/Checklist";
 import Videos from "./pages/Videos";
-import Noticias from "./pages/Noticias";
-import Metricas from "./pages/Metricas";
-import DojoMarket from "./pages/DojoMarket";
-import Drills from "./pages/Drills";
-import Alongamentos from "./pages/Alongamentos";
 import PesquisarUsuarios from "./pages/PesquisarUsuarios";
 import TreinosCronometrados from "./pages/TreinosCronometrados";
 import Aprender from "./pages/Aprender";
@@ -166,7 +160,7 @@ const AuthRedirectRoute = ({ children }) => {
   return children;
 };
 
-// Componente simples para rastrear rotas
+// Componente simples para rastrear rotas para Google Analytics
 const Analytics = () => {
   const location = useLocation();
   
@@ -226,14 +220,6 @@ const App = () => (
             <Route path="/sobre-nos" element={<AboutUs />} />
             <Route path="/contato" element={<Contact />} />
             <Route path="*" element={<NotFound />} />
-
-            {/* 
-            <Route path="/videos" element={<Videos />} />
-            <Route path="/noticias" element={<Noticias />} />
-            <Route path="/dojo-market" element={<DojoMarket />} />
-            <Route path="/drills" element={<Drills />} />
-            <Route path="/alongamentos" element={<Alongamentos />} />
-            <Route path="/objetivos" element={<Objetivos />} />*/}
           </Routes>
           </TooltipProvider>
         </Exp>
