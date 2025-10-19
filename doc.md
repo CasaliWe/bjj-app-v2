@@ -1,3 +1,29 @@
+### CORRIGIR BUG (OU FAZER):
+- Data no card comunidade competição detalhes;
+- Select categoria modal adicionar competição;
+- Colocar dados na página user busca;
+- Ranking;
+- Colocar anúncios;
+- Colocar código ganha dias na criação da conta (página register e modal welcome);
+- Colocar resgatar código promocional na aba Config;
+- Colocar tutorial (pode ser um gif na public para cada página);
+- Notícias blog (eu add pelo admin);
+- Lutas épicas (eu add pelo admin);
+
+
+### TESTAR MELHOR ANTES DO LANÇAMENTO:
+- pagamento;
+- testar cód promo;
+- testar criar com cód promo;
+- comunidade técnicas;
+- testar upload videos tecnicas de várias tipo de celulares, formatos e tamanhos;
+- Página aprender;
+- Testar comunidade trienos;
+- Comunidade competição;
+- Usar manus para pegar eventos ibjjf e testar scrpping eventos sou competidor;
+- Página atleta com muita coisa publica;
+
+
 ### Documentação:
 - Sempre ao fazer o build precisa atualizar a .env antes;
 - Usar o upload-dist-to-vps.sh para mandar arquivos a vps prod;
@@ -12,6 +38,7 @@
 - Precisa importar o titlePage em todas as páginas para definir o titulo da página;
 - Precisa ajusta o G-tag do analytics na App.jsx e no index.html;
 - Precisa ajusta o adsense index.html e ???;
+
 
 ### Páginas atualmente dentro do app:
 - /app;
@@ -29,6 +56,7 @@
 - /aprender;
 - /eventos;
 - /videos;
+
 
 ### Páginas atualmente fora do app:
 - /login;
