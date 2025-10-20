@@ -42,6 +42,7 @@ import PesquisarUsuarios from "./pages/PesquisarUsuarios";
 import TreinosCronometrados from "./pages/TreinosCronometrados";
 import Aprender from "./pages/Aprender";
 import Eventos from "./pages/Eventos";
+import Ranking from "./pages/Ranking";
 
 
 const queryClient = new QueryClient();
@@ -206,6 +207,7 @@ const App = () => (
               <Route path="/eventos" element={<PrivateRoute><Eventos /></PrivateRoute>} />
               <Route path="/usuario" element={<PrivateRoute><UserPage /></PrivateRoute>} />
               <Route path="/ia-sensei" element={<PrivateRoute><IASensei /></PrivateRoute>} />
+              <Route path="/ranking" element={<PrivateRoute><Ranking /></PrivateRoute>} />
             
             {/* Rotas públicas com redirecionamento para usuários autenticados */}
             <Route path="/login" element={<AuthRedirectRoute><Login /></AuthRedirectRoute>} />

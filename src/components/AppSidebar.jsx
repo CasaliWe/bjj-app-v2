@@ -126,6 +126,12 @@ const menuSections = [
         description: "Encontre outros praticantes"
       },
       {
+        title: "Ranking",
+        url: "/ranking",
+        icon: Trophy,
+        description: "Ranking de atletas por EXP"
+      },
+      {
         title: "I.A Sensei",
         url: "/ia-sensei",
         icon: Bot,

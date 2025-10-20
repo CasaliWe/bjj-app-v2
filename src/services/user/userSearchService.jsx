@@ -47,3 +47,52 @@ export const searchUsers = async (query, searchBy = 'nome') => {
     throw error;
   }
 };
+
+/**
+ * Busca usuários com suporte a paginação
+ * @param {string} query - Termo de pesquisa (nome ou BJJ ID)
+ * @param {number} pagina - Número da página (padrão: 1)
+ * @param {number} limite - Número de itens por página (padrão: 50)
+ * @param {string} searchBy - Tipo de pesquisa ('nome' ou 'bjj_id')
+ * @returns {Promise<Object>} Lista de usuários encontrados com informações de paginação
+ */
+export const buscarUsuarios = async (query = '', pagina = 1, limite = 50, searchBy = 'nome') => {
+  try {
+    // Quando não houver query, a API retorna todos os usuários se nenhum parâmetro for enviado
+    const hasQuery = !!(query && query.trim() !== '');
+    let url = `${BASE_URL}endpoint/user/pesquisar-usuario.php?pagina=${pagina}&limite=${limite}`;
+    
+    if (hasQuery) {
+      url += `&query=${encodeURIComponent(query)}&search_by=${searchBy}`;
+    }
+    
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${getAuthToken()}`
+      }
+    });
+    
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || 'Erro ao buscar usuários');
+    }
+    
+    const data = await response.json();
+    
+    // A API retorna os usuários diretamente em data.data (array)
+    return {
+      usuarios: data.data || [],
+      paginacao: data.pagination || {
+        currentPage: pagina,
+        totalPages: 1,
+        totalItems: 0,
+        itemsPerPage: limite
+      }
+    };
+  } catch (error) {
+    console.error("Erro ao buscar usuários:", error);
+    throw error;
+  }
+};
