@@ -140,7 +140,7 @@ const Tutorial = () => {
                     size="sm"
                     className="bg-bjj-gold text-black hover:bg-bjj-gold/90"
                   >
-                    Entendi!
+                    Entendi, Vamos lá!
                   </Button>
                 </div>
               </div>
