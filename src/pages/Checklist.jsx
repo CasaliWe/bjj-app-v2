@@ -30,6 +30,9 @@ import { useGetUser } from "@/hooks/use-getUser";
 // Upgrade
 import UpgradeModal from "@/components/upgrade/UpgradeModal";
 
+// Tutorial
+import Tutorial from "@/components/ui/Tutorial";
+
 /**
  * Página de Checklists
  * Permite ao usuário gerenciar seus checklists e tarefas
@@ -119,15 +122,18 @@ const Checklist = () => {
               <h1 className="text-xl font-semibold">Checklist</h1>
             </div>
 
-            <Button onClick={() => abrirModal()} className="gap-2">
-              {isMobile ? (
-                <Plus className="h-5 w-5" />
-              ) : (
-                <>
-                  <Plus className="h-5 w-5 mr-1" /> Novo Checklist
-                </>
-              )}
-            </Button>
+            <div className="flex items-center gap-2">
+              <Tutorial />
+              <Button onClick={() => abrirModal()} className="gap-2">
+                {isMobile ? (
+                  <Plus className="h-5 w-5" />
+                ) : (
+                  <>
+                    <Plus className="h-5 w-5 mr-1" /> Novo Checklist
+                  </>
+                )}
+              </Button>
+            </div>
           </header>
 
           <MobileNav />

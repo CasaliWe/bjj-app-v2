@@ -2,7 +2,6 @@
 - Colocar anúncios;
 - Colocar código ganha dias na criação da conta (página register e modal welcome);
 - Colocar resgatar código promocional na aba Config;
-- Colocar tutorial (pode ser um gif na public para cada página);
 - Notícias blog (eu add pelo admin);
 - Lutas épicas (eu add pelo admin);
 
@@ -52,6 +51,7 @@
 - /aprender;
 - /eventos;
 - /videos;
+- /ranking;
 
 
 ### Páginas atualmente fora do app:

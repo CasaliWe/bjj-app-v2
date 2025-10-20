@@ -24,6 +24,9 @@ import TecnicasList from "@/components/tecnicas/TecnicasList";
 // Upgrade
 import UpgradeModal from "@/components/upgrade/UpgradeModal";
 
+// Tutorial
+import Tutorial from "@/components/ui/Tutorial";
+
 const Tecnicas = () => {  
   // Estados para os filtros
   const [filtroCategoria, setFiltroCategoria] = useState("todas");
@@ -197,6 +200,7 @@ const Tecnicas = () => {
               <h1 className="text-xl font-semibold">Técnicas</h1>
             </div>
             <div className="flex items-center gap-2">
+              <Tutorial />
               <Button
                 onClick={() => setModalPosicoesAberto(true)}
                 variant="outline"

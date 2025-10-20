@@ -17,6 +17,9 @@ import CompeticaoDetalhes from '../components/competicoes/CompeticaoDetalhes';
 // Upgrade
 import UpgradeModal from "@/components/upgrade/UpgradeModal";
 
+// Tutorial
+import Tutorial from "@/components/ui/Tutorial";
+
 // Hook personalizado
 import { useCompeticoes } from '../hooks/use-competicoes';
 import { useIsMobile } from '../hooks/use-mobile';
@@ -149,15 +152,18 @@ const Competicoes = () => {
               <h1 className="text-xl font-semibold">Competições</h1>
             </div>
 
-            <Button onClick={abrirNovaCompeticao}>
-              {isMobile ? (
-                <Plus className="h-5 w-5" />
-              ) : (
-                <>
-                  <Plus className="h-5 w-5 mr-2" /> Nova Competição
-                </>
-              )}
-            </Button>
+            <div className="flex items-center gap-2">
+              <Tutorial />
+              <Button onClick={abrirNovaCompeticao}>
+                {isMobile ? (
+                  <Plus className="h-5 w-5" />
+                ) : (
+                  <>
+                    <Plus className="h-5 w-5 mr-2" /> Nova Competição
+                  </>
+                )}
+              </Button>
+            </div>
           </header>
 
           <MobileNav />

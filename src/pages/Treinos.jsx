@@ -26,6 +26,9 @@ import { useGetUser } from "@/hooks/use-getUser";
 // Upgrade
 import UpgradeModal from "@/components/upgrade/UpgradeModal";
 
+// Tutorial
+import Tutorial from "@/components/ui/Tutorial";
+
 /**
  * Página de treinos
  * @returns {JSX.Element} Componente React
@@ -115,6 +118,7 @@ const Treinos = () => {
               <h1 className="text-xl font-semibold">Treinos</h1>
             </div>
             <div className="flex gap-2">
+              <Tutorial />
               <Button
                 onClick={abrirModalComunidade}
                 size="sm"

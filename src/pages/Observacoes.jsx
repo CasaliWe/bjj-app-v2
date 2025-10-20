@@ -30,6 +30,9 @@ import { useGetUser } from "@/hooks/use-getUser";
 // Upgrade
 import UpgradeModal from "@/components/upgrade/UpgradeModal";
 
+// Tutorial
+import Tutorial from "@/components/ui/Tutorial";
+
 /**
  * Página de Observações
  * Permite ao usuário gerenciar suas observações, dicas e insights
@@ -112,15 +115,18 @@ const Observacoes = () => {
               <h1 className="text-xl font-semibold">Observações</h1>
             </div>
 
-            <Button onClick={() => abrirModal()} className="gap-2">
-              {isMobile ? (
-                <Plus className="h-5 w-5" />
-              ) : (
-                <>
-                  <Plus className="h-5 w-5 mr-1" /> Nova Observação
-                </>
-              )}
-            </Button>
+            <div className="flex items-center gap-2">
+              <Tutorial />
+              <Button onClick={() => abrirModal()} className="gap-2">
+                {isMobile ? (
+                  <Plus className="h-5 w-5" />
+                ) : (
+                  <>
+                    <Plus className="h-5 w-5 mr-1" /> Nova Observação
+                  </>
+                )}
+              </Button>
+            </div>
           </header>
 
           <MobileNav />

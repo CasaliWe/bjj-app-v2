@@ -12,6 +12,9 @@ import TitleUpdater from "@/components/TitleUpdater";
 // Upgrade
 import UpgradeModal from "@/components/upgrade/UpgradeModal";
 
+// Tutorial
+import Tutorial from "@/components/ui/Tutorial";
+
 const PlanoDeJogo = () => {
   const location = useLocation();
   const isMobile = useIsMobile();
@@ -34,6 +37,7 @@ const PlanoDeJogo = () => {
               <SidebarTrigger />
               <h1 className="text-xl font-semibold">Plano de Jogo</h1>
             </div>
+            <Tutorial />
           </header>
 
           <MobileNav />
