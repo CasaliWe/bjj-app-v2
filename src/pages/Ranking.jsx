@@ -39,13 +39,14 @@ const Ranking = () => {
   
   // Estados de paginação
   const [paginaAtual, setPaginaAtual] = useState(1);
-  const usuariosPorPagina = 20;
+  const usuariosPorPagina = 25;
   
-  // Calcular dados da paginação
+  // Calcular dados da paginação (FRONTEND)
+  const totalUsuarios = usuariosOrdenados.length;
+  const totalPaginas = Math.ceil(totalUsuarios / usuariosPorPagina);
   const indexInicial = (paginaAtual - 1) * usuariosPorPagina;
   const indexFinal = indexInicial + usuariosPorPagina;
   const usuariosPaginaAtual = usuariosOrdenados.slice(indexInicial, indexFinal);
-  const totalPaginas = Math.ceil(usuariosOrdenados.length / usuariosPorPagina);
 
   // Definir título da página
   useEffect(() => {
@@ -92,9 +93,6 @@ const Ranking = () => {
         
         // DEPOIS: filtrar apenas com EXP > 0
         const ordenados = todosOrdenados.filter(usuario => usuario.expNumerico > 0);
-        
-        console.log('Usuários com EXP > 0:', ordenados.length);
-        console.log('=== FIM DEBUG ===');
         
         setUsuariosOrdenados(ordenados);
       } catch (error) {
@@ -146,19 +144,37 @@ const Ranking = () => {
     }
   };
 
-  // Função para gerar números das páginas a serem exibidas
+  // Função para gerar números das páginas a serem exibidas (máximo 2)
   const gerarNumerosPaginas = () => {
     const numeros = [];
-    const maxNumeros = 5;
-    let inicio = Math.max(1, paginaAtual - Math.floor(maxNumeros / 2));
-    let fim = Math.min(totalPaginas, inicio + maxNumeros - 1);
+    const maxNumeros = 2; // Máximo de 2 botões de página visíveis
     
-    if (fim - inicio + 1 < maxNumeros) {
-      inicio = Math.max(1, fim - maxNumeros + 1);
-    }
-    
-    for (let i = inicio; i <= fim; i++) {
-      numeros.push(i);
+    if (totalPaginas <= 2) {
+      // Se tem 2 ou menos páginas, mostra todas
+      for (let i = 1; i <= totalPaginas; i++) {
+        numeros.push(i);
+      }
+    } else {
+      // Lógica para mostrar apenas 2 números centrados na página atual
+      let inicio, fim;
+      
+      if (paginaAtual === 1) {
+        // Se está na primeira página, mostra 1 e 2
+        inicio = 1;
+        fim = 2;
+      } else if (paginaAtual === totalPaginas) {
+        // Se está na última página, mostra as 2 últimas
+        inicio = totalPaginas - 1;
+        fim = totalPaginas;
+      } else {
+        // Caso geral: mostra a atual e a próxima
+        inicio = paginaAtual;
+        fim = Math.min(paginaAtual + 1, totalPaginas);
+      }
+      
+      for (let i = inicio; i <= fim; i++) {
+        numeros.push(i);
+      }
     }
     
     return numeros;
@@ -241,44 +257,51 @@ const Ranking = () => {
                 {totalPaginas > 1 && (
                   <Card className="bg-card/80 backdrop-blur-sm border-border/50">
                     <CardContent className="p-4">
-                      <div className="flex items-center justify-between">
+                      {/* Informações da paginação */}
+                      <div className="text-center mb-4">
                         <p className="text-sm text-muted-foreground">
-                          Mostrando {indexInicial + 1} a {Math.min(indexFinal, usuariosOrdenados.length)} de {usuariosOrdenados.length} atletas
+                          Mostrando {indexInicial + 1} a {Math.min(indexFinal, totalUsuarios)} de {totalUsuarios} atletas
                         </p>
+                        <p className="text-xs text-muted-foreground mt-1">
+                          Página {paginaAtual} de {totalPaginas}
+                        </p>
+                      </div>
+                      
+                      {/* Controles de paginação */}
+                      <div className="flex items-center justify-center gap-2">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={irParaPaginaAnterior}
+                          disabled={paginaAtual === 1}
+                          className="px-2 sm:px-3"
+                        >
+                          <ChevronLeft className="h-4 w-4" />
+                          <span className="hidden sm:inline ml-1">Anterior</span>
+                        </Button>
                         
-                        <div className="flex items-center space-x-2">
+                        {gerarNumerosPaginas().map((numero) => (
                           <Button
-                            variant="outline"
+                            key={numero}
+                            variant={numero === paginaAtual ? "default" : "outline"}
                             size="sm"
-                            onClick={irParaPaginaAnterior}
-                            disabled={paginaAtual === 1}
+                            onClick={() => irParaPagina(numero)}
+                            className="min-w-[2.5rem] w-10 h-10"
                           >
-                            <ChevronLeft className="h-4 w-4" />
-                            Anterior
+                            {numero}
                           </Button>
-                          
-                          {gerarNumerosPaginas().map((numero) => (
-                            <Button
-                              key={numero}
-                              variant={numero === paginaAtual ? "default" : "outline"}
-                              size="sm"
-                              onClick={() => irParaPagina(numero)}
-                              className="min-w-[2.5rem]"
-                            >
-                              {numero}
-                            </Button>
-                          ))}
-                          
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={irParaProximaPagina}
-                            disabled={paginaAtual === totalPaginas}
-                          >
-                            Próxima
-                            <ChevronRight className="h-4 w-4" />
-                          </Button>
-                        </div>
+                        ))}
+                        
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={irParaProximaPagina}
+                          disabled={paginaAtual === totalPaginas}
+                          className="px-2 sm:px-3"
+                        >
+                          <span className="hidden sm:inline mr-1">Próxima</span>
+                          <ChevronRight className="h-4 w-4" />
+                        </Button>
                       </div>
                     </CardContent>
                   </Card>
