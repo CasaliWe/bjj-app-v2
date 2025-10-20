@@ -20,6 +20,7 @@ import { setPageTitle } from "@/services/title";
 import PrivateProfile from "@/components/userPage/PrivateProfile";
 import PublicProfile from "@/components/userPage/PublicProfile";
 import UserTabs from "@/components/userPage/UserTabs";
+import { UserHistoryData } from "@/components/userPage/UserHistoryData";
 
 // Hook personalizado
 import { useUserPage } from "@/hooks/use-userPage";
@@ -68,6 +69,11 @@ const UserPage = () => {
     
     // Controle de tabs
     activeTab,
+    
+    // Dados históricos
+    userHistoryData,
+    isLoadingHistoryData,
+    historyDataError,
     
     // Métodos
     fetchUserProfile,
@@ -189,6 +195,9 @@ const UserPage = () => {
                     ) : (
                       <>
                         <PublicProfile profile={userProfile} />
+                        
+                        {/* Dados históricos de treinos e competições */}
+                        <UserHistoryData treinosDados={userHistoryData} />
                         
                         {/* Tabs para conteúdo público */}
                         <UserTabs 

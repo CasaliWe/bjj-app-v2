@@ -149,3 +149,30 @@ export const getUserPublicTechniques = async (bjjId, pagina = 1, limite = 10) =>
     throw error;
   }
 };
+
+/**
+ * Busca os dados históricos de treinos e competições de um usuário específico
+ * @param {string} bjjId - ID do usuário
+ * @returns {Promise<Object>} Dados históricos de treinos e competições
+ */
+export const getUserHistoryData = async (bjjId) => {
+  try {
+    const url = `${BASE_URL}endpoint/user/getUserHistoryData.php?bjj_id=${bjjId}`;
+    
+    const response = await fetch(url, {
+      method: 'GET'
+    });
+    
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || 'Erro ao buscar dados históricos do usuário');
+    }
+    
+    const data = await response.json();
+    
+    return data.data || {};
+  } catch (error) {
+    console.error("Erro ao buscar dados históricos do usuário:", error);
+    throw error;
+  }
+};

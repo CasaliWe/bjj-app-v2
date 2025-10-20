@@ -3,7 +3,8 @@ import {
   getUserProfile, 
   getUserPublicTrainings, 
   getUserPublicCompetitions, 
-  getUserPublicTechniques 
+  getUserPublicTechniques,
+  getUserHistoryData
 } from '@/services/user/userPageService';
 
 /**
@@ -52,6 +53,11 @@ export const useUserPage = (bjjId) => {
   
   // Estado para controlar a tab ativa
   const [activeTab, setActiveTab] = useState('treinos');
+  
+  // Estados para dados históricos
+  const [userHistoryData, setUserHistoryData] = useState(null);
+  const [isLoadingHistoryData, setIsLoadingHistoryData] = useState(false);
+  const [historyDataError, setHistoryDataError] = useState(null);
   
   // Função para buscar o perfil do usuário
   const fetchUserProfile = useCallback(async () => {
@@ -143,6 +149,24 @@ export const useUserPage = (bjjId) => {
     }
   }, [bjjId]);
   
+  // Função para buscar dados históricos do usuário
+  const fetchUserHistoryData = useCallback(async () => {
+    if (!bjjId) return;
+    
+    setIsLoadingHistoryData(true);
+    setHistoryDataError(null);
+    
+    try {
+      const historyData = await getUserHistoryData(bjjId);
+      setUserHistoryData(historyData);
+    } catch (error) {
+      console.error('Erro ao buscar dados históricos do usuário:', error);
+      setHistoryDataError('Não foi possível carregar os dados históricos do usuário.');
+    } finally {
+      setIsLoadingHistoryData(false);
+    }
+  }, [bjjId]);
+  
   // Função para mudar a página de treinos
   const changeTrainingsPage = useCallback((page) => {
     fetchUserTrainings(page);
@@ -192,13 +216,14 @@ export const useUserPage = (bjjId) => {
   useEffect(() => {
     if (bjjId) {
       fetchUserProfile();
+      fetchUserHistoryData();
       
       // Carregar dados das tabs imediatamente
       fetchUserTrainings(1);
       fetchUserCompetitions(1);
       fetchUserTechniques(1);
     }
-  }, [bjjId, fetchUserProfile, fetchUserTrainings, fetchUserCompetitions, fetchUserTechniques]);
+  }, [bjjId, fetchUserProfile, fetchUserHistoryData, fetchUserTrainings, fetchUserCompetitions, fetchUserTechniques]);
   
   return {
     // Dados do perfil
@@ -227,11 +252,17 @@ export const useUserPage = (bjjId) => {
     // Controle de tabs
     activeTab,
     
+    // Dados históricos
+    userHistoryData,
+    isLoadingHistoryData,
+    historyDataError,
+    
     // Métodos
     fetchUserProfile,
     fetchUserTrainings,
     fetchUserCompetitions,
     fetchUserTechniques,
+    fetchUserHistoryData,
     changeTrainingsPage,
     changeCompetitionsPage,
     changeTechniquesPage,
