@@ -25,6 +25,7 @@
 
 
 ### Documentação:
+- Deps: api url (VITE_API_URL), cloudflare (VITE_CLOUDFLARE_TURNSTILE), google auth (VITE_GOOGLE_CLIENT_ID) e ia (VITE_IA_URL);
 - Sempre ao fazer o build precisa atualizar a .env antes;
 - Usar o upload-dist-to-vps.sh para mandar arquivos a vps prod;
 - Todas as páginas após logado deve ter o hook que busca os dados do user, assim aparece o plus ao lado da logo;
@@ -34,7 +35,6 @@
 - Modal welcome apenas na dashboard no primeiro acesso;
 - Todos os form publicos precisam ter o turnstile;
 - Modal pwa instalar em tudo;
-- Deps: cloudflare (VITE_CLOUDFLARE_TURNSTILE), google auth (VITE_GOOGLE_CLIENT_ID) e ia (VITE_IA_URL);
 - Precisa importar o titlePage em todas as páginas para definir o titulo da página;
 - Precisa ajusta o G-tag do analytics na App.jsx e no index.html;
 - Precisa ajusta o adsense index.html e ???;
