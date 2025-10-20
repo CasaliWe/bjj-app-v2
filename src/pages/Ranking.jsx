@@ -172,10 +172,7 @@ const Ranking = () => {
           <header className="sticky top-0 z-10 border-b bg-background p-4 flex items-center justify-between">
             <div className="flex items-center gap-3">
               <SidebarTrigger />
-              <div className="flex items-center gap-2">
-                <Trophy className="h-5 w-5 text-bjj-gold" />
-                <h1 className="text-xl font-semibold">Ranking de Atletas</h1>
-              </div>
+              <h1 className="text-xl font-semibold">Ranking de Atletas</h1>
             </div>
           </header>
 
@@ -315,7 +312,7 @@ const Ranking = () => {
 
       {/* Modal de upgrade para o plano Plus */}
       <UpgradeModal />
-      
+
     </SidebarProvider>
   );
 };

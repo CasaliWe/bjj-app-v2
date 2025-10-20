@@ -9,7 +9,8 @@ import {
   Trophy,
   Crown,
   Medal,
-  Award
+  Award,
+  Home
 } from "lucide-react";
 
 /**
@@ -67,115 +68,80 @@ const RankingUserCard = ({ usuario, posicao, isPodium, medalIcon }) => {
 
   return (
     <Card 
-      className={`bg-card/80 backdrop-blur-sm border-border/50 hover:bg-card/90 transition-all duration-200 cursor-pointer ${
-        isPodium ? 'ring-2 ring-bjj-gold/30 shadow-lg' : ''
+      className={`cursor-pointer hover:shadow-md transition-shadow duration-200 border-t-4 ${
+        isPodium ? 'border-t-bjj-gold' : 'border-t-bjj-gold'
       }`}
       onClick={irParaPaginaUsuario}
     >
-      <CardContent className="p-4">
-        <div className="flex items-center gap-4">
-          {/* Posição e Medalha */}
-          <div className="flex items-center gap-2 min-w-[60px]">
+      <CardContent className="pt-6 pb-4">
+        <div className="flex flex-col gap-2">
+          {/* Primeira linha: Posição + Medalha (se tiver) */}
+          <div className="flex items-center gap-2 mb-2">
             {isPodium ? (
-              <div className="flex items-center gap-1">
+              <div className="flex items-center gap-2">
                 {medalIcon}
                 <span className="font-bold text-lg text-bjj-gold">#{posicao}</span>
               </div>
             ) : (
               <span className="font-semibold text-lg text-muted-foreground">#{posicao}</span>
             )}
-          </div>
-
-          {/* Foto de perfil */}
-          <div className="w-16 h-16 rounded-full bg-bjj-gold/10 flex items-center justify-center flex-shrink-0 overflow-hidden border-2 border-bjj-gold/20">
-            {usuario?.imagem ? (
-              <img 
-                src={usuario.tipo_acesso === 'Google' ? usuario.imagem : `${import.meta.env.VITE_API_URL}admin/assets/imagens/arquivos/perfil/${usuario.imagem}`}
-                alt={`Foto de ${usuario.nome}`} 
-                className="w-full h-full object-cover"
-                {...(usuario.tipo_acesso === 'Google' && {
-                    referrerPolicy: "no-referrer",
-                    crossOrigin: "anonymous"
-                })}
-                onError={(e) => {
-                    e.target.style.display = 'none';
-                    const parent = e.target.parentElement;
-                    const fallbackDiv = parent.querySelector('.fallback-initials-ranking');
-                    if (fallbackDiv) {
-                        fallbackDiv.style.display = 'flex';
-                    }
-                }}
-                onLoad={(e) => {
-                    const parent = e.target.parentElement;
-                    const fallbackDiv = parent.querySelector('.fallback-initials-ranking');
-                    if (fallbackDiv) {
-                        fallbackDiv.style.display = 'none';
-                    }
-                }}
-              />
-            ) : null}
-            <div className={`w-full h-full flex items-center justify-center bg-bjj-gold/10 text-bjj-gold text-xl font-bold fallback-initials-ranking ${usuario?.imagem ? 'hidden' : ''}`} style={{ display: usuario?.imagem ? 'none' : 'flex' }}>
-              {getInitials()}
+            
+            <div className="flex items-center gap-1 bg-gradient-to-r from-yellow-500 to-yellow-600 text-white px-3 py-1 rounded-full text-sm font-medium shadow-sm ml-auto">
+              <Trophy className="h-4 w-4" />
+              <span>{usuario?.exp || 0} EXP</span>
             </div>
           </div>
 
-          {/* Informações do usuário */}
-          <div className="flex-1 min-w-0">
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
-              {/* Nome e badges */}
-              <div className="min-w-0">
-                <h3 className="font-semibold text-lg text-foreground truncate">
+          {/* Layout igual à pesquisa de usuários */}
+          <div className="flex justify-between items-start">
+            <div className="flex items-center gap-3">
+              <div className="h-12 w-12 rounded-full overflow-hidden flex-shrink-0">
+                {usuario.imagem && usuario.imagem.trim() !== null ? (
+                  <img 
+                    src={usuario.imagem} 
+                    alt={`Foto de ${usuario.nome || 'perfil'}`}
+                    className="h-full w-full object-cover"
+                    onError={(e) => {
+                      e.target.onerror = null;
+                      e.target.src = '';
+                    }}
+                  />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center bg-bjj-gold/10 text-bjj-gold text-xl font-bold">
+                    {getInitials()}
+                  </div>
+                )}
+              </div>
+              <div>
+                <h3 className="text-lg font-bold text-foreground mb-1">
                   {usuario?.nome || 'Nome não informado'}
                 </h3>
                 
-                <div className="flex flex-wrap items-center gap-2 mt-1">
-                  {usuario?.faixa && (
-                    <Badge className={`${getBeltColor()} text-xs`}>
-                      {usuario.faixa}
-                    </Badge>
-                  )}
-                  
-                  {usuario?.idade && (
-                    <Badge variant="outline" className="text-xs">
-                      {usuario.idade} anos
-                    </Badge>
-                  )}
-
-                  {usuario?.graduacao && (
-                    <Badge variant="secondary" className="text-xs">
-                      {usuario.graduacao}
-                    </Badge>
-                  )}
+                <div className="flex items-center gap-1 text-sm text-muted-foreground mb-2">
+                  <span>BJJ ID: {usuario?.bjj_id || 'Não disponível'}</span>
                 </div>
               </div>
-
-              {/* EXP */}
-              <div className="flex items-center gap-2 bg-gradient-to-r from-yellow-500 to-yellow-600 text-white px-3 py-1 rounded-full text-sm font-medium shadow-sm">
-                <Trophy className="h-4 w-4" />
-                <span>{usuario?.exp || 0} EXP</span>
+            </div>
+            
+            <Badge className={`${getBeltColor()} px-3 py-1`}>
+              {usuario?.faixa || 'Faixa não informada'}
+            </Badge>
+          </div>
+          
+          <div className="grid grid-cols-1 gap-2 mt-2">
+            {usuario?.cidade && (
+              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                <MapPin className="h-4 w-4" />
+                <span>{usuario.cidade}</span>
               </div>
-            </div>
-
-            {/* Informações adicionais */}
-            <div className="flex flex-wrap items-center gap-4 mt-2 text-sm text-muted-foreground">
-              {usuario?.academia && (
-                <div className="flex items-center gap-1">
-                  <Building className="h-3 w-3 flex-shrink-0" />
-                  <span className="truncate">{usuario.academia}</span>
-                </div>
-              )}
-              
-              {(usuario?.cidade || usuario?.estado) && (
-                <div className="flex items-center gap-1">
-                  <MapPin className="h-3 w-3 flex-shrink-0" />
-                  <span className="truncate">
-                    {usuario?.cidade}
-                    {usuario?.cidade && usuario?.estado && ', '}
-                    {usuario?.estado}
-                  </span>
-                </div>
-              )}
-            </div>
+            )}
+            
+            {usuario?.academia && (
+              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                <Building className="h-4 w-4" />
+                <span>{usuario.academia}</span>
+              </div>
+            )}
           </div>
         </div>
       </CardContent>
