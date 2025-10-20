@@ -1,6 +1,4 @@
 ### CORRIGIR BUG (OU FAZER):
-- Data no card comunidade competição detalhes;
-- Select categoria modal adicionar competição;
 - Colocar dados na página user busca;
 - Ranking;
 - Colocar anúncios;
