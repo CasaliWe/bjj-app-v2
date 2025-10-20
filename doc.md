@@ -1,6 +1,4 @@
 ### CORRIGIR BUG (OU FAZER):
-- Colocar dados na página user busca;
-- Ranking;
 - Colocar anúncios;
 - Colocar código ganha dias na criação da conta (página register e modal welcome);
 - Colocar resgatar código promocional na aba Config;

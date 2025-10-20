@@ -64,21 +64,6 @@ const Ranking = () => {
         // EXATAMENTE como no hook useUserSearch
         const { usuarios } = await searchUsers('', 'nome');
         
-        console.log('=== RANKING DEBUG ===');
-        console.log('Usuários carregados:', usuarios.length);
-        console.log('DADOS COMPLETOS dos primeiros 3 usuários:', usuarios.slice(0, 3));
-        
-        // Verificar TODOS os campos dos usuários
-        if (usuarios.length > 0) {
-          console.log('TODAS AS CHAVES do primeiro usuário:', Object.keys(usuarios[0]));
-          console.log('Valores de EXP dos primeiros 5:', usuarios.slice(0, 5).map(u => ({
-            nome: u.nome, 
-            exp: u.exp, 
-            exp_type: typeof u.exp,
-            todas_props_com_exp: Object.keys(u).filter(key => key.toLowerCase().includes('exp'))
-          })));
-        }
-        
         setUsuarios(usuarios);
         
         // PRIMEIRO: ordenar TODOS os usuários por EXP (sem filtrar)
@@ -88,8 +73,6 @@ const Ranking = () => {
             expNumerico: Number(usuario.exp) || 0
           }))
           .sort((a, b) => b.expNumerico - a.expNumerico);
-        
-        console.log('TODOS os usuários ordenados por EXP:', todosOrdenados.map(u => ({nome: u.nome, exp: u.exp, expNumerico: u.expNumerico})));
         
         // DEPOIS: filtrar apenas com EXP > 0
         const ordenados = todosOrdenados.filter(usuario => usuario.expNumerico > 0);
