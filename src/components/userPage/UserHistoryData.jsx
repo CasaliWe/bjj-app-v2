@@ -1,14 +1,55 @@
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { User, Trophy, Shield, Shirt, CircleOff, Calendar, Activity } from "lucide-react";
+import LoadingSpinner from "@/components/ui/LoadingSpinner";
 
 /**
  * Componente para exibir histórico de treinos e competições na página de usuário público
  * @param {Object} props - Propriedades do componente
  * @param {Object} props.treinosDados - Dados de treinos e competições do usuário
+ * @param {boolean} props.isLoading - Estado de carregamento dos dados
+ * @param {string} props.error - Mensagem de erro, se houver
  * @returns {JSX.Element} Componente React
  */
-export function UserHistoryData({ treinosDados }) {
+export function UserHistoryData({ treinosDados, isLoading, error }) {
+  // Estado de carregamento
+  if (isLoading) {
+    return (
+      <div className="mt-6">
+        <Card className="bg-card border-border">                
+          <CardHeader>
+            <CardTitle className="text-lg font-semibold text-foreground flex items-center gap-2">
+              <Activity className="w-5 h-5 text-bjj-gold" />
+              Histórico de Atividades
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <LoadingSpinner message="Carregando dados históricos..." />
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  // Estado de erro
+  if (error) {
+    return (
+      <div className="mt-6">
+        <Card className="bg-card border-border">                
+          <CardHeader>
+            <CardTitle className="text-lg font-semibold text-foreground flex items-center gap-2">
+              <Activity className="w-5 h-5 text-bjj-gold" />
+              Histórico de Atividades
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-center text-muted-foreground py-6">{error}</p>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
   // Se não tiver dados ou os campos necessários, não renderiza nada
   if (!treinosDados || (!treinosDados.gi && !treinosDados.noGi && !treinosDados.competicoesGi && !treinosDados.competicoesNoGi)) {
     return null;

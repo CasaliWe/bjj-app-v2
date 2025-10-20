@@ -197,7 +197,11 @@ const UserPage = () => {
                         <PublicProfile profile={userProfile} />
                         
                         {/* Dados históricos de treinos e competições */}
-                        <UserHistoryData treinosDados={userHistoryData} />
+                        <UserHistoryData 
+                          treinosDados={userHistoryData} 
+                          isLoading={isLoadingHistoryData}
+                          error={historyDataError}
+                        />
                         
                         {/* Tabs para conteúdo público */}
                         <UserTabs 
