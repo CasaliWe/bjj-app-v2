@@ -37,6 +37,62 @@ const WelcomeModal = ({ forceShow = false }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);
   const totalSteps = 3;
+
+  // Função para calcular e formatar tempo restante
+  const getTempoRestante = () => {
+    if (!user?.vencimento) return "7 dias"; // fallback para 7 dias
+    
+    // Criar as datas forçando o fuso horário brasileiro (UTC-3)
+    const hoje = new Date();
+    hoje.setHours(0, 0, 0, 0); // Zerar horas para comparar apenas datas
+    
+    // Garantir que a data do vencimento seja interpretada corretamente
+    const vencimentoStr = user.vencimento;
+    const [ano, mes, dia] = vencimentoStr.split('-').map(Number);
+    const vencimento = new Date(ano, mes - 1, dia); // mes - 1 porque Date usa 0-11 para meses
+    vencimento.setHours(23, 59, 59, 999); // Definir para fim do dia
+    
+    if (vencimento <= hoje) return "expirado";
+    
+    // Calcular diferença precisa de meses e dias usando as datas ajustadas
+    let anos = vencimento.getFullYear() - hoje.getFullYear();
+    let meses = vencimento.getMonth() - hoje.getMonth();
+    let dias = vencimento.getDate() - hoje.getDate();
+    
+    // Ajustar se os dias forem negativos
+    if (dias < 0) {
+      meses--;
+      // Pegar o último dia do mês anterior
+      const ultimoDiaMesAnterior = new Date(vencimento.getFullYear(), vencimento.getMonth(), 0).getDate();
+      dias += ultimoDiaMesAnterior;
+    }
+    
+    // Ajustar se os meses forem negativos
+    if (meses < 0) {
+      anos--;
+      meses += 12;
+    }
+    
+    // Calcular total de meses
+    const totalMeses = anos * 12 + meses;
+    
+    // Se for menos de 1 mês, mostrar em dias
+    if (totalMeses === 0) {
+      const diasTotais = Math.ceil((vencimento.getTime() - hoje.getTime()) / (1000 * 3600 * 24));
+      return diasTotais === 1 ? "1 dia" : `${diasTotais} dias`;
+    }
+    
+    // Se não sobrar dias, mostra apenas meses
+    if (dias === 0) {
+      return totalMeses === 1 ? "1 mês" : `${totalMeses} meses`;
+    }
+    
+    // Se sobrar dias, mostra meses e dias
+    const textMeses = totalMeses === 1 ? "1 mês" : `${totalMeses} meses`;
+    const textDias = dias === 1 ? "1 dia" : `${dias} dias`;
+    
+    return `${textMeses} e ${textDias}`;
+  };
   
   // Verifica se é o primeiro acesso do usuário 
   const isFirstAccess = () => {
@@ -160,9 +216,9 @@ const WelcomeModal = ({ forceShow = false }) => {
           <Clock className="h-9 w-9 text-bjj-gold" />
         </div>
         <div>
-          <h3 className="text-xl font-bold text-bjj-gold text-center sm:text-left">Acesso Gratuito por 7 Dias</h3>
+          <h3 className="text-xl font-bold text-bjj-gold text-center sm:text-left">Acesso Gratuito por {getTempoRestante()}</h3>
           <p className="text-sm text-center sm:text-left">
-            Dê os primeiros passos na sua evolução! Você tem 7 dias para explorar todas as funcionalidades do BJJ Academy.
+            Dê os primeiros passos na sua evolução! Você tem {getTempoRestante()} para explorar todas as funcionalidades do BJJ Academy.
           </p>
         </div>
       </div>
@@ -176,7 +232,7 @@ const WelcomeModal = ({ forceShow = false }) => {
         <ul className="space-y-3 pl-4 sm:pl-8">
           <li className="flex items-center gap-2 text-sm">
             <ChevronRight className="h-4 w-4 text-bjj-gold flex-shrink-0" />
-            <span>Acesso a todas as funcionalidades premium por 7 dias</span>
+            <span>Acesso a todas as funcionalidades premium por {getTempoRestante()}</span>
           </li>
           <li className="flex items-center gap-2 text-sm">
             <ChevronRight className="h-4 w-4 text-bjj-gold flex-shrink-0" />
