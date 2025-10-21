@@ -1,5 +1,6 @@
 ### CORRIGIR BUG (OU FAZER):
 - Ajustar gifs tutoriais;
+- Atualizar preços e dados;
 - Colocar anúncios;
 - Notícias blog (eu add pelo admin);
 - Teste seu conhecimento (usando IA);
