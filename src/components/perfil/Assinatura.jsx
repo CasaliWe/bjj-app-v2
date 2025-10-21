@@ -26,6 +26,7 @@ const Assinatura = () => {
   const [cpf, setCpf] = useState('');
   const [cpfError, setCpfError] = useState('');
   const [plans, setPlans] = useState({});
+  const [pixError, setPixError] = useState('');
 
   // Estados para o modal de código promocional
   const [promoModalOpen, setPromoModalOpen] = useState(false);
@@ -111,6 +112,7 @@ const Assinatura = () => {
 
     // fazendo a chamada para a API
     try {
+      setPixError(''); // Limpa erros anteriores
       const response = await fetch(`${import.meta.env.VITE_API_URL}endpoint/asaas/gerar-pix.php`, {
         method: "POST",
         headers: {
@@ -131,10 +133,12 @@ const Assinatura = () => {
           setLoading(false);
       }else{
         console.error("Erro na resposta da API:", data.message);
+        setPixError(data.message || "Erro ao gerar PIX. Tente novamente.");
         setLoading(false);
       }
     } catch (error) {
       console.error("Erro na requisição da API:", error);
+      setPixError("Erro ao conectar com o servidor. Verifique sua conexão e tente novamente.");
       setLoading(false);
     }
   };
@@ -584,9 +588,20 @@ const Assinatura = () => {
                 ))}
               </RadioGroup>
               
+              {/* Mensagem de erro */}
+              {pixError && (
+                <div className="bg-red-900/20 border border-red-800 text-red-400 px-3 py-2 rounded-md text-sm mb-3 flex items-center gap-2">
+                  <AlertCircle className="w-4 h-4 flex-shrink-0" />
+                  {pixError}
+                </div>
+              )}
+              
               <Button 
                 className="w-full" 
-                onClick={generatePixQrCode}
+                onClick={() => {
+                  setPixError(''); // Limpa erro ao tentar novamente
+                  generatePixQrCode();
+                }}
                 disabled={loading}
               >
                 {loading ? (
