@@ -18,6 +18,7 @@ const Register = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [promoCode, setPromoCode] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -217,7 +218,8 @@ const Register = () => {
         username,
         email,
         password,
-        turnstileToken
+        turnstileToken,
+        promoCode: promoCode.trim() || null
       };
 
       const response = await cadastrar(userData);
@@ -557,6 +559,24 @@ const Register = () => {
                         Senhas conferem
                       </p>
                     )}
+                  </div>
+
+                  {/* Campo de código promocional */}
+                  <div className="space-y-2">
+                    <Label htmlFor="promoCode" className="text-sm font-medium text-foreground">
+                      Tem código promocional?
+                    </Label>
+                    <div className="relative">
+                      <Award className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                      <Input 
+                        id="promoCode"
+                        type="text" 
+                        placeholder="adicione aqui...." 
+                        value={promoCode}
+                        onChange={(e) => setPromoCode(e.target.value)}
+                        className="pl-10"
+                      />
+                    </div>
                   </div>
 
                   {/* CloudFlare Turnstile (CAPTCHA) */}

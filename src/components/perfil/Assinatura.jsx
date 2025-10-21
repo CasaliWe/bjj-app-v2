@@ -4,7 +4,7 @@ import { Button } from "../ui/button";
 import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
-import { QrCode, CheckCircle, LockKeyhole, Calendar, ArrowRight, RotateCcw, User } from "lucide-react";
+import { QrCode, CheckCircle, LockKeyhole, Calendar, ArrowRight, RotateCcw, User, Gift, AlertCircle } from "lucide-react";
 import { useUser } from "@/contexts/UserContext";
 
 import { getAuthToken } from '@/services/cookies/cookies';
@@ -26,6 +26,13 @@ const Assinatura = () => {
   const [cpf, setCpf] = useState('');
   const [cpfError, setCpfError] = useState('');
   const [plans, setPlans] = useState({});
+
+  // Estados para o modal de código promocional
+  const [promoModalOpen, setPromoModalOpen] = useState(false);
+  const [promoCode, setPromoCode] = useState('');
+  const [promoLoading, setPromoLoading] = useState(false);
+  const [promoError, setPromoError] = useState('');
+  const [promoSuccess, setPromoSuccess] = useState('');
 
   // useEffect para buscar os dados dos planos da API
   useEffect(() => {
@@ -238,41 +245,203 @@ const Assinatura = () => {
     }, 300);
   };
 
+  // Função para resgatar código promocional
+  const handlePromoCodeSubmit = async () => {
+    if (!promoCode.trim()) {
+      setPromoError('Por favor, insira um código promocional');
+      return;
+    }
+
+    setPromoLoading(true);
+    setPromoError('');
+    setPromoSuccess('');
+
+    try {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}endpoint/asaas/codigo-promocional.php?codigo=${encodeURIComponent(promoCode.trim())}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${getAuthToken()}`
+        }
+      });
+      
+      const data = await response.json();
+      
+      if (data.success) {
+        setPromoSuccess(data.message || 'Código promocional ativado com sucesso!');
+        // Aguarda um pouco para mostrar a mensagem de sucesso antes de fechar
+        setTimeout(() => {
+          setPromoModalOpen(false);
+          setPromoCode('');
+          setPromoError('');
+          setPromoSuccess('');
+          // Redireciona para atualizar as informações do usuário
+          window.location.href = "/app";
+        }, 2000);
+      } else {
+        setPromoError(data.message || 'Código promocional não existe ou já foi utilizado');
+      }
+    } catch (error) {
+      console.error("Erro ao resgatar código promocional:", error);
+      setPromoError('Erro ao processar código promocional. Tente novamente.');
+    } finally {
+      setPromoLoading(false);
+    }
+  };
+
+  // Reset do modal de código promocional
+  const resetPromoModal = () => {
+    setPromoCode('');
+    setPromoError('');
+    setPromoSuccess('');
+    setPromoLoading(false);
+  };
+
   return (
     <>
       {/* Botão principal que abre o modal */}
-      <div className="w-full flex justify-center">
-        {user && user.plano === 'Plus' ? (
-          <div className="w-full">
-            <div className="bg-white border border-gray-200 rounded-md p-3 mb-3 text-center">
-              <p className="text-sm font-medium text-green-600">Plano Plus Ativo</p>
-              <p className="text-xs text-gray-500">Válido até {new Date(user.vencimento).toLocaleDateString("pt-BR")}</p>
+      <div className="w-full flex flex-col gap-3">
+        <div className="w-full flex justify-center">
+          {user && user.plano === 'Plus' ? (
+            <div className="w-full">
+              <div className="bg-white border border-gray-200 rounded-md p-3 mb-3 text-center">
+                <p className="text-sm font-medium text-green-600">Plano Plus Ativo</p>
+                <p className="text-xs text-gray-500">Válido até {new Date(user.vencimento).toLocaleDateString("pt-BR")}</p>
+              </div>
+              <Button 
+                onClick={() => {
+                  setOpen(true);
+                  setStep('cpf-input');
+                }}
+                className="flex items-center gap-2 bg-green-600 hover:bg-green-700 w-full"
+              >
+                <QrCode className="w-4 h-4" />
+                Renovar Assinatura
+              </Button>
             </div>
+          ) : (
             <Button 
               onClick={() => {
                 setOpen(true);
                 setStep('cpf-input');
               }}
-              className="flex items-center gap-2 bg-green-600 hover:bg-green-700 w-full"
+              className="flex items-center gap-2 bg-purple-600 hover:bg-purple-700"
             >
               <QrCode className="w-4 h-4" />
-              Renovar Assinatura
+              Assinar via PIX
             </Button>
-          </div>
-        ) : (
+          )}
+        </div>
+        
+        {/* Botão de código promocional */}
+        <div className="w-full flex justify-center">
           <Button 
             onClick={() => {
-              setOpen(true);
-              setStep('cpf-input');
+              resetPromoModal();
+              setPromoModalOpen(true);
             }}
-            className="flex items-center gap-2 bg-purple-600 hover:bg-purple-700"
+            variant="outline"
+            className="flex items-center gap-2 border-bjj-gold/30 text-bjj-gold hover:bg-bjj-gold/10 hover:border-bjj-gold/50"
           >
-            <QrCode className="w-4 h-4" />
-            Assinar via PIX
+            <Gift className="w-4 h-4" />
+            Resgatar código promocional
           </Button>
-        )}
+        </div>
       </div>
       {/* Botão principal que abre o modal */}
+      
+      {/* Modal de código promocional */}
+      <Dialog open={promoModalOpen} onOpenChange={(isOpen) => {
+        if (!isOpen) {
+          setPromoModalOpen(false);
+          resetPromoModal();
+        }
+      }}>
+        <DialogContent className="sm:max-w-[400px]">
+          <DialogHeader className="pb-2">
+            <DialogTitle className="text-center text-xl flex items-center justify-center gap-2">
+              <Gift className="w-5 h-5 text-bjj-gold" />
+              Código Promocional
+            </DialogTitle>
+          </DialogHeader>
+          
+          {promoSuccess ? (
+            // Tela de sucesso
+            <div className="py-4 flex flex-col items-center">
+              <CheckCircle className="w-12 h-12 text-green-500 mb-3" />
+              <p className="text-center mb-2 font-medium text-green-600">
+                {promoSuccess}
+              </p>
+              <p className="text-xs text-center text-muted-foreground">
+                Redirecionando...
+              </p>
+            </div>
+          ) : (
+            // Formulário de código promocional
+            <div className="py-2">
+              <div className="mb-4">
+                <p className="text-sm text-center text-muted-foreground mb-4">
+                  Insira abaixo seu código promocional para receber tempo adicional de acesso ao app gratuitamente.
+                </p>
+                
+                <div className="space-y-2">
+                  <Label htmlFor="promoCode" className="text-sm font-medium">
+                    Código promocional
+                  </Label>
+                  <Input
+                    id="promoCode"
+                    type="text"
+                    placeholder="Insira aqui..."
+                    value={promoCode}
+                    onChange={(e) => {
+                      setPromoCode(e.target.value);
+                      if (promoError) setPromoError('');
+                    }}
+                    className={`w-full ${promoError ? 'border-red-500' : ''}`}
+                    disabled={promoLoading}
+                  />
+                  {promoError && (
+                    <div className="flex items-center gap-2 text-red-500 text-xs">
+                      <AlertCircle className="w-3 h-3" />
+                      {promoError}
+                    </div>
+                  )}
+                </div>
+              </div>
+              
+              <Button 
+                onClick={handlePromoCodeSubmit}
+                className="w-full bg-bjj-gold hover:bg-bjj-gold/90 text-primary-foreground"
+                disabled={promoLoading || !promoCode.trim()}
+              >
+                {promoLoading ? (
+                  <>
+                    <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent"></div>
+                    Ativando...
+                  </>
+                ) : (
+                  <>
+                    <Gift className="mr-2 h-4 w-4" />
+                    Ativar
+                  </>
+                )}
+              </Button>
+              
+              <DialogFooter className="pt-4">
+                <Button 
+                  variant="outline" 
+                  onClick={() => setPromoModalOpen(false)}
+                  className="w-full"
+                  disabled={promoLoading}
+                >
+                  Cancelar
+                </Button>
+              </DialogFooter>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
+      {/* Modal de código promocional */}
       
       {/* Modal de pagamento PIX */}
       <Dialog open={open} onOpenChange={(isOpen) => {
