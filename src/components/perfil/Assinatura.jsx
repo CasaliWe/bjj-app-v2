@@ -401,7 +401,7 @@ const Assinatura = () => {
                       setPromoCode(e.target.value);
                       if (promoError) setPromoError('');
                     }}
-                    className={`w-full ${promoError ? 'border-red-500' : ''}`}
+                    className={`w-full ${promoError ? 'border-red-500' : ''} uppercase`}
                     disabled={promoLoading}
                   />
                   {promoError && (
