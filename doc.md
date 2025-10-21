@@ -5,19 +5,6 @@
 - Teste seu conhecimento (usando IA);
 
 
-### TESTAR MELHOR ANTES DO LANÇAMENTO:
-- pagamento;
-- testar cód promo;
-- testar criar com cód promo;
-- comunidade técnicas;
-- testar upload videos tecnicas de várias tipo de celulares, formatos e tamanhos;
-- Página aprender;
-- Testar comunidade trienos;
-- Comunidade competição;
-- Usar manus para pegar eventos ibjjf e testar scrpping eventos sou competidor;
-- Página atleta com muita coisa publica;
-
-
 ### Documentação:
 - Deps: api url (VITE_API_URL), cloudflare (VITE_CLOUDFLARE_TURNSTILE), google auth (VITE_GOOGLE_CLIENT_ID) e ia (VITE_IA_URL);
 - Sempre ao fazer o build precisa atualizar a .env antes;
@@ -66,7 +53,7 @@
 
 ### Precisa de atenção:
 - Componente Exp;
-- Componente Assinatura;
+- Componente Assinatura (cód promo);
 - Componente Upgrade modal;
 - Componente Welcome;
 - Componente PWAInstall (apenas windows e android);
