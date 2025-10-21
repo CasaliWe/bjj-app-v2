@@ -52,6 +52,7 @@ export const setTitleByRoute = (path) => {
     "/treinos": "Treinos",
     "/competicoes": "Competições",
     "/observacoes": "Observações",
+    "/lutas-epicas": "Lutas Épicas",
     "/plano-de-jogo": "Plano de Jogo",
     "/videos": "Vídeos",
     "/eventos": "Eventos",

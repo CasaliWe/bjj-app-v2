@@ -43,6 +43,7 @@ import TreinosCronometrados from "./pages/TreinosCronometrados";
 import Aprender from "./pages/Aprender";
 import Eventos from "./pages/Eventos";
 import Ranking from "./pages/Ranking";
+import LutasEpicas from "./pages/LutasEpicas";
 
 
 const queryClient = new QueryClient();
@@ -208,6 +209,7 @@ const App = () => (
               <Route path="/usuario" element={<PrivateRoute><UserPage /></PrivateRoute>} />
               <Route path="/ia-sensei" element={<PrivateRoute><IASensei /></PrivateRoute>} />
               <Route path="/ranking" element={<PrivateRoute><Ranking /></PrivateRoute>} />
+              <Route path="/lutas-epicas" element={<PrivateRoute><LutasEpicas /></PrivateRoute>} />
             
             {/* Rotas públicas com redirecionamento para usuários autenticados */}
             <Route path="/login" element={<AuthRedirectRoute><Login /></AuthRedirectRoute>} />

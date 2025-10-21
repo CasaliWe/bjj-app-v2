@@ -58,6 +58,12 @@ const menuSections = [
         url: "/videos",
         icon: Video,
         description: "Biblioteca de vídeos do YouTube"
+      },
+      {
+        title: "Lutas Épicas",
+        url: "/lutas-epicas",
+        icon: Trophy,
+        description: "Lutas épicas do Jiu-Jitsu"
       }
     ]
   },
