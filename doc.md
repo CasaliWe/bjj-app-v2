@@ -1,7 +1,6 @@
 ### CORRIGIR BUG (OU FAZER):
 - Colocar anúncios;
 - Notícias blog (eu add pelo admin);
-- Lutas épicas (eu add pelo admin);
 - Teste seu conhecimento (usando IA);
 
 
@@ -38,6 +37,7 @@
 - /eventos;
 - /videos;
 - /ranking;
+- /lutas-epicas;
 
 
 ### Páginas atualmente fora do app:
