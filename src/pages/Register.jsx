@@ -574,7 +574,7 @@ const Register = () => {
                         placeholder="adicione aqui...." 
                         value={promoCode}
                         onChange={(e) => setPromoCode(e.target.value)}
-                        className="pl-10"
+                        className="pl-10 uppercase"
                       />
                     </div>
                   </div>
