@@ -2,6 +2,7 @@
 - Colocar anúncios;
 - Notícias blog (eu add pelo admin);
 - Lutas épicas (eu add pelo admin);
+- Teste seu conhecimento (usando IA);
 
 
 ### TESTAR MELHOR ANTES DO LANÇAMENTO:
