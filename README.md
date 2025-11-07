@@ -14,6 +14,6 @@ Plataforma completa para praticantes de Jiu Jitsu com diversas funcionalidades e
 - React (front-end)  
 - MySQL como banco de dados  
 - TailwindCSS para estilização  
-- Hospedado em servidor Linux (ex: Ubuntu + Nginx)  
+- Hospedado em servidor Linux (Ubuntu + Nginx)  
 - Versionamento com Git + GitHub  
 
